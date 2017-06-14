@@ -20,7 +20,10 @@ Tests the Watchdog and Triigger classes.
 
 # standard library
 import logging
-from unittest.mock import Mock, patch
+try:
+    from unittest.mock import Mock, patch
+except ImportError:
+    from mock import Mock, patch
 import threading
 
 # third party
@@ -427,12 +430,11 @@ class MuzzleTestCase(TestCase):
         alert5.save()
         alert6.save()
         alert7.save()
-        new_data = {'content': {'subject': 'foo4'}, 'to': 'bar'}
-        with patch('alerts.models.Alert.saved_data', return_value=new_data):
-            alert8 = Alert.objects.get(pk=8)
-            with patch('watchdogs.models.timezone.now',
-                       return_value=alert8.created_date):
-                self.assertIs(self.muzzle.is_match(alert8), False)
+        alert8 = Alert.objects.get(pk=8)
+        alert8.data = {'content': {'subject': 'foo4'}, 'to': 'bar'}
+        with patch('watchdogs.models.timezone.now',
+                   return_value=alert8.created_date):
+            self.assertIs(self.muzzle.is_match(alert8), False)
 
     @patch_find_by_id
     def test_is_match_w_matches(self):

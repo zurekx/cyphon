@@ -7,6 +7,15 @@ Server Configuration
 Cyphon is most easily deployed using `Docker`_. This requires installing Docker and Docker Compose, and configuring virtual memory on the host machine.
 
 
+.. _system-requirements:
+
+***************************
+Minimum System Requirements
+***************************
+
+Cyphon requires that the server (either dedicated machine or virtual machine) hosting Docker has a minimum of 2 cores and at least 8GB of RAM. Docker-based installation will require at least 20GB of storage space. Expect an increase over time due to Docker's snapshot system. For production environments, you may want to map data folders to a separate volume with much larger storage capacity.
+
+
 .. _install-docker-engine:
 
 **************
@@ -76,7 +85,7 @@ Then install Docker Compose::
 
     $ sudo pip install docker-compose
 
-To install Docker Compose on other operating systems, see `Docker's documentation <https://docs.docker.com/compose/install/>`_.
+To install Docker Compose on other operating systems, see `Docker's documentation <https://docs.docker.com/compose/install/>`__.
 
 
 .. _configure-virtual-memory:
@@ -85,8 +94,8 @@ To install Docker Compose on other operating systems, see `Docker's documentatio
 Configure Virtual Memory
 ************************
 
-This project uses the official `Elasticsearch docker repository <https://hub.docker.com/_/elasticsearch/>`_. These images require a Linux host to 
-allow a process to have at least 262,144 memory-mapped areas (see `Elasticsearch's documentation <https://www.elastic.co/guide/en/elasticsearch/reference/current/_maximum_map_count_check.html/>`_ for more info). 
+This project uses the official `Elasticsearch docker repository <https://hub.docker.com/_/elasticsearch/>`__. These images require a Linux host to 
+allow a process to have at least 262,144 memory-mapped areas (see `Elasticsearch's documentation <https://www.elastic.co/guide/en/elasticsearch/reference/current/_maximum_map_count_check.html/>`__ for more info). 
 
 To increase the memory map count::
 
