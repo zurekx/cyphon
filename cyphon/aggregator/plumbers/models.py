@@ -28,7 +28,7 @@ from ambassador.emissaries.models import Emissary, EmissaryManager
 
 class Plumber(Emissary):
     """
-    Handles an API key or token (KeySet) for a set of users of a Pipe.
+    Handles an API key or token (Passport) for a set of users of a Pipe.
     Uses a Meter to keep track of the number of calls made using that
     API key.
     """
@@ -40,4 +40,3 @@ class Plumber(Emissary):
     )
 
     objects = EmissaryManager()
-
