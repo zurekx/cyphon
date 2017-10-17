@@ -20,9 +20,6 @@ an API's rate limits and parameter limits. Also stores information on
 how to access the specific class needed to handle a query to the API.
 """
 
-# standard library
-import logging
-
 # third party
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -31,8 +28,6 @@ from django.utils.translation import ugettext_lazy as _
 from aggregator.reservoirs.models import Reservoir
 from ambassador.endpoints.models import Endpoint, EndpointManager
 from cyphon.choices import LOCATION_FORMAT_CHOICES, LOGIC_CHOICES
-
-LOGGER = logging.getLogger(__name__)
 
 
 class Pipe(Endpoint):
