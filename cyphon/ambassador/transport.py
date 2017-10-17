@@ -94,7 +94,7 @@ class Transport(BaseClass):
 
     def _get_emissary_type(self):
         """
-        Returns the type of Emissary associated with teh Endpoint, such
+        Returns the type of Emissary associated with the Endpoint, such
         as a Courier or Plumber.
         """
         endpoint_model = type(self.endpoint)
