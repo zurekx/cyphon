@@ -14,13 +14,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
+"""
 
-from django.apps import AppConfig
-from django.utils.translation import ugettext_lazy as _
+"""
 
+# third party
+from django.shortcuts import render
 
-class QuartermastersConfig(AppConfig):
-    """Store metadata for the Suppliers application."""
-
-    name = 'suppliers'
-    verbose_name = _('Suppliers')
+# Create your views here.
