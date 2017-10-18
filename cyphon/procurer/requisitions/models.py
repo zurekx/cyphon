@@ -26,7 +26,7 @@ from django.utils.translation import ugettext_lazy as _
 # local
 from ambassador.endpoints.models import Endpoint, EndpointManager
 from cyphon.choices import FIELD_TYPE_CHOICES
-from trader.suppliers.models import Supplier
+from procurer.suppliers.models import Supplier
 
 
 class Requisition(Endpoint):
@@ -89,28 +89,28 @@ class Requisition(Endpoint):
         pass
         # create polling celery task, passing in dispatch to be updated
 
-    # def get_dispatch(self, user, alert):
-    #     """Take action on an |Alert| and get a |Dispatch| of the API
-    #     response.
+    def get_dispatch(self, user, alert):
+        """Take action on an |Alert| and get a |Dispatch| of the API
+        response.
 
-    #     Parameters
-    #     ----------
-    #     user : |AppUser|
-    #         The user making the API request.
+        Parameters
+        ----------
+        user : |AppUser|
+            The user making the API request.
 
-    #     alert : |Alert|
-    #         The |Alert| on which the action is being taken and to which
-    #         the API request relates.
+        alert : |Alert|
+            The |Alert| on which the action is being taken and to which
+            the API request relates.
 
-    #     Returns
-    #     -------
-    #     |Dispatch|
-    #         A record of the API response.
+        Returns
+        -------
+        |Dispatch|
+            A record of the API response.
 
-    #     """
-    #     transport = self.create_request_handler(user=user)
-    #     transport.run(alert)
-    #     return transport.record
+        """
+        transport = self.create_request_handler(user=user)
+        transport.run(alert)
+        return transport.record
 
 
 class Parameter(models.Model):

@@ -24,7 +24,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # local
 from ambassador.emissaries.models import Emissary, EmissaryManager
-from trader.requisitions.models import Requisitiion
+from procurer.requisitions.models import Requisitiion
 
 
 class Quartermaster(Emissary):

@@ -27,22 +27,32 @@ from django.db import models
 # from sifter.datasifter.datachutes.models import DataChute
 
 
+class Convoy(Transport):
+    """
+
+    """
+
+    def create_tarnsport(self):
+        """
+
+        """
+        pass
+        #self.supply_chain.get_link(index)
+
+
 # class SupplyTransport(Transport):
 #     """
 
 #     Attributes
 #     ----------
-#     endpoint : Pipe
+#     endpoint : Requisition
 
-#     emissary : Plumber
+#     emissary : Quartermaster
 
 #     user : AppUser
 
 #     cargo :  Cargo
 
-#     record : Invoice
-
-#     task : str
-
+#     record : Manifest
 
 #     """
