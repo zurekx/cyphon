@@ -76,7 +76,7 @@ class Requisition(Endpoint):
         """
         pass
 
-    def is_valid(self, form):
+    def validate(self, form):
         """
 
         """
