@@ -54,7 +54,7 @@ class Condenser(models.Model):
     )
     bottle = models.ForeignKey(
         Bottle,
-        help_text=_('The bottle (custom data  model) into which the raw data '
+        help_text=_('The bottle (custom data model) into which the raw data '
                     'will be distilled and stored.')
     )
 
