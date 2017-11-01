@@ -25,8 +25,10 @@ from django.utils.translation import ugettext_lazy as _
 
 # local
 # from bottler.containers.models import Container
-from procurer.requisition.models import Requisition
-from sifter.datasifter.datacondensers.models import DataCondenser
+from cyphon.models import GetByNameManager
+from procurer.requisition.models import Requisition, Parameter
+from procurer.convoy import Convoy
+
 from .exceptions import SupplyChainException
 # from cyphon.transaction import close_old_connections
 # from sifter.datasifter.datachutes.models import DataChute
@@ -41,7 +43,13 @@ class SupplyChain(models.Model):
 
     """
 
-    name = models.CharField(max_length=255, verbose_name=_('name'))
+    name = models.CharField(
+        max_length=255,
+        unique=True,
+        verbose_name=_('name')
+    )
+
+    objects = GetByNameManager()
 
     class Meta(object):
         """Metadata options."""
@@ -49,29 +57,14 @@ class SupplyChain(models.Model):
         verbose_name = _('supply chain')
         verbose_name_plural = _('supply chains')
 
-    @cached_property
-    def _first_link(self):
-        """
-
-        """
-        return self.supplylinks.first()
-
-    def _get_transport(self, supply_link):
-        """
-
-        """
-        pass
-        # get Transport for SupplyLink
-
     def start(self, data):
         """
 
         """
-        input_doc = data
-        for link in self.supplylinks.all():
-            if link.validate(input_doc):
-                input_doc = link.process(input_doc)
-        return input_doc
+        for supplylink in self.supplylinks.all():  # ordered by position
+            cargo = supplylink.process(data)
+            data = cargo.data
+        return data
 
 
 class SupplyLink(models.Model):
@@ -85,17 +78,18 @@ class SupplyLink(models.Model):
     requisition : Requisition
         The |Requisition| associated with the SupplyLink.
 
-    condenser : DataCondenser
-        The |DataCondenser| used to transform input data into a form the
-        `requisition` can use.
-
     position : int
         An |int| representing the order of the SupplyLink in a
-        |SupplyChain|. SupplyLink are evaluated in ascending order (the
+        |SupplyChain|. SupplyLinks are evaluated in ascending order (the
         lowest rank first)
 
     """
 
+    name = models.CharField(
+        max_length=255,
+        unique=True,
+        verbose_name=_('name')
+    )
     supply_chain = models.ForeignKey(
         SupplyChain,
         related_name='supplylinks',
@@ -103,10 +97,6 @@ class SupplyLink(models.Model):
         verbose_name=_('supply chain')
     )
     requisition = models.ForeignKey(Requisition, verbose_name=_('requisition'))
-    condenser = models.ForeignKey(
-        DataCondenser,
-        verbose_name=_('data condenser')
-    )
     position = models.IntegerField(
         default=0,
         verbose_name=_('position'),
@@ -115,48 +105,139 @@ class SupplyLink(models.Model):
                     'with the lowest number performed first.')
     )
 
+    objects = GetByNameManager()
+
     class Meta(object):
         """Metadata options."""
 
         order = ['supply_chain', 'position']
+        unique_together = ['supply_chain', 'position']
         verbose_name = _('supply link')
         verbose_name_plural = _('supply links')
 
-    def _format_request(self, data):
+    @cached_property
+    def coupling(self):
         """
 
         """
-        pass
-        # transform input data into request data using condenser
+        coupling = {}
+        for field_coupling in self.field_couplings.all():
+            field_coupling.update(field_coupling.mapping)
+            return coupling
+
+    def _get_params(self, data):
+        """
+
+        """
+        params = {}
+        for (field_name, param_name) in self.coupling.items():
+            params[param_name] = data.get(field_name)
+        return params
+
+    def _create_transport(self, user):
+        """
+
+        """
+        return Convoy(endpoint=self.requisition, user=user)
 
     def _validate(self, data):
         """
 
         """
-        pass
+        for coupling in self.couplings.all():
+            if not coupling.validate(data):
+                # TODO(LH): add message to exception
+                raise SupplyChainException()
+        return True
 
-    def get_bottle(self):
+    def process(self, user, data):
         """
 
-        """
-        return self.condenser.bottle
+        Parameters
+        ----------
+        user : |AppUser|
+            The user making the API request.
 
-    def _create_transport(self):
-        """
+        data : |dict|
+            A dictionary of data used to construct the API request.
+
+        Returns
+        -------
+        |Convoy|
+
+        Raises
+        ------
+        SupplyChainException
 
         """
-        pass
-        # start Transport
+        self._validate(data)
 
-    def process(self, data):
-        """
+        params = self._get_params(data)
+        transport = self._create_transport(user)
+        transport.run(params)
 
-        """
-        # create Transport
-        is_valid = self._validate(data)
-        if is_valid:
-            transport = self._create_transport(data)
-            return transport.start()
+        if transport.cargo:
+            return transport.cargo
         else:
-            # TODO(LH): add error message with identifying info
+            # TODO(LH): add message to exception
             raise SupplyChainException()
+
+
+class FieldCoupling(models.Model):
+    """
+
+    Attributes
+    ----------
+    supply_link : SupplyLink
+        The |SupplyLink| associated with the Coupling.
+
+    parameter : Parameter
+        The |Parameter| associated with the Coupling.
+
+    """
+
+    supply_link = models.ForeignKey(
+        SupplyLink,
+        related_name='field_couplings',
+        related_name_query='field_coupling',
+        verbose_name=_('supply link')
+    )
+    parameter = models.ForeignKey(
+        Parameter,
+        related_name='field_couplings',
+        related_name_query='field_coupling',
+        verbose_name=_('parameter')
+    )
+    field_name = models.CharField(
+        max_length=64,
+        verbose_name=_('field name')
+    )
+
+    class Meta(object):
+        """Metadata options."""
+
+        order = ['supply_link', 'parameter']
+        unique_together = ['supply_chain', 'position']
+        verbose_name = _('supply link')
+        verbose_name_plural = _('supply links')
+
+    @cached_property
+    def param_name(self):
+        """
+
+        """
+        return self.parameter.param_name
+
+    @property
+    def mapping(self):
+        """
+
+        """
+        return {self.field_name: self.param_name}
+
+    def validate(self, data):
+        """
+
+        """
+        value = data.get(self.field_name)
+        return self.parameter.validate(value)

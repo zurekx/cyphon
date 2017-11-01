@@ -19,10 +19,11 @@
 """
 
 # third party
-from django.db import models
+# from django.db import models
 
 # local
-# from ambassador.transport import Cargo, Transport
+from ambassador.manifests.models import Manifest
+from ambassador.transport import Cargo, Transport
 # from cyphon.transaction import close_old_connections
 # from sifter.datasifter.datachutes.models import DataChute
 
@@ -32,27 +33,43 @@ class Convoy(Transport):
 
     """
 
-    def create_tarnsport(self):
+    def create_record(self, stamp, obj):
+        """
+        Create a record of the response
+
+        Parameters
+        ----------
+        stamp : |Stamp|
+
+        obj : |dict|
+
+
+        Returns
+        -------
+        None
+
+        """
+        return Manifest.objects.create(
+            stamp=stamp,
+            data=obj,
+        )
+
+    def process_request(self, obj):
         """
 
+        Parameters
+        ----------
+        obj : |dict|
+            The data to use for constructing the API request.
+
+        Returns
+        -------
+        |Cargo|
+            The results of the API call packaged as a |Cargo| object.
+
+        Takes a data dictionary, formats and submits it to the API,
+        returns a Cargo object. This method needs to be implemented in
+        derived classes so it can be customized for specific APIs.
+
         """
-        pass
-        #self.supply_chain.get_link(index)
-
-
-# class SupplyTransport(Transport):
-#     """
-
-#     Attributes
-#     ----------
-#     endpoint : Requisition
-
-#     emissary : Quartermaster
-
-#     user : AppUser
-
-#     cargo :  Cargo
-
-#     record : Manifest
-
-#     """
+        raise self.raise_method_not_implemented()

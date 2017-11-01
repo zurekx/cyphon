@@ -89,27 +89,25 @@ class Requisition(Endpoint):
         pass
         # create polling celery task, passing in dispatch to be updated
 
-    def get_dispatch(self, user, alert):
-        """Take action on an |Alert| and get a |Dispatch| of the API
-        response.
+    def get_manifest(self, user, data):
+        """
 
         Parameters
         ----------
         user : |AppUser|
             The user making the API request.
 
-        alert : |Alert|
-            The |Alert| on which the action is being taken and to which
-            the API request relates.
+        data : |dict|
+            A dictionary of data used to construct the API request.
 
         Returns
         -------
-        |Dispatch|
+        |Manifest|
             A record of the API response.
 
         """
-        transport = self.create_request_handler(user=user)
-        transport.run(alert)
+        transport = self.create_request_handler(user=user, params=data)
+        transport.run(data)
         return transport.record
 
 
@@ -146,7 +144,7 @@ class Parameter(models.Model):
         verbose_name_plural = _('parameters')
         unique_together = ['requisition', 'param_name']
 
-    def is_valid(self, value):
+    def validate(self, value):
         """
 
         """

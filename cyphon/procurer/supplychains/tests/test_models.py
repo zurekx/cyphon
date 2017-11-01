@@ -19,32 +19,6 @@
 """
 
 # third party
-from django.contrib.postgres.fields.jsonb import JSONField
-from django.utils.translation import ugettext_lazy as _
+from django.test import TestCase
 
-# local
-from ambassador.records.models import Record, RecordManager
-
-
-class Manifest(Record):
-    """Provides a record of an API call.
-
-    Attributes
-    ----------
-    stamp : Stamp
-        A |Stamp| recording the details of the API call.
-
-    data : dict
-        A dictionary containing the response to the API request.
-
-    """
-
-    data = JSONField(blank=True, null=True)
-
-    objects = RecordManager()
-
-    class Meta(object):
-        """Metadata options."""
-
-        verbose_name = _('Manifest')
-        verbose_name_plural = _('manifests')
+# Create your tests here.
