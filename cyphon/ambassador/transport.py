@@ -48,7 +48,7 @@ class Cargo(object):
     status_code : str, optional
         The HTTP status code received in response to the API request.
 
-    data : dict, optional
+    data : dict or list of dict, optional
         Data of interest recieved in response to the API call.
 
     notes : str, optional
