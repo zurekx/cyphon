@@ -68,7 +68,7 @@ class JiraHandler(Carrier):
 
 class IssueAPI(JiraHandler):
     """
-    Class for accessing the JIRA Isssue API.
+    Class for accessing the JIRA Issue API.
     """
 
     def __init__(self, *args, **kwargs):
