@@ -26,7 +26,7 @@ from django.utils.translation import ugettext_lazy as _
 # local
 # from bottler.containers.models import Container
 from cyphon.models import GetByNameManager
-from procurer.requisition.models import Requisition, Parameter
+from procurer.requisitions.models import Requisition, Parameter
 from procurer.convoy import Convoy
 
 from .exceptions import SupplyChainException
@@ -93,7 +93,7 @@ class SupplyLink(models.Model):
     supply_chain = models.ForeignKey(
         SupplyChain,
         related_name='supplylinks',
-        related_name_query='supplylink',
+        related_query_name='supplylink',
         verbose_name=_('supply chain')
     )
     requisition = models.ForeignKey(Requisition, verbose_name=_('requisition'))
@@ -110,7 +110,7 @@ class SupplyLink(models.Model):
     class Meta(object):
         """Metadata options."""
 
-        order = ['supply_chain', 'position']
+        ordering = ['supply_chain', 'position']
         unique_together = ['supply_chain', 'position']
         verbose_name = _('supply link')
         verbose_name_plural = _('supply links')
@@ -199,13 +199,13 @@ class FieldCoupling(models.Model):
     supply_link = models.ForeignKey(
         SupplyLink,
         related_name='field_couplings',
-        related_name_query='field_coupling',
+        related_query_name='field_coupling',
         verbose_name=_('supply link')
     )
     parameter = models.ForeignKey(
         Parameter,
         related_name='field_couplings',
-        related_name_query='field_coupling',
+        related_query_name='field_coupling',
         verbose_name=_('parameter')
     )
     field_name = models.CharField(
@@ -216,8 +216,8 @@ class FieldCoupling(models.Model):
     class Meta(object):
         """Metadata options."""
 
-        order = ['supply_link', 'parameter']
-        unique_together = ['supply_chain', 'position']
+        ordering = ['supply_link', 'parameter']
+        unique_together = ['supply_link', 'parameter']
         verbose_name = _('supply link')
         verbose_name_plural = _('supply links')
 

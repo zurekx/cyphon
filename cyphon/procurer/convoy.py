@@ -22,8 +22,8 @@
 # from django.db import models
 
 # local
-from ambassador.manifests.models import Manifest
 from ambassador.transport import Cargo, Transport
+from procurer.manifests.models import Manifest
 # from cyphon.transaction import close_old_connections
 # from sifter.datasifter.datachutes.models import DataChute
 

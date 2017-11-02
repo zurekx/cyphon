@@ -24,7 +24,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # local
 from ambassador.emissaries.models import Emissary, EmissaryManager
-from procurer.requisitions.models import Requisitiion
+from procurer.requisitions.models import Requisition
 
 
 class Quartermaster(Emissary):
@@ -44,7 +44,7 @@ class Quartermaster(Emissary):
 
     """
     endpoints = models.ManyToManyField(
-        Requisitiion,
+        Requisition,
         verbose_name=_('requisition'),
         related_name='emissaries',
         related_query_name='emissary'

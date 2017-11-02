@@ -65,7 +65,6 @@ class Requisition(Endpoint):
     class Meta(object):
         """Metadata options."""
 
-        ordering = ['name']
         unique_together = ('platform', 'api_class')
         verbose_name = _('requisition')
         verbose_name_plural = _('requisitions')
@@ -106,7 +105,7 @@ class Requisition(Endpoint):
             A record of the API response.
 
         """
-        transport = self.create_request_handler(user=user, params=data)
+        transport = self.create_request_handler(user=user)
         transport.run(data)
         return transport.record
 
