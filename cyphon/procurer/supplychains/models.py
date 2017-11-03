@@ -19,6 +19,7 @@
 """
 
 # third party
+from celery import chain
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -26,12 +27,22 @@ from django.utils.translation import ugettext_lazy as _
 # local
 # from bottler.containers.models import Container
 from cyphon.models import GetByNameManager
+from cyphon.celeryapp import app
+from cyphon.choices import TIME_UNIT_CHOICES
 from procurer.requisitions.models import Requisition, Parameter
 from procurer.convoy import Convoy
-
+import utils.dateutils.dateutils as dt
 from .exceptions import SupplyChainException
 # from cyphon.transaction import close_old_connections
 # from sifter.datasifter.datachutes.models import DataChute
+
+
+@app.task
+def start_supplylink(supplylink, data):
+    """
+
+    """
+    return supplylink.process(data)
 
 
 class SupplyChain(models.Model):
@@ -61,10 +72,10 @@ class SupplyChain(models.Model):
         """
 
         """
-        for supplylink in self.supplylinks.all():  # ordered by position
-            cargo = supplylink.process(data)
-            data = cargo.data
-        return data
+        return chain(
+            start_supplylink.s(supplylink, countdown=supplylink.coutdown)
+            for supplylink in self.supplylinks.all()
+        )
 
 
 class SupplyLink(models.Model):
@@ -104,6 +115,12 @@ class SupplyLink(models.Model):
                     'Supply Chain. Steps are performed in ascending order, '
                     'with the lowest number performed first.')
     )
+    wait_time = models.IntegerField(verbose_name=_('wait interval'))
+    time_unit = models.CharField(
+        max_length=3,
+        choices=TIME_UNIT_CHOICES,
+        verbose_name=_('time unit')
+    )
 
     objects = GetByNameManager()
 
@@ -124,6 +141,13 @@ class SupplyLink(models.Model):
         for field_coupling in self.field_couplings.all():
             field_coupling.update(field_coupling.mapping)
             return coupling
+
+    @property
+    def countdown_seconds(self):
+        """
+        Returns the number of seconds bedore.
+        """
+        return dt.convert_time_to_seconds(self.time_interval, self.time_unit)
 
     def _get_params(self, data):
         """
@@ -177,7 +201,7 @@ class SupplyLink(models.Model):
         transport.run(params)
 
         if transport.cargo:
-            return transport.cargo
+            return transport.cargo.data
         else:
             # TODO(LH): add message to exception
             raise SupplyChainException()
