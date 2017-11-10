@@ -92,6 +92,10 @@ class Transport(BaseClass):
         self.cargo = None
         self.record = None
 
+    def __str__(self):
+        """A string representation of the Transport."""
+        return '%s: %s' % (self.endpoint, self.user)
+
     def _get_emissary_type(self):
         """
         Returns the type of Emissary associated with the Endpoint, such
