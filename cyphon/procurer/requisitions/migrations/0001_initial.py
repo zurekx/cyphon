@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('param_name', models.CharField(max_length=64, verbose_name='parameter name')),
                 ('param_type', models.CharField(choices=[('BooleanField', 'BooleanField'), ('CharField', 'CharField'), ('ChoiceField', 'ChoiceField'), ('DateTimeField', 'DateTimeField'), ('EmailField', 'EmailField'), ('FileField', 'FileField'), ('FloatField', 'FloatField'), ('IntegerField', 'IntegerField'), ('GenericIPAddressField', 'IPAddressField'), ('ListField', 'ListField'), ('PointField', 'PointField'), ('TextField', 'TextField'), ('URLField', 'URLField'), ('EmbeddedDocument', 'EmbeddedDocument')], max_length=64, verbose_name='parameter type')),
                 ('default', models.CharField(max_length=255, verbose_name='default value')),
-                ('choices', django.contrib.postgres.fields.ArrayField(base_field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=255), size=2), size=None, verbose_name='choices')),
+                ('choices', django.contrib.postgres.fields.ArrayField(base_field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=255), size=2), blank=True, null=True, size=None, verbose_name='choices')),
                 ('required', models.BooleanField(default=False, verbose_name='required')),
                 ('help_text', models.CharField(max_length=255, verbose_name='help text')),
                 ('verbose_name', models.CharField(max_length=255, verbose_name='verbose name')),

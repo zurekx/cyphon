@@ -18,8 +18,12 @@
 
 """
 
+# standard library
+import logging
+
 # third party
 from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -27,6 +31,8 @@ from django.utils.translation import ugettext_lazy as _
 from ambassador.endpoints.models import Endpoint, EndpointManager
 from cyphon.choices import FIELD_TYPE_CHOICES
 from procurer.suppliers.models import Supplier
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class Requisition(Endpoint):
@@ -110,6 +116,44 @@ class Requisition(Endpoint):
         return transport.record
 
 
+class ParameterManager(models.Manager):
+    """Manage |Parameter| objects.
+
+    Adds methods to the default Django model manager.
+    """
+
+    def get_by_natural_key(self, platform, api_class, param_name):
+        """Get a |Context| by its natural key.
+
+        Allows retrieval of a |Context| by its natural key instead of
+        its primary key.
+
+        Parameters
+        ----------
+        platform : str
+            The name of the platform package.
+
+        api_class : str
+            The name of the API class.
+
+        param_name : str
+            The name of the parameter.
+
+        Returns
+        -------
+        |Parameter|
+            The |Parameter| associated with the natural key.
+
+        """
+        try:
+            requisition_key = [platform, api_class]
+            requisition = Requisition.objects.get_by_natural_key(*requisition_key)
+            return self.get(requisition=requisition, param_name=param_name)
+        except ObjectDoesNotExist:
+            _LOGGER.error('%s:%s.%s.%s does not exist',
+                          self.model.__name__, platform, api_class, param_name)
+
+
 class Parameter(models.Model):
     """
 
@@ -127,7 +171,9 @@ class Parameter(models.Model):
     default = models.CharField(max_length=255, verbose_name=_('default value'))
     choices = ArrayField(
         ArrayField(models.CharField(max_length=255), size=2),
-        verbose_name=_('choices')
+        verbose_name=_('choices'),
+        null=True,
+        blank=True
     )
     required = models.BooleanField(default=False, verbose_name=_('required'))
     help_text = models.CharField(max_length=255, verbose_name=_('help text'))
@@ -135,6 +181,8 @@ class Parameter(models.Model):
         max_length=255,
         verbose_name=_('verbose name')
     )
+
+    objects = ParameterManager()
 
     class Meta(object):
         """Metadata options."""
