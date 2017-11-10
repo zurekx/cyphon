@@ -18,6 +18,9 @@
 
 """
 
+# standard library
+import logging
+
 # third party
 from celery import chain
 from django.db import models
@@ -32,9 +35,11 @@ from cyphon.choices import TIME_UNIT_CHOICES
 from procurer.requisitions.models import Requisition, Parameter
 from procurer.convoy import Convoy
 import utils.dateutils.dateutils as dt
-from .exceptions import SupplyChainException
+from .exceptions import SupplyChainError
 # from cyphon.transaction import close_old_connections
 # from sifter.datasifter.datachutes.models import DataChute
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @app.task
@@ -72,10 +77,16 @@ class SupplyChain(models.Model):
         """
 
         """
-        return chain(
-            start_supplylink.s(supplylink, countdown=supplylink.coutdown)
-            for supplylink in self.supplylinks.all()
-        )
+        try:
+            result = chain(start_supplylink.s(supplylink, data), 
+                # start_supplylink.signature((supplylink,), countdown=supplylink.countdown_seconds)
+                start_supplylink.s(supplylink, data)
+                for supplylink in self.supplylinks.all()
+            )()
+            print(list(result.collect()))
+            return result.get()
+        except SupplyChainError as error:
+            _LOGGER.error('A SupplyChainError occurred: %s', error.msg)
 
 
 class SupplyLink(models.Model):
@@ -93,6 +104,10 @@ class SupplyLink(models.Model):
         An |int| representing the order of the SupplyLink in a
         |SupplyChain|. SupplyLinks are evaluated in ascending order (the
         lowest rank first)
+
+    wait_time : int
+
+    time_unit : str
 
     """
 
@@ -115,9 +130,13 @@ class SupplyLink(models.Model):
                     'Supply Chain. Steps are performed in ascending order, '
                     'with the lowest number performed first.')
     )
-    wait_time = models.IntegerField(verbose_name=_('wait interval'))
+    wait_time = models.IntegerField(
+        default=0,
+        verbose_name=_('wait interval')
+    )
     time_unit = models.CharField(
         max_length=3,
+        default='m',
         choices=TIME_UNIT_CHOICES,
         verbose_name=_('time unit')
     )
@@ -147,7 +166,7 @@ class SupplyLink(models.Model):
         """
         Returns the number of seconds bedore.
         """
-        return dt.convert_time_to_seconds(self.time_interval, self.time_unit)
+        return dt.convert_time_to_seconds(self.wait_time, self.time_unit)
 
     def _get_params(self, data):
         """
@@ -171,7 +190,7 @@ class SupplyLink(models.Model):
         for coupling in self.couplings.all():
             if not coupling.validate(data):
                 # TODO(LH): add message to exception
-                raise SupplyChainException()
+                raise SupplyChainError()
         return True
 
     def process(self, user, data):
@@ -191,7 +210,7 @@ class SupplyLink(models.Model):
 
         Raises
         ------
-        SupplyChainException
+        SupplyChainError
 
         """
         self._validate(data)
@@ -204,7 +223,7 @@ class SupplyLink(models.Model):
             return transport.cargo.data
         else:
             # TODO(LH): add message to exception
-            raise SupplyChainException()
+            raise SupplyChainError()
 
 
 class FieldCoupling(models.Model):

@@ -20,8 +20,15 @@
 """
 
 
-class SupplyChainException(Exception):
-    """
+class SupplyChainError(Exception):
+    """Exception raised for errors in the execution of a SupplyChain.
+
+    Attributes
+    ----------
+    msg : str
+        Explanation of the error.
 
     """
-    pass
+
+    def __init__(self, msg=None):
+        self.msg = msg
