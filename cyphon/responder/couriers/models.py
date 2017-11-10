@@ -28,8 +28,7 @@ from responder.actions.models import Action
 
 class Courier(Emissary):
     """
-    Handles an API key or token (Passport) for a set of users of a Pipe.
-    Uses a Meter to keep track of the number of calls made using that API key.
+    Handles an API key or token (Passport) for a set of users of a Destination.
     """
     endpoints = models.ManyToManyField(
         Action,
