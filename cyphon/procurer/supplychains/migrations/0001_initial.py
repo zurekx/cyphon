@@ -47,6 +47,8 @@ class Migration(migrations.Migration):
                 ('position', models.IntegerField(default=0, help_text='An integer representing the order of this step in the Supply Chain. Steps are performed in ascending order, with the lowest number performed first.', verbose_name='position')),
                 ('requisition', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='requisitions.Requisition', verbose_name='requisition')),
                 ('supply_chain', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='supplylinks', related_query_name='supplylink', to='supplychains.SupplyChain', verbose_name='supply chain')),
+                ('time_unit', models.CharField(choices=[('s', 'Seconds'), ('m', 'Minutes'), ('h', 'Hours'), ('d', 'Days')], default='m', max_length=3, verbose_name='time unit')),
+                ('wait_time', models.IntegerField(default=0, verbose_name='wait interval')),
             ],
             options={
                 'ordering': ['supply_chain', 'position'],
