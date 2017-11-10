@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('requisitions', '0001_initial'),
         ('visas', '0001_initial'),
-        ('passports', '0002_auto_20171102_2006'),
+        ('passports', '0001_initial'),
     ]
 
     operations = [
