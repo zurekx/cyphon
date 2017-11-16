@@ -284,8 +284,8 @@ class Context(models.Model):
         """
         Takes a dictionary of data that was distilled by the Context's
         primary_distillery. If the Context has a time_interval and
-        time_unit, returns a list of fieldset dictionaries for a
-        time-frame query. Otherwise, returns an empty list.
+        time_unit, returns EngineQuery for a time-frame. Otherwise,
+        returns None.
         """
         timeframe = []
 
