@@ -28,8 +28,14 @@ from django.apps import apps
 from django.db import close_old_connections
 
 # local
-from cyphon.celeryapp import app
 from aggregator.filters.services import execute_filter_queries
+from cyphon.celeryapp import app
+
+
+@app.task(name='celery.ping')
+def ping():
+    """Simple task that just returns 'pong'."""
+    return 'pong'
 
 
 @app.task(name='tasks.get_new_mail')
