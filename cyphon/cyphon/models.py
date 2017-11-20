@@ -106,4 +106,3 @@ class SelectRelatedManager(models.Manager):
         """
         default_queryset = super(SelectRelatedManager, self).get_queryset()
         return default_queryset.select_related()
-

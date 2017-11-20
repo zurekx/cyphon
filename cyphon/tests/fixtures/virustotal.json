@@ -125,7 +125,7 @@
       "supply_chain": ["VirusTotal URL Scan & Report"],
       "requisition": ["virustotal", "UrlReport"],
       "position": 1,
-      "wait_time": 30,
+      "wait_time": 3,
       "time_unit": "s"
     }
   },
