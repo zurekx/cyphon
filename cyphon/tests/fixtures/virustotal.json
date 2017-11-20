@@ -10,7 +10,7 @@
     "model": "passports.passport",
     "fields": {
       "name": "VirusTotal Public",
-      "key": "",
+      "key": "1094517f822994bd99e86887f97f4a504092c81e9aefb29cb69f1dd91699022f",
       "secret": "",
       "access_token": "",
       "access_token_secret": "",
@@ -48,6 +48,14 @@
     "fields": {
       "requisition": ["virustotal", "UrlReport"],
       "param_name": "resource",
+      "param_type": "CharField"
+    }
+  },
+  {
+    "model": "requisitions.parameter",
+    "fields": {
+      "requisition": ["virustotal", "UrlScan"],
+      "param_name": "url",
       "param_type": "CharField"
     }
   },
@@ -103,6 +111,14 @@
     }
   },
   {
+    "model": "supplychains.fieldcoupling",
+    "fields": {
+      "supply_link": ["VirusTotal URL Scan"],
+      "parameter": ["virustotal", "UrlScan", "url"],
+      "field_name": "url"
+    }
+  },
+  {
     "model": "supplychains.supplylink",
     "fields": {
       "name": "VirusTotal URL Report after 30s wait",
@@ -116,9 +132,9 @@
   {
     "model": "supplychains.fieldcoupling",
     "fields": {
-      "supply_link": ["VirusTotal URL Scan"],
+      "supply_link": ["VirusTotal URL Report after 30s wait"],
       "parameter": ["virustotal", "UrlReport", "resource"],
-      "field_name": "scan_id"
+      "field_name": "url"
     }
   }
 ]
