@@ -38,5 +38,15 @@
       "time_interval": 1,
       "time_unit": "s"
     }
+  },
+  {
+    "model": "visas.visa",
+    "fields": {
+      "id": 5,
+      "name": "VirusTotal API",
+      "calls": 4,
+      "time_interval": 1,
+      "time_unit": "m"
+    }
   }
 ]

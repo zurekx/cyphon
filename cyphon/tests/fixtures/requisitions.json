@@ -1,0 +1,34 @@
+[
+  {
+    "model": "requisitions.requisition",
+    "fields": {
+      "platform": ["virustotal"],
+      "api_module": "handlers",
+      "api_class": "UrlScan"
+    }
+  },
+  {
+    "model": "requisitions.requisition",
+    "fields": {
+      "platform": ["virustotal"],
+      "api_module": "handlers",
+      "api_class": "UrlReport"
+    }
+  },
+  {
+    "model": "requisitions.parameter",
+    "fields": {
+      "requisition": ["virustotal", "UrlReport"],
+      "param_name": "resource",
+      "param_type": "CharField"
+    }
+  },
+  {
+    "model": "requisitions.parameter",
+    "fields": {
+      "requisition": ["virustotal", "UrlScan"],
+      "param_name": "url",
+      "param_type": "CharField"
+    }
+  }
+]

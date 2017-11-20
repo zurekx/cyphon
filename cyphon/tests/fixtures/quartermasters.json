@@ -1,0 +1,11 @@
+[
+  {
+    "model": "quartermasters.quartermaster",
+    "fields": {
+      "name": "virustotal_filescan_1",
+      "endpoints": [["virustotal", "UrlReport"], ["virustotal", "UrlScan"]],
+      "passport": ["VirusTotal Public"],
+      "visa": ["VirusTotal API"]
+    }
+  }
+]
