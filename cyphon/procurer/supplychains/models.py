@@ -20,6 +20,7 @@
 
 # standard library
 import logging
+import time
 
 # third party
 from celery import chain
@@ -30,24 +31,13 @@ from django.utils.translation import ugettext_lazy as _
 # local
 # from bottler.containers.models import Container
 from cyphon.models import GetByNameManager
-from cyphon.celeryapp import app
 from cyphon.choices import TIME_UNIT_CHOICES
+from cyphon.tasks import start_supplylink
 from procurer.requisitions.models import Requisition, Parameter
-from procurer.convoy import Convoy
 import utils.dateutils.dateutils as dt
 from .exceptions import SupplyChainError
-# from cyphon.transaction import close_old_connections
-# from sifter.datasifter.datachutes.models import DataChute
 
 _LOGGER = logging.getLogger(__name__)
-
-
-@app.task
-def start_supplylink(supplylink, data):
-    """
-
-    """
-    return supplylink.process(data)
 
 
 class SupplyChain(models.Model):
@@ -73,17 +63,19 @@ class SupplyChain(models.Model):
         verbose_name = _('supply chain')
         verbose_name_plural = _('supply chains')
 
-    def start(self, data):
+    def start(self, data, user):
         """
 
         """
         try:
-            result = chain(start_supplylink.s(supplylink, data), 
-                # start_supplylink.signature((supplylink,), countdown=supplylink.countdown_seconds)
-                start_supplylink.s(supplylink, data)
-                for supplylink in self.supplylinks.all()
-            )()
-            print(list(result.collect()))
+            # use object ids instead of objects, which aren't JSON serializable
+            # and can't be used in celery tasks
+            id_list = list(self.supplylinks.all().values_list('pk', flat=True))
+            links = [start_supplylink.s(data, id_list[0], user)]
+            links += [
+                start_supplylink.s(obj_id, user) for obj_id in id_list[1:]
+            ]
+            result = chain(*links)()
             return result.get()
         except SupplyChainError as error:
             _LOGGER.error('A SupplyChainError occurred: %s', error.msg)
@@ -151,6 +143,12 @@ class SupplyLink(models.Model):
         verbose_name = _('supply link')
         verbose_name_plural = _('supply links')
 
+    def __str__(self):
+        """
+
+        """
+        return '<SupplyLink: %s>' % self.name
+
     @cached_property
     def coupling(self):
         """
@@ -158,8 +156,8 @@ class SupplyLink(models.Model):
         """
         coupling = {}
         for field_coupling in self.field_couplings.all():
-            field_coupling.update(field_coupling.mapping)
-            return coupling
+            coupling.update(field_coupling.mapping)
+        return coupling
 
     @property
     def countdown_seconds(self):
@@ -181,19 +179,20 @@ class SupplyLink(models.Model):
         """
 
         """
-        return Convoy(endpoint=self.requisition, user=user)
+        return self.requisition.create_request_handler(user=user)
 
     def _validate(self, data):
         """
 
         """
-        for coupling in self.couplings.all():
+        for coupling in self.field_couplings.all():
             if not coupling.validate(data):
                 # TODO(LH): add message to exception
-                raise SupplyChainError()
+                raise SupplyChainError('The coupling %s was not valid'
+                                       % coupling)
         return True
 
-    def process(self, user, data):
+    def process(self, data, user):
         """
 
         Parameters
@@ -217,6 +216,7 @@ class SupplyLink(models.Model):
 
         params = self._get_params(data)
         transport = self._create_transport(user)
+        time.sleep(self.countdown_seconds)
         transport.run(params)
 
         if transport.cargo:
@@ -263,6 +263,10 @@ class FieldCoupling(models.Model):
         unique_together = ['supply_link', 'parameter']
         verbose_name = _('supply link')
         verbose_name_plural = _('supply links')
+
+    def __str__(self):
+        """String representation of a FieldCoupling."""
+        return '%s:%s' % (self.supply_link, self.parameter)
 
     @cached_property
     def param_name(self):
