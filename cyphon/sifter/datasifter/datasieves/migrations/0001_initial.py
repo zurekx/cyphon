@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(help_text='It\'s a good idea to name rules after the data they examine and the comparison they make, e.g. "log_contains_WARNING."', max_length=40, unique=True)),
-                ('value', models.CharField(blank=True, help_text='The value to compare the data against.', max_length=255, null=True)),
+                ('value', models.CharField(blank=True, help_text='The value to compare the data against. If using regex, the output of the regex is used for comparison.', max_length=255, null=True)),
                 ('is_regex', models.BooleanField(default=False, help_text='Whether the value should be interpreted as a regular expression.', verbose_name='regular expression')),
                 ('case_sensitive', models.BooleanField(default=False, help_text='Whether the comparison should be case sensitive.')),
                 ('negate', models.BooleanField(default=False, help_text='Whether the Rule should be evaluated as True if the data does NOT match the condition.')),
