@@ -53,23 +53,3 @@ class Convoy(Transport):
             stamp=stamp,
             data=obj,
         )
-
-    def process_request(self, obj):
-        """
-
-        Parameters
-        ----------
-        obj : |dict|
-            The data to use for constructing the API request.
-
-        Returns
-        -------
-        |Cargo|
-            The results of the API call packaged as a |Cargo| object.
-
-        Takes a data dictionary, formats and submits it to the API,
-        returns a Cargo object. This method needs to be implemented in
-        derived classes so it can be customized for specific APIs.
-
-        """
-        raise self.raise_method_not_implemented()
