@@ -23,7 +23,6 @@ class Migration(migrations.Migration):
                 ('notes', ckeditor_uploader.fields.RichTextUploadingField(blank=True)),
             ],
             options={
-                'ordering': ['alert'],
                 'permissions': (('view_alert', 'Can see existing alerts'),),
                 'verbose_name_plural': 'analyses',
             },
