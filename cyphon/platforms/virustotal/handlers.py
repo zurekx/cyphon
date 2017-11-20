@@ -226,6 +226,7 @@ class UrlScan(VirusTotalHandler):
     #     print('scan notes', cargo.notes)
     #     return cargo
 
+
 class UrlReport(VirusTotalResourceReport):
     """
     Accesses the VirusTotal API endpoint for URL reports.
@@ -243,9 +244,6 @@ class UrlReport(VirusTotalResourceReport):
         """
 
         """
-        print('report data', cargo.data)
-        print('report code', cargo.status_code)
-        print('report notes', cargo.notes)
         if cargo.data and 'scans' not in cargo.data and \
                 'scan_id' in cargo.data and tries <= self.retries:
             time.sleep(self.wait_time_seconds)
