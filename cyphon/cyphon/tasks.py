@@ -74,3 +74,16 @@ def run_bkgd_search():
     """
     execute_filter_queries()
     close_old_connections()
+
+
+@app.task(name='tasks.start_supplylink')
+def start_supplylink(data, supplylink_id, user):
+    """
+
+    """
+    supplylink_model = apps.get_model(app_label='supplychains',
+                                      model_name='supplylink')
+    supplylink = supplylink_model.objects.get(pk=supplylink_id)
+    result = supplylink.process(data, user)
+    close_old_connections()
+    return result
