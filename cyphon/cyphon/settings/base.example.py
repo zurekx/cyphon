@@ -324,6 +324,9 @@ STATIC_URL = '/static/'
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html
 ###############################################################################
 
+#: Backend for saving results.
+CELERY_RESULT_BACKEND = 'rpc'
+
 #: Default broker URL.
 BROKER_URL = 'amqp://{username}:{password}@{host}:5672/{vhost}'.format(
     username=RABBITMQ['USERNAME'],
