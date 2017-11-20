@@ -75,6 +75,10 @@ class Requisition(Endpoint):
         verbose_name = _('requisition')
         verbose_name_plural = _('requisitions')
 
+    def __str__(self):
+        """String representation of a Requisition."""
+        return '<Requisition: %s %s>' % (self.platform, self.api_class)
+
     def _param_is_valid(self, field):
         """
 
@@ -190,6 +194,10 @@ class Parameter(models.Model):
         verbose_name = _('parameter')
         verbose_name_plural = _('parameters')
         unique_together = ['requisition', 'param_name']
+
+    def __str__(self):
+        """String representation of a Parameter."""
+        return '<Parameter: %s - %s>' % (self.requisition, self.param_name)
 
     def validate(self, value):
         """
