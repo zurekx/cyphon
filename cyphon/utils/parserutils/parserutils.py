@@ -403,19 +403,19 @@ def restore_type_from_str(string):
 
     Examples
     --------
-    >>> restore_type('"123"')
+    >>> restore_type_from_str('"123"')
     '123'
 
-    >>> restore_type("ObjectId('123')")
+    >>> restore_type_from_str("ObjectId('123')")
     ObjectId('123')
 
-    >>> restore_type('123')
+    >>> restore_type_from_str('123')
     123
 
-    >>> restore_type('_123')
+    >>> restore_type_from_str('_123')
     '_123'
 
-    >>> restore_type('null')
+    >>> restore_type_from_str('null')
     None
 
     """
