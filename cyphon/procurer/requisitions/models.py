@@ -31,6 +31,7 @@ from django.utils.translation import ugettext_lazy as _
 from ambassador.endpoints.models import Endpoint, EndpointManager
 from cyphon.choices import FIELD_TYPE_CHOICES
 from procurer.suppliers.models import Supplier
+from utils.parserutils.parserutils import restore_type
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -78,25 +79,6 @@ class Requisition(Endpoint):
     def __str__(self):
         """String representation of a Requisition."""
         return '<Requisition: %s %s>' % (self.platform, self.api_class)
-
-    def _param_is_valid(self, field):
-        """
-
-        """
-        pass
-
-    def validate(self, form):
-        """
-
-        """
-        pass
-
-    def submit(self, form):
-        """
-
-        """
-        pass
-        # create polling celery task, passing in dispatch to be updated
 
     def get_manifest(self, user, data):
         """
@@ -203,4 +185,8 @@ class Parameter(models.Model):
         """
 
         """
-        pass
+        try:
+            restore_type(field_type=self.param_type, value=value)
+            return True
+        except ValueError:
+            return False
