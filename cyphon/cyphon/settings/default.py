@@ -383,6 +383,7 @@ INSTALLED_APPS = [
     'monitors',
     'notifications',
     'procurer.manifests',
+    'procurer.procurements',
     'procurer.quartermasters',
     'procurer.requisitions',
     'procurer.suppliers',

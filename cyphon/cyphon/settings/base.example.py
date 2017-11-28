@@ -166,6 +166,7 @@ INSTALLED_APPS = [
     'query.collectionqueries',
     'query.reservoirqueries',
     'procurer.manifests',
+    'procurer.procurements',
     'procurer.quartermasters',
     'procurer.requisitions',
     'procurer.suppliers',
