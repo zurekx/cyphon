@@ -25,6 +25,7 @@ The |Record| class is the basis for the |Dispatch| and |Invoice| classes.
 
 # third party
 from django.db import models
+from django.utils.functional import cached_property
 
 # local
 from ambassador.stamps.models import Stamp
@@ -62,6 +63,43 @@ class Record(models.Model):
     class Meta:
         abstract = True
 
+    @cached_property
+    def issued_by(self):
+        """
+
+        """
+        return self.get_user()
+
+    @cached_property
+    def status_code(self):
+        """
+
+        """
+        return self.get_status_code()
+
+    @cached_property
+    def response_msg(self):
+        """
+
+        """
+        return self.stamp.notes
+
+    def get_status_code(self):
+        """
+
+        """
+        return self.stamp.status_code
+
+    get_status_code.short_description = 'status code'
+
+    def get_user(self):
+        """
+
+        """
+        return self.stamp.user
+
+    get_user.short_description = 'user'
+
     def get_endpoint(self):
         """Get the |Endpoint| associated with the |Record|.
 
@@ -89,4 +127,3 @@ class Record(models.Model):
         """
         self.stamp.finalize(status_code=cargo.status_code, notes=cargo.notes)
         return self
-

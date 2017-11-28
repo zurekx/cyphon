@@ -32,6 +32,7 @@ class Dispatch(Record):
     """
     A Record of an API call by a Courier.
     """
+
     alert = models.ForeignKey(
         Alert,
         related_name='dispatches',
@@ -54,35 +55,6 @@ class Dispatch(Record):
         """
         return self.get_title()
 
-    @cached_property
-    def issued_by(self):
-        """
-
-        """
-        return self.get_user()
-
-    @cached_property
-    def status_code(self):
-        """
-
-        """
-        return self.get_status_code()
-
-    @cached_property
-    def response_msg(self):
-        """
-
-        """
-        return self.stamp.notes
-
-    def get_status_code(self):
-        """
-
-        """
-        return self.stamp.status_code
-
-    get_status_code.short_description = 'status code'
-
     def get_title(self):
         """
 
@@ -91,14 +63,6 @@ class Dispatch(Record):
         return action.title
 
     get_title.short_description = 'title'
-
-    def get_user(self):
-        """
-
-        """
-        return self.stamp.user
-
-    get_user.short_description = 'user'
 
     def finalize(self, cargo):
         """
