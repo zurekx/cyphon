@@ -15,21 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
-Defines filters for Actions.
+Defines filters for Endpoints.
 """
 
 # third party
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 
-# local
-from .models import Action
 
-
-class ActionFilterBackend(DjangoFilterBackend):
+class EndpointFilterBackend(DjangoFilterBackend):
     """
-    Provides a filter backend to only show |Actions| for which the
-    current user has an available |Courier|.
+    Provides a filter backend to only show |Endpoints| for which the
+    current user has an available |Emissary|.
 
     """
 
@@ -59,4 +56,4 @@ class ActionFilterBackend(DjangoFilterBackend):
         has_user = Q(emissary__passport__users=request.user)
         is_public = Q(emissary__passport__public=True)
 
-        return Action.objects.filter(has_user | is_public).distinct()
+        return queryset.filter(has_user | is_public).distinct()

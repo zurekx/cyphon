@@ -36,7 +36,7 @@ class ActionViewSet(CustomModelViewSet):
     REST API for Actions.
     """
     queryset = Action.objects.all()
-    custom_filter_backends = ['responder.actions.filters.ActionFilterBackend']
+    custom_filter_backends = ['ambassador.endpoints.filters.EndpointFilterBackend']
     permission_classes = [IsAuthenticated, ]
     serializers = {
         'run': ActionRunSerializer,
