@@ -40,6 +40,30 @@ from .exceptions import SupplyChainError
 _LOGGER = logging.getLogger(__name__)
 
 
+class SupplyChainManager(GetByNameManager):
+    """Manage |SupplyChain| objects.
+
+    Adds methods to the default Django model manager.
+    """
+
+    def filter_by_user(self, user):
+        """Get |SupplyChains| that can be executed by the given user.
+
+        Ensures that every SupplyLink in the the SupplyChain can be
+        executed by the given user.
+
+        Returns
+        -------
+        |Queryset|
+            A |Queryset| of |SupplyChains| can be executed by the given
+            user.
+
+        """
+        queryset = self.get_queryset()
+        excluded_supplylinks = SupplyLink.objects.exclude_by_user(user)
+        return queryset.exclude(supplylink__in=excluded_supplylinks)
+
+
 class SupplyChain(models.Model):
     """
 
@@ -55,7 +79,7 @@ class SupplyChain(models.Model):
         verbose_name=_('name')
     )
 
-    objects = GetByNameManager()
+    objects = SupplyChainManager()
 
     class Meta(object):
         """Metadata options."""
@@ -81,12 +105,51 @@ class SupplyChain(models.Model):
             _LOGGER.error('A SupplyChainError occurred: %s', error.msg)
 
 
+class SupplyLinkManager(GetByNameManager):
+    """Manage |SupplyLink| objects.
+
+    Adds methods to the default Django model manager.
+    """
+
+    def filter_by_user(self, user):
+        """Get |SupplyLinks| that can be executed by the given user.
+
+        Returns
+        -------
+        |Queryset|
+            A |Queryset| of |SupplyLinks| can be executed by the given
+            user.
+
+        """
+        queryset = self.get_queryset()
+
+        has_user = models.Q(requisition__emissary__passport__users=user)
+        is_public = models.Q(requisition__emissary__passport__public=True)
+
+        return queryset.filter(has_user | is_public).distinct()
+
+    def exclude_by_user(self, user):
+        """Get |SupplyLinks| that cannot be executed by the given user.
+
+        Returns
+        -------
+        |Queryset|
+            A |Queryset| of |SupplyLinks| can be executed by the given
+            user.
+
+        """
+        queryset = self.get_queryset()
+        available_supplylinks = self.filter_by_user()
+        ids = available_supplylinks.values_list('id', flat=True)
+        return queryset.exclude(id__in=ids)
+
+
 class SupplyLink(models.Model):
     """
 
     Attributes
     ----------
-    chain : SupplyChain
+    supply_chain : SupplyChain
         The |SupplyChain| associated with the SupplyLink.
 
     requisition : Requisition
@@ -133,7 +196,7 @@ class SupplyLink(models.Model):
         verbose_name=_('time unit')
     )
 
-    objects = GetByNameManager()
+    objects = SupplyLinkManager()
 
     class Meta(object):
         """Metadata options."""
@@ -152,7 +215,10 @@ class SupplyLink(models.Model):
     @cached_property
     def coupling(self):
         """
-
+        Returns a dictionary in which the keys are field names that
+        correspond to the keys of input data and the values are the
+        names of the parameters for which those fields will supply
+        values.
         """
         coupling = {}
         for field_coupling in self.field_couplings.all():
@@ -187,7 +253,6 @@ class SupplyLink(models.Model):
         """
         for coupling in self.field_couplings.all():
             if not coupling.validate(data):
-                # TODO(LH): add message to exception
                 raise SupplyChainError('The coupling %s was not valid'
                                        % coupling)
         return True
@@ -234,8 +299,11 @@ class FieldCoupling(models.Model):
     supply_link : SupplyLink
         The |SupplyLink| associated with the Coupling.
 
+    field_name : str
+        The dictionary key storing the value for the `parameter`.
+
     parameter : Parameter
-        The |Parameter| associated with the Coupling.
+        The |Parameter| that will be supplied a value.
 
     """
 
