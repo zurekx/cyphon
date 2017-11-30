@@ -113,16 +113,14 @@ class AlertManager(models.Manager):
         return filtered_qs.distinct()
 
     @staticmethod
-    def _filter_by_company(user, queryset):
+    def _filter_by_distilleries(user, queryset):
         """
 
         """
-        if not user.is_staff:
-            query = models.Q(distillery__company=user.company) | \
-                    models.Q(distillery__company__isnull=True)
-            return queryset.filter(query).distinct()
-        else:
-            return queryset
+        distilleries = Distillery.objects.filter_by_user(user)
+        query = models.Q(distillery__in=distilleries) | \
+                models.Q(distillery__isnull=True)
+        return queryset.filter(query).distinct()
 
     def filter_by_user(self, user, queryset=None):
         """
@@ -134,7 +132,7 @@ class AlertManager(models.Manager):
             alert_qs = self.get_queryset()
 
         if user:
-            filtered_qs = self._filter_by_company(user, alert_qs)
+            filtered_qs = self._filter_by_distilleries(user, alert_qs)
             return self._filter_by_group(user, filtered_qs)
         else:
             return alert_qs.none()
