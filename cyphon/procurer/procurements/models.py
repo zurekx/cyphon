@@ -26,10 +26,40 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # local
+from cyphon.documents import DocumentObj
+from cyphon.models import GetByNameManager
+from distilleries.models import Distillery
 from procurer.supplychains.models import SupplyChain
 from sifter.datasifter.datamungers.models import DataMunger
 
 _LOGGER = logging.getLogger(__name__)
+
+
+class ProcurementManager(GetByNameManager):
+    """Manage |Procurement| objects.
+
+    Adds methods to the default Django model manager.
+    """
+
+    def filter_by_user(self, user, queryset=None):
+        """Get |Procurements| that can be executed by the given user.
+
+        Returns
+        -------
+        |Queryset|
+            A |Queryset| of |Procurements| can be executed by the given
+            user.
+
+        """
+        if queryset is not None:
+            procurement_qs = queryset
+        else:
+            procurement_qs = self.get_queryset()
+
+        supply_chains = SupplyChain.objects.filter_by_user(user)
+        distilleries = Distillery.objects.filter_by_user(user)
+        return procurement_qs.filter(supplychain__in=supply_chains,
+                                     munger__distillery__in=distilleries)
 
 
 class Procurement(models.Model):
@@ -70,3 +100,52 @@ class Procurement(models.Model):
 
         ordering = ['name']
         unique_together = ['supply_chain', 'munger']
+
+    @property
+    def input_fields(self):
+        """
+        Returns a dictionary in which keys are the names of input fields
+        and the values are the field types.
+        """
+        return self.supply_chain.input_fields
+
+    def _get_result(self, data, user):
+        """Return the result of a Procurement request.
+
+        Takes a dictionary of data and an AppUser, and submits them as a
+        SupplyChain request. If the request is succesful, returns a
+        data dictionary of the result. Otherwise, returns None.
+        """
+        return self.supply_chain.start(data, user)
+
+    def _get_platform_name(self):
+        """Return the name of the Platform associated with the Procurement."""
+        return str(self.supply_chain.platform)
+
+    def _get_doc_obj(self, result):
+        """Return a DocumentObj for a result."""
+        platform = self._get_platform_name()
+        return DocumentObj(data=result, platform=platform)
+
+    def _process_doc(self, doc_obj):
+        """Parse and save data from a DocumentObj."""
+        return self.munger.process(doc_obj)
+
+    def process(self, data, user):
+        """
+
+        Attributes
+        ----------
+        data : dict
+
+        user : AppUser
+            The |SupplyChain| that will procure the data.
+
+        munger : DataMunger
+            The |DataMunger| that will process and save the data.
+
+        """
+        result = self._get_result(data, user)
+        if result:
+            doc_obj = self._get_doc_obj(result)
+            return self._process_doc(doc_obj)
