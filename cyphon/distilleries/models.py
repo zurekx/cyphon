@@ -92,6 +92,20 @@ class DistilleryManager(SelectRelatedManager):
                           self.model.__name__, backend, warehouse_name,
                           collection_name)
 
+    def filter_by_user(self, user, queryset=None):
+        """Returns a queryset of |Distilleries| associated with a user."""
+        if queryset is not None:
+            distillery_qs = queryset
+        else:
+            distillery_qs = self.get_queryset()
+
+        if not user.is_staff:
+            query = models.Q(company=user.company) | \
+                    models.Q(company__isnull=True)
+            return distillery_qs.filter(query).distinct()
+        else:
+            return distillery_qs
+
     def have_alerts(self, queryset=None):
         """Get |Distilleries| that are associated with |Alerts|.
 
