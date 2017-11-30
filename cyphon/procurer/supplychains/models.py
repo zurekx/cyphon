@@ -93,6 +93,15 @@ class SupplyChain(models.Model):
         last_supplylink = self.supplylinks.last()
         return last_supplylink.platform
 
+    @property
+    def input_fields(self):
+        """
+        Returns a dictionary in which keys are the names of input fields
+        and the values are the field types.
+        """
+        first_supplylink = self.supplylinks.first()
+        return first_supplylink.input_fields
+
     def start(self, data, user):
         """
 
@@ -217,6 +226,14 @@ class SupplyLink(models.Model):
 
         """
         return '<SupplyLink: %s>' % self.name
+
+    @cached_property
+    def input_fields(self):
+        """
+        Returns a dictionary in which keys are the names of input fields
+        and the values are the field types.
+        """
+        pass
 
     @cached_property
     def coupling(self):
