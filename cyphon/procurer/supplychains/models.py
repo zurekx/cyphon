@@ -87,6 +87,12 @@ class SupplyChain(models.Model):
         verbose_name = _('supply chain')
         verbose_name_plural = _('supply chains')
 
+    @property
+    def platform(self):
+        """Return the Platform for the last SupplyLink in the SupplyChain."""
+        last_supplylink = self.supplylinks.last()
+        return last_supplylink.platform
+
     def start(self, data, user):
         """
 
@@ -231,6 +237,11 @@ class SupplyLink(models.Model):
         Returns the number of seconds bedore.
         """
         return dt.convert_time_to_seconds(self.wait_time, self.time_unit)
+
+    @property
+    def platform(self):
+        """Return the Platform associated with the SupplyLink's Requisition."""
+        return self.requisition.platform
 
     def _get_params(self, data):
         """
