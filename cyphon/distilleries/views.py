@@ -66,7 +66,6 @@ class DistilleryViewSet(viewsets.ReadOnlyModelViewSet):
 
         return self.queryset.none()
 
-
     @list_route(methods=['get'], url_path='have-alerts')
     def have_alerts(self, request, *args, **kwargs):
         """Get |Distilleries| that are associated with |Alerts|.
@@ -91,6 +90,6 @@ class DistilleryViewSet(viewsets.ReadOnlyModelViewSet):
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(filtered_qs, many=True)
-        return Response(serializer.data)
+        else:
+            serializer = self.get_serializer(w_alerts_qs, many=True)
+            return Response(serializer.data)
