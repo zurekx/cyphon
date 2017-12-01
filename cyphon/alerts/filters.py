@@ -192,38 +192,3 @@ class AlertFilter(FilterSet):
         except (TypeError, ValueError):
             LOGGER.error('An error occurred while filtering Alerts')
             return queryset
-
-
-class AlertFilterBackend(DjangoFilterBackend):
-    """
-    Provides a filter backend to only show |Alerts| that are either
-    associated with at least one of a given user's |Group| or are not
-    associated with any |Group|.
-    """
-
-    def filter_queryset(self, request, queryset, view):
-        """Return a filtered queryset.
-
-        Implements `custom filtering`_.
-
-        Parameters
-        ----------
-        request : Request
-             A `Request`_ for a resource.
-
-        queryset : QuerySet
-            A |QuerySet| to be filtered.
-
-        view : ModelViewSet
-            A `ModelViewSet`_.
-
-        Returns
-        -------
-        QuerySet
-            A |QuerySet| filtered to only show |Alerts| that are either
-            associated with at least one of a given user's |Group| or
-            are not associated with any |Group|.
-
-        """
-        user = request.user
-        return Alert.objects.filter_by_user(user, queryset)

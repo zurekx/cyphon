@@ -26,6 +26,40 @@ from django_filters.rest_framework import DjangoFilterBackend
 from cyphon.relations import ModelSearchMixIn
 
 
+class UserFilterBackend(DjangoFilterBackend):
+    """
+    Provides a filter backend to filter objects by user.
+    """
+
+    def filter_queryset(self, request, queryset, view):
+        """Return a filtered queryset.
+
+        Implements `custom filtering`_.
+
+        Parameters
+        ----------
+        request : Request
+             A `Request`_ for a resource.
+
+        queryset : QuerySet
+            A |QuerySet| to be filtered.
+
+        view : ModelViewSet
+            A `ModelViewSet`_.
+
+        Returns
+        -------
+        QuerySet
+            A |QuerySet| filtered to only show |Alerts| that are either
+            associated with at least one of a given user's |Group| or
+            are not associated with any |Group|.
+
+        """
+        user = request.user
+        model = queryset.model
+        return model.objects.filter_by_user(user, queryset)
+
+
 class ObjectFilterBackend(DjangoFilterBackend, ModelSearchMixIn):
     """
     Provides a filter backend for a REST API endpoint. The backend can

@@ -71,7 +71,7 @@ class AlertViewSet(CustomModelViewSet):
     filter_class = AlertFilter
     pagination_class = AlertPagination
     serializer_class = AlertDetailSerializer
-    custom_filter_backends = ['alerts.filters.AlertFilterBackend']
+    custom_filter_backends = ['cyphon.filters.UserFilterBackend']
 
     MAX_DAYS = 30
 
