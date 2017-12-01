@@ -80,6 +80,18 @@ class Requisition(Endpoint):
         """String representation of a Requisition."""
         return '<Requisition: %s %s>' % (self.platform, self.api_class)
 
+    @property
+    def required_parameters(self):
+        """Get a QuerySet of required Parameters.
+
+        Returns
+        -------
+        |QuerySet|
+            A QuerySet of the Requisition's required Parameters.
+
+        """
+        return self.parameters.filter(required=True)
+
     def get_manifest(self, user, data):
         """
 
@@ -185,6 +197,8 @@ class Parameter(models.Model):
         """
 
         """
+        if value in [None, ''] and not self.required:
+            return True
         try:
             restore_type(field_type=self.param_type, value=value)
             return True
