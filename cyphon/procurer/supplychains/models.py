@@ -87,11 +87,28 @@ class SupplyChain(models.Model):
         verbose_name = _('supply chain')
         verbose_name_plural = _('supply chains')
 
+    def __init__(self, *args, **kwargs):
+        """
+
+        """
+        super(SupplyChain, self).__init__(*args, **kwargs)
+        self.is_valid = self.validate()
+        self.errors = []
+
+    @cached_property
+    def _first_link(self):
+        """Return the first SupplyLink in the SupplyChain."""
+        return self.supplylinks.first()
+
+    @cached_property
+    def _last_link(self):
+        """Return the last SupplyLink in the SupplyChain."""
+        return self.supplylinks.last()
+
     @property
     def platform(self):
         """Return the Platform for the last SupplyLink in the SupplyChain."""
-        last_supplylink = self.supplylinks.last()
-        return last_supplylink.platform
+        return self._last_link.platform
 
     @property
     def input_fields(self):
@@ -99,8 +116,34 @@ class SupplyChain(models.Model):
         Returns a dictionary in which keys are the names of input fields
         and the values are the field types.
         """
-        first_supplylink = self.supplylinks.first()
-        return first_supplylink.input_fields
+        return self._first_link.input_fields
+
+    def validate(self):
+        """
+
+        """
+        is_valid = True
+        supply_links = self.supply_links.all()
+
+        if supply_links:
+            for supply_link in self.supply_links.all():
+                supply_link.validate()
+                if not supply_link.is_valid:
+                    is_valid = False
+                    self.errors += supply_link.errors
+        else:
+            is_valid = False
+            self.errors = ['SupplyChain has no SupplyLinks.']
+
+        self.is_valid = is_valid
+        return self
+
+    def validate_input(self, data):
+        """
+        Returns a dictionary in which keys are the names of input fields
+        and the values are the field types.
+        """
+        return self._first_link.validate_input(data)
 
     def start(self, data, user):
         """
@@ -221,6 +264,14 @@ class SupplyLink(models.Model):
         verbose_name = _('supply link')
         verbose_name_plural = _('supply links')
 
+    def __init__(self, *args, **kwargs):
+        """
+
+        """
+        super(SupplyLink, self).__init__(*args, **kwargs)
+        self.is_valid = self.validate()
+        self.errors = []
+
     def __str__(self):
         """
 
@@ -263,6 +314,36 @@ class SupplyLink(models.Model):
         """Return the Platform associated with the SupplyLink's Requisition."""
         return self.requisition.platform
 
+    @cached_property
+    def _coupling_parameters(self):
+        """
+
+        """
+        return [coupling.parameter for coupling in self.field_couplings.all()]
+
+    @cached_property
+    def _required_parameters(self):
+        """
+
+        """
+        return self.requisition.required_parameters
+
+    def validate(self):
+        """
+
+        """
+        is_valid = True
+        self.errors = []
+
+        for req_param in self._required_parameters:
+            if req_param not in self._coupling_parameters:
+                is_valid = False
+                self.errors.append('A FieldCoupling is missing for the '
+                                   'required parameter %s.' % req_param)
+
+        self.is_valid = is_valid
+        return self
+
     def _get_params(self, data):
         """
 
@@ -278,15 +359,24 @@ class SupplyLink(models.Model):
         """
         return self.requisition.create_request_handler(user=user)
 
-    def _validate(self, data):
+    def validate_input(self, data):
         """
 
         """
+        is_valid = True
+        invalid_couplings = []
+
         for coupling in self.field_couplings.all():
-            if not coupling.validate(data):
-                raise SupplyChainError('The coupling %s was not valid'
-                                       % coupling)
-        return True
+            if not coupling.validate_input(data):
+                is_valid = False
+                invalid_couplings.append(str(coupling))
+
+        if not is_valid:
+            error_msg = ('The following couplings were invalid: %s'
+                         % invalid_couplings)
+            raise SupplyChainError(error_msg)
+
+        return is_valid
 
     def process(self, data, user):
         """
@@ -308,7 +398,7 @@ class SupplyLink(models.Model):
         SupplyChainError
 
         """
-        self._validate(data)
+        self.validate_input(data)
 
         params = self._get_params(data)
         transport = self._create_transport(user)
@@ -395,7 +485,7 @@ class FieldCoupling(models.Model):
         """
         return {self.field_name: self._param_type}
 
-    def validate(self, data):
+    def validate_input(self, data):
         """
 
         """
