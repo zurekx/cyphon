@@ -233,7 +233,10 @@ class SupplyLink(models.Model):
         Returns a dictionary in which keys are the names of input fields
         and the values are the field types.
         """
-        pass
+        input_fields = {}
+        for field_coupling in self.field_couplings.all():
+            input_fields.update(field_coupling.input_field)
+        return input_fields
 
     @cached_property
     def coupling(self):
@@ -365,18 +368,32 @@ class FieldCoupling(models.Model):
         return '%s:%s' % (self.supply_link, self.parameter)
 
     @cached_property
-    def param_name(self):
+    def _param_name(self):
         """
 
         """
         return self.parameter.param_name
+
+    @cached_property
+    def _param_type(self):
+        """
+
+        """
+        return self.parameter.param_type
 
     @property
     def mapping(self):
         """
 
         """
-        return {self.field_name: self.param_name}
+        return {self.field_name: self._param_name}
+
+    @cached_property
+    def input_field(self):
+        """
+
+        """
+        return {self.field_name: self._param_type}
 
     def validate(self, data):
         """
