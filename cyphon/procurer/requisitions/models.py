@@ -156,7 +156,12 @@ class Parameter(models.Model):
     """
 
     """
-    requisition = models.ForeignKey(Requisition, verbose_name=_('requisition'))
+    requisition = models.ForeignKey(
+        Requisition,
+        related_name='parameters',
+        related_query_name='parameter',
+        verbose_name=_('requisition')
+    )
     param_name = models.CharField(
         max_length=64,
         verbose_name=_('parameter name')
