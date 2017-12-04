@@ -171,6 +171,7 @@ INSTALLED_APPS = [
     'procurer.requisitions',
     'procurer.suppliers',
     'procurer.supplychains',
+    'procurer.supplyorders',
     'responder.actions',
     'responder.couriers',
     'responder.destinations',

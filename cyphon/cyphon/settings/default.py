@@ -229,7 +229,7 @@ PRIVATE_FIELDS = [
 ]
 
 RABBITMQ = {
-    'HOST': os.getenv('RABBITMQ_DEFAULT_HOST', 'rabbit'),
+    'HOST': 'localhost', #os.getenv('RABBITMQ_DEFAULT_HOST', 'rabbit'),
     'VHOST': os.getenv('RABBITMQ_DEFAULT_VHOST', 'cyphon'),
     'USERNAME': os.getenv('RABBITMQ_DEFAULT_USER', 'guest'),
     'PASSWORD': os.getenv('RABBITMQ_DEFAULT_PASS', 'guest'),
@@ -388,6 +388,7 @@ INSTALLED_APPS = [
     'procurer.requisitions',
     'procurer.suppliers',
     'procurer.supplychains',
+    'procurer.supplyorders',
     'query',
     'query.collectionqueries',
     'query.reservoirqueries',
