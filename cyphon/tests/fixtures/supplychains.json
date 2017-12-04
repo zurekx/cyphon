@@ -2,12 +2,21 @@
   {
     "model": "supplychains.supplychain",
     "fields": {
+      "id": 1,
       "name": "VirusTotal URL Report"
+    }
+  },
+  {
+    "model": "supplychains.supplychain",
+    "fields": {
+      "id": 2,
+      "name":"VirusTotal URL Scan & Report"
     }
   },
   {
     "model": "supplychains.supplylink",
     "fields": {
+      "id": 1,
       "name": "VirusTotal URL Report",
       "supply_chain": ["VirusTotal URL Report"],
       "requisition": ["virustotal", "UrlReport"],
@@ -17,22 +26,9 @@
     }
   },
   {
-    "model": "supplychains.fieldcoupling",
-    "fields": {
-      "supply_link": ["VirusTotal URL Report"],
-      "parameter": ["virustotal", "UrlReport", "resource"],
-      "field_name": "url"
-    }
-  },
-  {
-    "model": "supplychains.supplychain",
-    "fields": {
-      "name": "VirusTotal URL Scan & Report"
-    }
-  },
-  {
     "model": "supplychains.supplylink",
     "fields": {
+      "id": 2,
       "name": "VirusTotal URL Scan",
       "supply_chain": ["VirusTotal URL Scan & Report"],
       "requisition": ["virustotal", "UrlScan"],
@@ -42,16 +38,9 @@
     }
   },
   {
-    "model": "supplychains.fieldcoupling",
-    "fields": {
-      "supply_link": ["VirusTotal URL Scan"],
-      "parameter": ["virustotal", "UrlScan", "url"],
-      "field_name": "url"
-    }
-  },
-  {
     "model": "supplychains.supplylink",
     "fields": {
+      "id": 3,
       "name": "VirusTotal URL Report after 30s wait",
       "supply_chain": ["VirusTotal URL Scan & Report"],
       "requisition": ["virustotal", "UrlReport"],
@@ -63,6 +52,25 @@
   {
     "model": "supplychains.fieldcoupling",
     "fields": {
+      "id": 1,
+      "supply_link": ["VirusTotal URL Report"],
+      "parameter": ["virustotal", "UrlReport", "resource"],
+      "field_name": "url"
+    }
+  },
+  {
+    "model": "supplychains.fieldcoupling",
+    "fields": {
+      "id": 2,
+      "supply_link": ["VirusTotal URL Scan"],
+      "parameter": ["virustotal", "UrlScan", "url"],
+      "field_name": "url"
+    }
+  },
+  {
+    "model": "supplychains.fieldcoupling",
+    "fields": {
+      "id": 3,
       "supply_link": ["VirusTotal URL Report after 30s wait"],
       "parameter": ["virustotal", "UrlReport", "resource"],
       "field_name": "url"

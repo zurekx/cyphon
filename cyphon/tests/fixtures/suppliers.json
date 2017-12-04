@@ -2,6 +2,7 @@
   {
     "model": "suppliers.supplier",
     "fields": {
+      "id": 1,
       "name": "virustotal",
       "enabled": true
     }
