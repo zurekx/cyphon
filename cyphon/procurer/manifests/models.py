@@ -20,10 +20,12 @@
 
 # third party
 from django.contrib.postgres.fields.jsonb import JSONField
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # local
 from ambassador.records.models import Record, RecordManager
+from procurer.supplyorders.models import SupplyOrder
 
 
 class Manifest(Record):
@@ -39,6 +41,14 @@ class Manifest(Record):
 
     """
 
+    supply_order = models.ForeignKey(
+        SupplyOrder,
+        related_name='manifests',
+        related_query_name='manifest',
+        verbose_name=_('supply order'),
+        blank=True,
+        null=True
+    )
     data = JSONField(blank=True, null=True)
 
     objects = RecordManager()
