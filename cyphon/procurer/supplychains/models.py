@@ -145,19 +145,20 @@ class SupplyChain(models.Model):
         """
         return self._first_link.validate_input(data)
 
-    def start(self, data, user):
+    def start(self, data, user, supply_order=None):
         """
 
         """
         try:
             # use object ids instead of objects, which aren't JSON serializable
             # and can't be used in celery tasks
-            id_list = list(self.supplylinks.all().values_list('pk', flat=True))
-            links = [start_supplylink.s(data, id_list[0], user)]
+            id_list = list(self.supply_links.all().values_list('pk', flat=True))
+            links = [start_supplylink.s(data, id_list[0], user, supply_order)]
             links += [
-                start_supplylink.s(obj_id, user) for obj_id in id_list[1:]
+                start_supplylink.s(obj_id, user, supply_order) for obj_id in id_list[1:]
             ]
             result = chain(*links)()
+            print('result', result)
             return result.get()
         except SupplyChainError as error:
             _LOGGER.error('A SupplyChainError occurred: %s', error.msg)
@@ -231,8 +232,8 @@ class SupplyLink(models.Model):
     )
     supply_chain = models.ForeignKey(
         SupplyChain,
-        related_name='supplylinks',
-        related_query_name='supplylink',
+        related_name='supply_links',
+        related_query_name='supply_link',
         verbose_name=_('supply chain')
     )
     requisition = models.ForeignKey(Requisition, verbose_name=_('requisition'))
@@ -378,7 +379,7 @@ class SupplyLink(models.Model):
 
         return is_valid
 
-    def process(self, data, user):
+    def process(self, data, user, supply_order):
         """
 
         Parameters
@@ -404,6 +405,10 @@ class SupplyLink(models.Model):
         transport = self._create_transport(user)
         time.sleep(self.countdown_seconds)
         transport.run(params)
+
+        if transport.record:
+            transport.record.supply_order = supply_order
+            transport.record.save()
 
         if transport.cargo:
             return transport.cargo.data
