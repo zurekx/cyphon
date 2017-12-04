@@ -56,9 +56,9 @@ class ProcurementManager(GetByNameManager):
         else:
             procurement_qs = self.get_queryset()
 
-        supply_chains = SupplyChain.objects.filter_by_user(user)
+        supplychains = SupplyChain.objects.filter_by_user(user)
         distilleries = Distillery.objects.filter_by_user(user)
-        return procurement_qs.filter(supplychain__in=supply_chains,
+        return procurement_qs.filter(supply_chain__in=supplychains,
                                      munger__distillery__in=distilleries)
 
 
@@ -130,6 +130,12 @@ class Procurement(models.Model):
     def _process_doc(self, doc_obj):
         """Parse and save data from a DocumentObj."""
         return self.munger.process(doc_obj)
+
+    def validate(self, data):
+        """
+
+        """
+        pass
 
     def process(self, data, user):
         """
