@@ -109,14 +109,14 @@ class Procurement(models.Model):
         """
         return self.supply_chain.input_fields
 
-    def _get_result(self, data, user):
+    def _get_result(self, suppy_order):
         """Return the result of a Procurement request.
 
         Takes a dictionary of data and an AppUser, and submits them as a
         SupplyChain request. If the request is succesful, returns a
         data dictionary of the result. Otherwise, returns None.
         """
-        return self.supply_chain.start(data, user)
+        return self.supply_chain.start(suppy_order)
 
     def _get_platform_name(self):
         """Return the name of the Platform associated with the Procurement."""
@@ -137,7 +137,7 @@ class Procurement(models.Model):
         """
         pass
 
-    def process(self, data, user):
+    def process(self, suppy_order):
         """
 
         Attributes
@@ -151,7 +151,7 @@ class Procurement(models.Model):
             The |DataMunger| that will process and save the data.
 
         """
-        result = self._get_result(data, user)
+        result = self._get_result(suppy_order)
         if result:
             doc_obj = self._get_doc_obj(result)
             return self._process_doc(doc_obj)

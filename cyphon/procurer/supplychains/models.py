@@ -145,17 +145,19 @@ class SupplyChain(models.Model):
         """
         return self._first_link.validate_input(data)
 
-    def start(self, data, user, supply_order=None):
+    def start(self, supply_order):
         """
 
         """
         try:
             # use object ids instead of objects, which aren't JSON serializable
             # and can't be used in celery tasks
-            id_list = list(self.supply_links.all().values_list('pk', flat=True))
-            links = [start_supplylink.s(data, id_list[0], user, supply_order)]
+            supply_links = self.supply_links.all()
+            supply_link_ids = list(supply_links.values_list('pk', flat=True))
+
+            links = [start_supplylink.s(supply_order.data, supply_link_ids[0], supply_order.id)]
             links += [
-                start_supplylink.s(obj_id, user, supply_order) for obj_id in id_list[1:]
+                start_supplylink.s(supply_link_id, supply_order.id) for supply_link_id in supply_link_ids[1:]
             ]
             result = chain(*links)()
             print('result', result)
@@ -379,7 +381,7 @@ class SupplyLink(models.Model):
 
         return is_valid
 
-    def process(self, data, user, supply_order):
+    def process(self, supply_order):
         """
 
         Parameters
@@ -399,10 +401,10 @@ class SupplyLink(models.Model):
         SupplyChainError
 
         """
-        self.validate_input(data)
+        self.validate_input(supply_order.data)
 
-        params = self._get_params(data)
-        transport = self._create_transport(user)
+        params = self._get_params(supply_order.data)
+        transport = self._create_transport(supply_order.user)
         time.sleep(self.countdown_seconds)
         transport.run(params)
 

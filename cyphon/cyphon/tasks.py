@@ -25,6 +25,7 @@ Cyphon Celery tasks.
 
 # third party
 from django.apps import apps
+from django.conf import settings
 from django.db import close_old_connections
 
 # local
@@ -77,13 +78,18 @@ def run_bkgd_search():
 
 
 @app.task(name='tasks.start_supplylink')
-def start_supplylink(data, supplylink_id, user):
+def start_supplylink(data, supplylink_id, supplyorder_id):
     """
 
     """
     supplylink_model = apps.get_model(app_label='supplychains',
                                       model_name='supplylink')
     supplylink = supplylink_model.objects.get(pk=supplylink_id)
-    result = supplylink.process(data, user)
+
+    supplyorder_model = apps.get_model(app_label='supplyorders',
+                                       model_name='supplyorder')
+    supplyorder = supplyorder_model.objects.get(pk=supplyorder_id)
+
+    result = supplylink.process(data, supplyorder)
     close_old_connections()
     return result
