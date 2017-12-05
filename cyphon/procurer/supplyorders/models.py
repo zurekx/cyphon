@@ -19,7 +19,9 @@
 """
 
 # third party
+from django.contrib.postgres.fields.jsonb import JSONField
 from django.db import models
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 # local
@@ -50,6 +52,8 @@ class SupplyOrder(models.Model):
         blank=True,
         null=True
     )
+    data = JSONField(default=dict)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
 
     # objects = SupplyOrderManager()
 
@@ -58,3 +62,22 @@ class SupplyOrder(models.Model):
 
         verbose_name = _('supply order')
         verbose_name_plural = _('supply orders')
+
+    def populate_fields(self):
+        """
+        Uses values from the Alert data for the SupplyOrder data.
+        """
+        pass
+
+    def get_input_fields(self):
+        """
+        Returns a dictionary in which keys are the names of input fields
+        and the values are the field types.
+        """
+        return self.procurement.input_fields
+
+    def process(self):
+        """
+
+        """
+        return self.procurement.start(self)
