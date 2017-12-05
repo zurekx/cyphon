@@ -10,7 +10,7 @@
     "model": "supplychains.supplychain",
     "fields": {
       "id": 2,
-      "name":"VirusTotal URL Scan & Report"
+      "name": "VirusTotal URL Scan & Report"
     }
   },
   {
