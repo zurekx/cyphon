@@ -95,6 +95,8 @@ class Procurement(models.Model):
         verbose_name=_('data munger')
     )
 
+    objects = ProcurementManager()
+
     class Meta(object):
         """Metadata options."""
 
