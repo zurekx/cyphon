@@ -98,12 +98,12 @@ class SupplyChain(models.Model):
     @cached_property
     def _first_link(self):
         """Return the first SupplyLink in the SupplyChain."""
-        return self.supplylinks.first()
+        return self.supply_links.first()
 
     @cached_property
     def _last_link(self):
         """Return the last SupplyLink in the SupplyChain."""
-        return self.supplylinks.last()
+        return self.supply_links.last()
 
     @property
     def platform(self):
@@ -381,7 +381,7 @@ class SupplyLink(models.Model):
 
         return is_valid
 
-    def process(self, supply_order):
+    def process(self, data, supply_order):
         """
 
         Parameters
@@ -401,9 +401,9 @@ class SupplyLink(models.Model):
         SupplyChainError
 
         """
-        self.validate_input(supply_order.data)
+        self.validate_input(data)
 
-        params = self._get_params(supply_order.data)
+        params = self._get_params(data)
         transport = self._create_transport(supply_order.user)
         time.sleep(self.countdown_seconds)
         transport.run(params)
