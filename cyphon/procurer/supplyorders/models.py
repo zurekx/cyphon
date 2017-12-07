@@ -80,4 +80,4 @@ class SupplyOrder(models.Model):
         """
 
         """
-        return self.procurement.start(self)
+        return self.procurement.process(self)
