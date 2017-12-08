@@ -54,6 +54,14 @@
     "model": "warehouses.collection",
     "fields": {
       "id": 4,
+      "warehouse": 2,
+      "name": "test_scan"
+    }
+  },
+  {
+    "model": "warehouses.collection",
+    "fields": {
+      "id": 5,
       "warehouse": 3,
       "name": "test_syslogs"
     }
@@ -61,7 +69,7 @@
   {
     "model": "warehouses.collection",
     "fields": {
-      "id": 5,
+      "id": 6,
       "warehouse": 2,
       "name": "test_logs"
     }
@@ -69,7 +77,7 @@
   {
     "model": "warehouses.collection",
     "fields": {
-      "id": 6,
+      "id": 7,
       "warehouse": 2,
       "name": "test_mail"
     }
@@ -77,7 +85,7 @@
   {
     "model": "warehouses.collection",
     "fields": {
-      "id": 7,
+      "id": 8,
       "warehouse": 1,
       "name": "orphan"
     }
