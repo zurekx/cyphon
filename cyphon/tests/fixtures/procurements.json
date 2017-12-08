@@ -1,0 +1,11 @@
+[
+  {
+    "model": "procurements.procurement",
+    "fields": {
+      "id": 1,
+      "name": "VirusTotal URL Scan & Report",
+      "supply_chain": ["VirusTotal URL Scan & Report"],
+      "munger": ["VirusTotal URL Report"]
+    }
+  }
+]
