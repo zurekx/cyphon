@@ -52,7 +52,7 @@ class DistilleryManagerTestCase(TestCase):
         distillery = Distillery.objects.get_by_natural_key('elasticsearch',
                                                            'test_index',
                                                            'test_mail')
-        self.assertEqual(distillery.pk, 6)
+        self.assertEqual(distillery.pk, 7)
 
     def test_natural_key_exception(self):
         """

@@ -59,5 +59,15 @@
       "is_shell": false,
       "categories": [1, 2]
     }
+  },
+  {
+    "model": "distilleries.distillery",
+    "fields": {
+      "collection": ["elasticsearch", "test_index", "test_scan"],
+      "container": ["URL Scan"],
+      "company": null,
+      "is_shell": false,
+      "categories": []
+    }
   }
 ]

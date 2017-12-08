@@ -148,6 +148,78 @@
     }
   },
   {
+    "model": "datacondensers.dataparser",
+    "fields": {
+      "id": 17,
+      "name": "filescan_id",
+      "source_fields": "filescan_id",  
+      "method": "COPY"
+    }
+  },
+  {
+    "model": "datacondensers.dataparser",
+    "fields": {
+      "id": 18,
+      "name": "permalink",
+      "source_fields": "permalink",  
+      "method": "COPY"
+    }
+  },
+  {
+    "model": "datacondensers.dataparser",
+    "fields": {
+      "id": 19,
+      "name": "positives",
+      "source_fields": "positives",  
+      "method": "COPY"
+    }
+  },
+  {
+    "model": "datacondensers.dataparser",
+    "fields": {
+      "id": 20,
+      "name": "resource",
+      "source_fields": "resource",  
+      "method": "COPY"
+    }
+  },
+  {
+    "model": "datacondensers.dataparser",
+    "fields": {
+      "id": 21,
+      "name": "scan_date",
+      "source_fields": "scan_date",  
+      "method": "DATE"
+    }
+  },
+  {
+    "model": "datacondensers.dataparser",
+    "fields": {
+      "id": 22,
+      "name": "scan_id",
+      "source_fields": "scan_id",  
+      "method": "COPY"
+    }
+  },
+  {
+    "model": "datacondensers.dataparser",
+    "fields": {
+      "id": 23,
+      "name": "total",
+      "source_fields": "total",  
+      "method": "COPY"
+    }
+  },
+  {
+    "model": "datacondensers.dataparser",
+    "fields": {
+      "id": 24,
+      "name": "url",
+      "source_fields": "url",  
+      "method": "COPY"
+    }
+  },
+  {
     "model": "datacondensers.datacondenser",
     "fields": {
       "id": 1,
@@ -210,7 +282,15 @@
       "name": "mail",
       "bottle": ["mail"]
     }
-    },
+  },
+  {
+    "model": "datacondensers.datacondenser",
+    "fields": {
+      "id": 9,
+      "name": "URL Scan",
+      "bottle": ["URL Scan"]
+    }
+  },
   {
     "model": "datacondensers.datafitting",
     "fields": {
@@ -388,6 +468,86 @@
       "condenser": ["demo__snmptrap"],
       "target_field": ["message"],
       "object_id": 16,
+      "content_type": ["datacondensers", "dataparser"]
+    }
+  },
+  {
+    "model": "datacondensers.datafitting",
+    "fields": {
+      "id": 19,
+      "condenser": ["URL Scan"],
+      "target_field": ["filescan_id"],
+      "object_id": 17,
+      "content_type": ["datacondensers", "dataparser"]
+    }
+  },  
+  {
+    "model": "datacondensers.datafitting",
+    "fields": {
+      "id": 20,
+      "condenser": ["URL Scan"],
+      "target_field": ["permalink"],
+      "object_id": 18,
+      "content_type": ["datacondensers", "dataparser"]
+    }
+  },
+  {
+    "model": "datacondensers.datafitting",
+    "fields": {
+      "id": 21,
+      "condenser": ["URL Scan"],
+      "target_field": ["positives"],
+      "object_id": 19,
+      "content_type": ["datacondensers", "dataparser"]
+    }
+  },
+  {
+    "model": "datacondensers.datafitting",
+    "fields": {
+      "id": 22,
+      "condenser": ["URL Scan"],
+      "target_field": ["resource"],
+      "object_id": 20,
+      "content_type": ["datacondensers", "dataparser"]
+    }
+  },
+  {
+    "model": "datacondensers.datafitting",
+    "fields": {
+      "id": 23,
+      "condenser": ["URL Scan"],
+      "target_field": ["scan_date"],
+      "object_id": 21,
+      "content_type": ["datacondensers", "dataparser"]
+    }
+  },
+  {
+    "model": "datacondensers.datafitting",
+    "fields": {
+      "id": 24,
+      "condenser": ["URL Scan"],
+      "target_field": ["scan_id"],
+      "object_id": 22,
+      "content_type": ["datacondensers", "dataparser"]
+    }
+  },
+  {
+    "model": "datacondensers.datafitting",
+    "fields": {
+      "id": 25,
+      "condenser": ["URL Scan"],
+      "target_field": ["total"],
+      "object_id": 23,
+      "content_type": ["datacondensers", "dataparser"]
+    }
+  },
+  {
+    "model": "datacondensers.datafitting",
+    "fields": {
+      "id": 26,
+      "condenser": ["URL Scan"],
+      "target_field": ["url"],
+      "object_id": 24,
       "content_type": ["datacondensers", "dataparser"]
     }
   }
