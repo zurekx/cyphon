@@ -1,0 +1,12 @@
+[
+  {
+    "model": "supplyorders.supplyorder",
+    "fields": {
+      "id": 1,
+      "procurement": ["VirusTotal URL Report after 30s wait, "],
+      "alert": 1,
+      "data": {"url": "http://example.com"}
+      "user": 1
+    }
+  }
+]
