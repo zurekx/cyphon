@@ -47,5 +47,13 @@
       "name": "test_doc",
       "bottle": ["test_doc"]
     }
+  },
+  {
+    "model": "containers.container",
+    "fields": {
+      "id": 7,
+      "name": "URL Scan",
+      "bottle": ["URL Scan"]
+    }
   }
 ]
