@@ -45,21 +45,21 @@ class BottleFieldAPITests(BottleBaseAPITestCase):
         """
         response = self.get_api_response()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 32)
+        self.assertEqual(response.data['count'], 40)
 
     def test_get_bottlefield(self):
         """
         Tests the BottleFields detail REST API endpoint.
         """
-        response = self.get_api_response('7/')
+        response = self.get_api_response('9/')
         actual = response.data
         expected = {
-            'id': 7,
+            'id': 9,
             'field_name': 'from',
             'field_type': 'EmailField',
             'target_type': 'Account',
             'embedded_doc': None,
-            'url': 'http://testserver' + self.url + '7/',
+            'url': 'http://testserver' + self.url + '9/',
             'bottles': [
                 'http://testserver/api/v1/bottles/4/'
             ]
@@ -89,7 +89,7 @@ class BottleAPITests(BottleBaseAPITestCase):
         """
         response = self.get_api_response()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 7)
+        self.assertEqual(response.data['count'], 8)
 
     def test_get_bottle(self):
         """
