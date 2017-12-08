@@ -16,5 +16,14 @@
       "condenser": ["demo__snmptrap"],
       "distillery": ["elasticsearch", "test_index", "test_logs"]
     }
+  },
+  {
+    "model": "datamungers.datamunger",
+    "fields": {
+      "id": 3,
+      "name": "URL Scan",
+      "condenser": ["URL Scan"],
+      "distillery": ["elasticsearch", "test_index", "test_scan"]
+    }
   }
 ]
