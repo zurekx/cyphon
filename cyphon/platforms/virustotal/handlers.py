@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
-Defines classes for JIRA actions.
+Defines classes for VirusTotal handlers.
 """
 
 # standard library
