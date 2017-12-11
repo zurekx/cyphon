@@ -61,10 +61,10 @@ class PassportMixin(object):
         """
         Supplies valid credentials to a Passport used in tests.
         """
-        passport.key = settings['KEY']
-        passport.secret = settings['SECRET']
-        passport.access_token = settings['ACCESS_TOKEN']
-        passport.access_token_secret = settings['ACCESS_TOKEN_SECRET']
+        passport.key = settings.get('KEY', '')
+        passport.secret = settings.get('SECRET', '')
+        passport.access_token = settings.get('ACCESS_TOKEN', '')
+        passport.access_token_secret = settings.get('ACCESS_TOKEN_SECRET', '')
         passport.save()
 
 
