@@ -25,45 +25,16 @@ import logging
 from django.conf import settings
 
 # local
-from ambassador.passports.models import Passport
+from platforms.tests.test_apihandler import settings_exist
 
-_TWITTER_SETTINGS = settings.TWITTER
+VIRUSTOTAL_SETTINGS = settings.VIRUSTOTAL
 
 _LOGGER = logging.getLogger(__name__)
 
 
-def _credentials_exist():
-    """
-    Return a Boolean indicating whether Twitter authentication
-    credentials exist.
-    """
-    for setting in _TWITTER_SETTINGS:
-        if not _TWITTER_SETTINGS[setting]:
-            return False
-    return True
-
-
-if not _credentials_exist():
-    TWITTER_TESTS_ENABLED = False
-    _LOGGER.warning('Twitter authentication credentials are missing, '
-                    'so Twitter API tests will be skipped.')
+if not settings_exist(VIRUSTOTAL_SETTINGS):
+    VIRUSTOTAL_TESTS_ENABLED = False
+    _LOGGER.warning('VirusTotal authentication credentials are missing, '
+                    'so VirusTotal API tests will be skipped.')
 else:
-    TWITTER_TESTS_ENABLED = True
-
-
-class TwitterPassportMixin(object):
-    """
-    Supplies valid credentials to a Passport used in Twitter APi tests.
-    """
-
-    @staticmethod
-    def _update_passport():
-        """
-        Supplies valid credentials to a Passport used in tests.
-        """
-        passport = Passport.objects.get(pk=4)
-        passport.key = _TWITTER_SETTINGS['KEY']
-        passport.secret = _TWITTER_SETTINGS['SECRET']
-        passport.access_token = _TWITTER_SETTINGS['ACCESS_TOKEN']
-        passport.access_token_secret = _TWITTER_SETTINGS['ACCESS_TOKEN_SECRET']
-        passport.save()
+    VIRUSTOTAL_TESTS_ENABLED = True
