@@ -42,15 +42,16 @@ class ApiHandlerMixin(object):
     """
     Mixin for testing the ApiHandler class.
     """
+
     data = {
-        "text" : "this is an example post",
-        "id" : int("123456789"),
-        "user" : {
-            "screen_name" : "JohnSmith76",
-            "profile_image_url" : "http://www.example.com/123.jpeg",
-            "id" : 9999999,
+        'text': 'this is an example post',
+        'id': int('123456789'),
+        'user': {
+            'screen_name': 'JohnSmith76',
+            'profile_image_url': 'http://www.example.com/123.jpeg',
+            'id': 9999999,
         },
-        "created_at" : "Sat Feb 21 23:13:31 +0000 2015",
+        'created_at': 'Sat Feb 21 23:13:31 +0000 2015',
     }
 
     @staticmethod
@@ -103,4 +104,3 @@ class ApiHandlerTransactionTestCase(TransactionTestCase, ApiHandlerMixin):
         super(ApiHandlerTransactionTestCase, self).setUp()
         self.timeframe = self._create_example_timeframe()
         self.query = self._create_example_query()
-
