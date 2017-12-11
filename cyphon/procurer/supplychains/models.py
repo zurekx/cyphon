@@ -160,7 +160,6 @@ class SupplyChain(models.Model):
                 start_supplylink.s(supply_link_id, supply_order.id) for supply_link_id in supply_link_ids[1:]
             ]
             result = chain(*links)()
-            print('result', result)
             return result.get()
         except SupplyChainError as error:
             _LOGGER.error('A SupplyChainError occurred: %s', error.msg)
