@@ -210,27 +210,6 @@ class UrlScan(VirusTotalHandler):
         params = self._update_params(obj, 'url')
         return requests.post(self.url, data=params)
 
-    # def process_request(self, obj):
-    #     """
-
-    #     Parameters
-    #     ----------
-    #     obj : |dict|
-    #         The |dict| containing a 'resource' dictionary key.
-
-    #     Returns
-    #     -------
-    #     |Cargo|
-    #         The results of the API call to VirusTotal.
-
-    #     """
-    #     cargo = self._get_cargo(obj)
-    #     cargo = self._process_cargo(cargo)
-    #     print('scan data', cargo.data)
-    #     print('scan code', cargo.status_code)
-    #     print('scan notes', cargo.notes)
-    #     return cargo
-
 
 class UrlReport(VirusTotalResourceReport):
     """
