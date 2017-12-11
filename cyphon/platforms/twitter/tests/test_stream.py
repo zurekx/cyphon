@@ -26,17 +26,19 @@ from testfixtures import LogCapture
 
 # local
 from aggregator.pipes.models import Pipe
+from ambassador.passports.models import Passport
 from platforms.tests.test_apihandler import (
     ApiHandlerTestCase,
     ApiHandlerTransactionTestCase,
 )
 from platforms.twitter.handlers import PublicStreamsAPI
+from platforms.tests.test_apihandler import PassportMixin
 from query.reservoirqueries.models import ReservoirQuery
 from target.followees.models import Account
 from target.locations.models import Location
 from target.searchterms.models import SearchTerm
 from target.timeframes.models import TimeFrame
-from .mixins import TWITTER_TESTS_ENABLED, TwitterPassportMixin
+from .settings import TWITTER_SETTINGS, TWITTER_TESTS_ENABLED
 
 
 class TwitterPublicStreamsMixin(object):
@@ -173,7 +175,7 @@ class FormatStreamQueryTestCase(TwitterPublicStreamsTestCase):
 
 class SubmitStreamQueryTestCase(ApiHandlerTransactionTestCase,
                                 TwitterPublicStreamsMixin,
-                                TwitterPassportMixin):
+                                PassportMixin):
     """
     Tests the PublicStreamsAPI class.
     """
@@ -203,7 +205,8 @@ class SubmitStreamQueryTestCase(ApiHandlerTransactionTestCase,
         """
         Tests the _submit_query method.
         """
-        self._update_passport()
+        passport = Passport.objects.get(pk=4)
+        self._update_passport(passport, TWITTER_SETTINGS)
         query = self._create_test_query()
 
         with LogCapture('platforms.twitter.handlers') as log_capture:

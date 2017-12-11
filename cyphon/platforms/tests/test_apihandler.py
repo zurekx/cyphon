@@ -38,6 +38,36 @@ BASE_FIXTURES = get_fixtures(['plumbers', 'funnels', 'distilleries',
                               'timeframes'])
 
 
+def settings_exist(settings):
+    """
+    Takse a dict of settings and returns a Boolean indicating whether
+    all settings have value.
+    """
+    settings_exist = True
+    for key, val in settings.items():
+        if not val:
+            # print('missing key', key, val)
+            settings_exist = False
+    return settings_exist
+
+
+class PassportMixin(object):
+    """
+    Supplies valid credentials to a Passport used in API tests.
+    """
+
+    @staticmethod
+    def _update_passport(passport, settings):
+        """
+        Supplies valid credentials to a Passport used in tests.
+        """
+        passport.key = settings['KEY']
+        passport.secret = settings['SECRET']
+        passport.access_token = settings['ACCESS_TOKEN']
+        passport.access_token_secret = settings['ACCESS_TOKEN_SECRET']
+        passport.save()
+
+
 class ApiHandlerMixin(object):
     """
     Mixin for testing the ApiHandler class.

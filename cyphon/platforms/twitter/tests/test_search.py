@@ -26,14 +26,15 @@ from django.contrib.gis.geos import Point
 
 # local
 from aggregator.pipes.models import Pipe
-from platforms.tests.test_apihandler import ApiHandlerTestCase
+from ambassador.passports.models import Passport
+from platforms.tests.test_apihandler import ApiHandlerTestCase, PassportMixin
 from platforms.twitter.handlers import SearchAPI
 from query.reservoirqueries.models import ReservoirQuery
 from target.followees.models import Account
 from target.locations.models import Location
 from target.searchterms.models import SearchTerm
 from target.timeframes.models import TimeFrame
-from .mixins import TWITTER_TESTS_ENABLED, TwitterPassportMixin
+from .settings import TWITTER_SETTINGS, TWITTER_TESTS_ENABLED
 
 
 class TwitterSearchTestCase(ApiHandlerTestCase):
@@ -258,7 +259,7 @@ class FormatSearchQueryTestCase(TwitterSearchTestCase):
         self.assertFalse(hasattr(actual, 'geocode_param'))
 
 
-class ProcessSearchQueryTestCase(TwitterSearchTestCase, TwitterPassportMixin):
+class ProcessSearchQueryTestCase(TwitterSearchTestCase, PassportMixin):
     """
     Tests the process_query method.
     """
@@ -287,7 +288,8 @@ class ProcessSearchQueryTestCase(TwitterSearchTestCase, TwitterPassportMixin):
         """
         Tests the process_request method.
         """
-        self._update_passport()
+        passport = Passport.objects.get(pk=4)
+        self._update_passport(passport, TWITTER_SETTINGS)
         query = self._create_test_query()
         results = self.search_handler.process_request(query)
 
