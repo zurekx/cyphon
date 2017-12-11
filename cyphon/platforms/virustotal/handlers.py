@@ -88,9 +88,14 @@ class VirusTotalHandler(Convoy):
         """
 
         """
-        response_dict = response.json()
-        status_code = response_dict.pop('response_code')
-        verbose_msg = response_dict.pop('verbose_msg')
+        if response.status_code == 200:
+            response_dict = response.json()
+            status_code = response_dict.pop('response_code', '')
+            verbose_msg = response_dict.pop('verbose_msg', '')
+        else:
+            response_dict = {}
+            status_code = response.status_code
+            verbose_msg = response.reason
 
         return Cargo(
             status_code=status_code,
