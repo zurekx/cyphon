@@ -254,6 +254,11 @@ TWITTER = {
     'ACCESS_TOKEN_SECRET': os.getenv('TWITTER_TOKEN_SECRET', ''),  # tkn secret
 }
 
+#: VirusTotal authentication credentials for use in tests
+VIRUSTOTAL = {
+    'KEY': os.getenv('VIRUSTOTAL_KEY', ''),  # api key
+}
+
 WAREHOUSES = {
     'DEFAULT_STORAGE_ENGINE': 'elasticsearch'
 }
