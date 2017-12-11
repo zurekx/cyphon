@@ -58,7 +58,7 @@ class Cargo(object):
 
     def __init__(self, status_code=None, data=None, notes=None):
         self.status_code = status_code
-        self.data = data or []
+        self.data = data if data is not None else []
         self.notes = notes
 
 
