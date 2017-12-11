@@ -58,7 +58,7 @@ class Record(models.Model):
     same database table -- the one for |Stamps|.
 
     """
-    stamp = models.ForeignKey(Stamp, null=True, blank=True)
+    stamp = models.ForeignKey(Stamp, null=True, blank=True, verbose_name='stamp')
 
     class Meta:
         abstract = True

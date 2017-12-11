@@ -49,7 +49,7 @@ class Manifest(Record):
         blank=True,
         null=True
     )
-    data = JSONField(blank=True, null=True)
+    data = JSONField(blank=True, null=True, verbose_name=_('data'))
 
     objects = RecordManager()
 

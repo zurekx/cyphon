@@ -21,8 +21,8 @@ class Migration(migrations.Migration):
             name='Manifest',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('data', django.contrib.postgres.fields.jsonb.JSONField(blank=True, null=True)),
-                ('stamp', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='stamps.Stamp')),
+                ('data', django.contrib.postgres.fields.jsonb.JSONField(blank=True, null=True, verbose_name='data')),
+                ('stamp', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='stamps.Stamp', verbose_name='stamp')),
                 ('supply_order', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='manifests', related_query_name='manifest', to='supplyorders.SupplyOrder', verbose_name='supply order')),
             ],
             options={
