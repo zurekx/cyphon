@@ -46,7 +46,7 @@ class SupplyChainManager(GetByNameManager):
     Adds methods to the default Django model manager.
     """
 
-    def filter_by_user(self, user):
+    def filter_by_user(self, user, queryset):
         """Get |SupplyChains| that can be executed by the given user.
 
         Ensures that every SupplyLink in the the SupplyChain can be
@@ -59,9 +59,13 @@ class SupplyChainManager(GetByNameManager):
             user.
 
         """
-        queryset = self.get_queryset()
+        if queryset is not None:
+            supplychain_qs = queryset
+        else:
+            supplychain_qs = self.get_queryset()
+
         excluded_supplylinks = SupplyLink.objects.exclude_by_user(user)
-        return queryset.exclude(supplylink__in=excluded_supplylinks)
+        return supplychain_qs.exclude(supplylink__in=excluded_supplylinks)
 
 
 class SupplyChain(models.Model):
@@ -155,9 +159,11 @@ class SupplyChain(models.Model):
             supply_links = self.supply_links.all()
             supply_link_ids = list(supply_links.values_list('pk', flat=True))
 
-            links = [start_supplylink.s(supply_order.data, supply_link_ids[0], supply_order.id)]
+            links = [start_supplylink.s(supply_order.input_data,
+                                        supply_link_ids[0], supply_order.id)]
             links += [
-                start_supplylink.s(supply_link_id, supply_order.id) for supply_link_id in supply_link_ids[1:]
+                start_supplylink.s(supply_link_id, supply_order.id)
+                for supply_link_id in supply_link_ids[1:]
             ]
             result = chain(*links)()
             return result.get()
