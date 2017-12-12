@@ -104,6 +104,13 @@ class Procurement(models.Model):
         unique_together = ['supply_chain', 'munger']
 
     @property
+    def distillery(self):
+        """
+        Returns the Distillery associated with the Procurement's DataMunger.
+        """
+        return self.munger.distillery
+
+    @property
     def input_fields(self):
         """
         Returns a dictionary in which keys are the names of input fields
