@@ -69,11 +69,11 @@ class DistilleryFilterParameterTestCase(TestCase):
         self.assertEqual(len(parameter.distilleries), 2)
         self.assertEqual(
             str(parameter.distilleries[0]),
-            'mongodb.test_database.test_docs',
+            'elasticsearch.test_index.test_docs',
         )
         self.assertEqual(
             str(parameter.distilleries[1]),
-            'elasticsearch.test_index.test_docs',
+            'mongodb.test_database.test_docs',
         )
 
     def test_collection_picker(self):
@@ -205,8 +205,8 @@ class DistilleryFilterParameterTestCase(TestCase):
             'collection': 'test_docs',
             'warehouse': '*',
             'distilleries': [
-                'mongodb.test_database.test_docs',
                 'elasticsearch.test_index.test_docs',
+                'mongodb.test_database.test_docs',
             ],
             'errors': [],
         })
@@ -239,3 +239,33 @@ class DistilleryFilterParameterTestCase(TestCase):
                 DistilleryFilterParameter.CANNOT_FIND_COLLECTION.format('bleh'),
             ],
         })
+
+    def test_hyphen(self):
+        """
+        Tests that the filter includes names with hyphens.
+        """
+        parameter = DistilleryFilterParameter(
+            1, '@source=test-warehouse.test-collection', self.user)
+
+        self.assertEqual(parameter.warehouse, 'test-warehouse')
+        self.assertEqual(parameter.collection, 'test-collection')
+        self.assertEqual(len(parameter.errors), 2)
+        self.assertEqual(
+            parameter.errors[0],
+            DistilleryFilterParameter.CANNOT_FIND_WAREHOUSE.format(
+                'test-warehouse'))
+        self.assertEqual(
+            parameter.errors[1],
+            DistilleryFilterParameter.CANNOT_FIND_COLLECTION.format(
+                'test-collection'))
+
+        parameter = DistilleryFilterParameter(
+            0, '@source=test-warehouse.*', self.user)
+
+        self.assertEqual(parameter.warehouse, 'test-warehouse')
+        self.assertEqual(parameter.collection, '*')
+        self.assertEqual(len(parameter.errors), 1)
+        self.assertEqual(
+            parameter.errors[0],
+            DistilleryFilterParameter.CANNOT_FIND_WAREHOUSE.format(
+                'test-warehouse'))
