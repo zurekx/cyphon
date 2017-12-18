@@ -418,7 +418,7 @@ class WatchdogTransactionTestCase(TransactionTestCase):
         self.distillery = Distillery.objects.get_by_natural_key('mongodb.test_database.test_docs')
         self.email_wdog = Watchdog.objects.get_by_natural_key('inspect_emails')
 
-    @patch_find_by_id
+    @patch_find_by_id()
     def test_multiprocess_muzzled(self):
         """
         Tests muzzling when multiple duplicate Alerts are being processed
