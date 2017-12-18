@@ -162,3 +162,4 @@ class SupplyOrder(models.Model):
         self.doc_id = self.procurement.process(self)
         self.distillery = self.procurement.distillery
         self.save()
+        return self
