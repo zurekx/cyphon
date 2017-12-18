@@ -22,8 +22,8 @@ from django.apps import AppConfig
 from django.utils.translation import ugettext_lazy as _
 
 
-class QuartermasterConfig(AppConfig):
+class RequisitionsConfig(AppConfig):
     """Store metadata for the Requisitions application."""
 
-    name = 'requisitions'
+    name = 'procurer.requisitions'
     verbose_name = _('Requisitions')

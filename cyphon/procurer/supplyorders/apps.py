@@ -26,5 +26,5 @@ from django.utils.translation import ugettext_lazy as _
 class SupplyOrdersConfig(AppConfig):
     """Store metadata for the SupplyOrders application."""
 
-    name = 'supplyorders'
+    name = 'procurer.supplyorders'
     verbose_name = _('Supply Orders')

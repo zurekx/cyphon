@@ -26,5 +26,5 @@ from django.utils.translation import ugettext_lazy as _
 class ManifestsConfig(AppConfig):
     """Store metadata for the Manifests application."""
 
-    name = 'manifests'
+    name = 'procurer.manifests'
     verbose_name = _('Manifests')
