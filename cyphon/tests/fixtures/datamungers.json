@@ -23,7 +23,7 @@
       "id": 3,
       "name": "URL Scan",
       "condenser": ["URL Scan"],
-      "distillery": ["elasticsearch", "test_index", "test_scan"]
+      "distillery": ["elasticsearch.test_index.test_scan"]
     }
   }
 ]

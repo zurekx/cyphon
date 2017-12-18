@@ -69,6 +69,7 @@
   {
     "model": "distilleries.distillery",
     "fields": {
+      "name": "elasticsearch.test_index.test_scan",
       "collection": ["elasticsearch", "test_index", "test_scan"],
       "container": ["URL Scan"],
       "company": null,
