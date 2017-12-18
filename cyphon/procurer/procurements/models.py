@@ -29,6 +29,7 @@ from django.utils.translation import ugettext_lazy as _
 from cyphon.documents import DocumentObj
 from cyphon.models import GetByNameManager
 from distilleries.models import Distillery
+from procurer.supplychains.exceptions import SupplyChainError
 from procurer.supplychains.models import SupplyChain
 from sifter.datasifter.datamungers.models import DataMunger
 
@@ -60,6 +61,28 @@ class ProcurementManager(GetByNameManager):
         distilleries = Distillery.objects.filter_by_user(user)
         return procurement_qs.filter(supply_chain__in=supplychains,
                                      munger__distillery__in=distilleries)
+
+    def filter_by_alert(self, alert, user, queryset=None):
+        """Get |Procurements| that can be executed by the given user.
+
+        Returns
+        -------
+        |Queryset|
+            A |Queryset| of |Procurements| can be executed by the given
+            user.
+
+        """
+        if queryset is not None:
+            procurement_qs = queryset
+        else:
+            procurement_qs = self.get_queryset()
+
+        ids = []
+        for procurement in procurement_qs:
+            if procurement.is_valid(alert.data):
+                ids.append(procurement.id)
+
+        return procurement_qs.filter(id__in=ids)
 
 
 class Procurement(models.Model):
@@ -118,14 +141,14 @@ class Procurement(models.Model):
         """
         return self.supply_chain.input_fields
 
-    def _get_result(self, suppy_order):
+    def _get_result(self, supply_order):
         """Return the result of a Procurement request.
 
         Takes a dictionary of data and an AppUser, and submits them as a
         SupplyChain request. If the request is succesful, returns a
         data dictionary of the result. Otherwise, returns None.
         """
-        return self.supply_chain.start(suppy_order)
+        return self.supply_chain.start(supply_order)
 
     def _get_platform_name(self):
         """Return the name of the Platform associated with the Procurement."""
@@ -142,11 +165,22 @@ class Procurement(models.Model):
 
     def validate(self, data):
         """
+        Takes a data dictionary and returns a Boolean indicating whether
+        the data is valid input for the Procurement's SupplyChain.
+        """
+        return self.supply_chain.validate_input(data)
+
+    def is_valid(self, data):
+        """
 
         """
-        pass
+        try:
+            self.validate(data)
+            return True
+        except SupplyChainError:
+            return False
 
-    def process(self, suppy_order):
+    def process(self, supply_order):
         """
 
         Attributes
@@ -160,7 +194,7 @@ class Procurement(models.Model):
             The |DataMunger| that will process and save the data.
 
         """
-        result = self._get_result(suppy_order)
+        result = self._get_result(supply_order)
         if result:
             doc_obj = self._get_doc_obj(result)
             return self._process_doc(doc_obj)
