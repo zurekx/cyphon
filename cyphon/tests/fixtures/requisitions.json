@@ -32,7 +32,8 @@
       "id": 2,
       "requisition": ["virustotal", "UrlScan"],
       "param_name": "url",
-      "param_type": "CharField"
+      "param_type": "CharField",
+      "required": true
     }
   }
 ]
