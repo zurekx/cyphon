@@ -81,6 +81,7 @@ class AlertBasicAPITests(AlertBaseAPITests):
         """
         Tests the Alerts REST API endpoint for staff.
         """
+        self.maxDiff = None
         self.user.use_redaction = False
         response = self.get_api_response()
         self.assertEqual(response.json(), ALERT_LIST)
@@ -567,9 +568,9 @@ class AlertDistilleryAPITests(AlertBaseAPITests):
         response = self.get_api_response(is_staff=False)
         expected = [
             {
-                'id': 5,
+                'id': 6,
                 'name': 'elasticsearch.test_index.test_logs',
-                'url': 'http://testserver/api/v1/distilleries/5/'
+                'url': 'http://testserver/api/v1/distilleries/6/'
             },
             {
                 'id': 1,
