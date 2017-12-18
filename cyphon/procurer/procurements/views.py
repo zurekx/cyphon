@@ -18,6 +18,159 @@
 
 """
 
-from django.shortcuts import render
+# third party
+from rest_framework import status, viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import detail_route, list_route
 
-# Create your views here.
+# local
+from alerts.models import Alert
+from procurer.supplychains.exceptions import SupplyChainError
+from procurer.supplyorders.models import SupplyOrder
+from procurer.supplyorders.serializers import SupplyOrderSerializer
+from .models import Procurement
+from .serializers import ProcurementSerializer#, ProcurementProcessSerializer
+
+
+class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
+    """REST API views for Procurements."""
+
+    queryset = Procurement.objects.all()
+    serializer_class = ProcurementSerializer
+
+    @staticmethod
+    def _get_alert(request):
+        """
+
+        """
+        user = request.user
+        alert_id = request.query_params.get('id')
+        return Alert.objects.filter_by_user(user)\
+                            .filter(pk=int(alert_id))\
+                            .first()
+
+    def _get_serialized_queryset(self, queryset):
+        """
+
+        """
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        else:
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+
+    @list_route(methods=['get', 'post'], url_path='by-alert')
+    def filtered_by_alert(self, request, *args, **kwargs):
+        """Get |Distilleries| that are associated with |Alerts|.
+
+        Parameters
+        ----------
+        request : :class:`rest_framework.request.Request`
+            A Django REST framework HTTP `Request`_ object.
+
+        Returns
+        -------
+        :class:`rest_framework.response.Response`
+            A Django REST framework HTTP `Response`_ object containing
+            a list of JSON serialized |Distilleries| associated with
+            |Alerts|.
+
+        """
+        alert = self._get_alert(request)
+        if alert:
+            filtered_qs = self.filter_queryset(self.get_queryset())
+            filtered_by_user = Procurement.objects.filter_by_user(
+                user=request.user,
+                queryset=filtered_qs
+            )
+            filtered_qs = Procurement.objects.filter_by_alert(
+                alert=alert,
+                user=request.user,
+                queryset=filtered_by_user
+            )
+        else:
+            filtered_qs = Procurement.objects.none()
+
+        return self._get_serialized_queryset(filtered_qs)
+
+    @detail_route(methods=['post'], url_path='process')
+    def process(self, request, *args, **kwargs):
+        """Get |Distilleries| that are associated with |Alerts|.
+
+        Parameters
+        ----------
+        request : :class:`rest_framework.request.Request`
+            A Django REST framework HTTP `Request`_ object.
+
+        Returns
+        -------
+        :class:`rest_framework.response.Response`
+            A Django REST framework HTTP `Response`_ object containing
+            a list of JSON serialized |Distilleries| associated with
+            |Alerts|.
+
+        """
+        procurement = self.get_object()
+
+        try:
+            procurement.validate(request.data)
+            supplyorder = SupplyOrder.objects.create(
+                procurement=procurement,
+                alert=None,
+                user=request.user,
+                input_data=request.data
+            )
+            print('supplyorder', supplyorder)
+            # supplyorder = procurement.process(supplyorder)
+            serializer = SupplyOrderSerializer(data=supplyorder)
+            if serializer.is_valid():
+                return Response(serializer.validated_data)
+            else:
+                return Response(
+                    serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        except SupplyChainError as error:
+            print(vars(error))
+            return Response(
+                vars(error),
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    # @detail_route(methods=['post'], url_path='process-alert')
+    # def process_alert(self, request, *args, **kwargs):
+    #     """Get |Distilleries| that are associated with |Alerts|.
+
+    #     Parameters
+    #     ----------
+    #     request : :class:`rest_framework.request.Request`
+    #         A Django REST framework HTTP `Request`_ object.
+
+    #     Returns
+    #     -------
+    #     :class:`rest_framework.response.Response`
+    #         A Django REST framework HTTP `Response`_ object containing
+    #         a list of JSON serialized |Distilleries| associated with
+    #         |Alerts|.
+
+    #     """
+    #     procurement = self.get_object()
+
+    #     try:
+    #         procurement.validate(request.data)
+    #         supplyorder = SupplyOrder.objects.create(data=request.data)
+    #         result = procurement.process(request.data)
+    #         return Response(
+    #             vars(error),
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )
+    #     except SupplyChainError as error:
+    #         print(vars(error))
+    #         return Response(
+    #             vars(error),
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )
