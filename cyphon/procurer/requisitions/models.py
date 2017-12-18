@@ -202,10 +202,11 @@ class Parameter(models.Model):
         """
 
         """
-        if value in [None, ''] and not self.required:
-            return True
-        try:
-            restore_type(field_type=self.param_type, value=value)
-            return True
-        except ValueError:
-            return False
+        if value in [None, '']:
+            return not self.required
+        else:
+            try:
+                restore_type(field_type=self.param_type, value=value)
+                return True
+            except ValueError:
+                return False
