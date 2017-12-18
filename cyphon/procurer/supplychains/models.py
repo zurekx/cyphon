@@ -46,7 +46,7 @@ class SupplyChainManager(GetByNameManager):
     Adds methods to the default Django model manager.
     """
 
-    def filter_by_user(self, user, queryset):
+    def filter_by_user(self, user, queryset=None):
         """Get |SupplyChains| that can be executed by the given user.
 
         Ensures that every SupplyLink in the the SupplyChain can be
@@ -65,7 +65,7 @@ class SupplyChainManager(GetByNameManager):
             supplychain_qs = self.get_queryset()
 
         excluded_supplylinks = SupplyLink.objects.exclude_by_user(user)
-        return supplychain_qs.exclude(supplylink__in=excluded_supplylinks)
+        return supplychain_qs.exclude(supply_link__in=excluded_supplylinks)
 
 
 class SupplyChain(models.Model):
@@ -91,14 +91,6 @@ class SupplyChain(models.Model):
         verbose_name = _('supply chain')
         verbose_name_plural = _('supply chains')
 
-    def __init__(self, *args, **kwargs):
-        """
-
-        """
-        super(SupplyChain, self).__init__(*args, **kwargs)
-        self.is_valid = self.validate()
-        self.errors = []
-
     @cached_property
     def _first_link(self):
         """Return the first SupplyLink in the SupplyChain."""
@@ -122,25 +114,23 @@ class SupplyChain(models.Model):
         """
         return self._first_link.input_fields
 
-    def validate(self):
+    @property
+    def errors(self):
         """
 
         """
-        is_valid = True
+        errors = []
         supply_links = self.supply_links.all()
 
         if supply_links:
             for supply_link in self.supply_links.all():
                 supply_link.validate()
-                if not supply_link.is_valid:
-                    is_valid = False
-                    self.errors += supply_link.errors
+                if supply_link.errors:
+                    errors += supply_link.errors
         else:
-            is_valid = False
-            self.errors = ['SupplyChain has no SupplyLinks.']
+            errors = ['SupplyChain has no SupplyLinks.']
 
-        self.is_valid = is_valid
-        return self
+        return errors
 
     def validate_input(self, data):
         """
@@ -188,10 +178,8 @@ class SupplyLinkManager(GetByNameManager):
 
         """
         queryset = self.get_queryset()
-
         has_user = models.Q(requisition__emissary__passport__users=user)
         is_public = models.Q(requisition__emissary__passport__public=True)
-
         return queryset.filter(has_user | is_public).distinct()
 
     def exclude_by_user(self, user):
@@ -205,7 +193,7 @@ class SupplyLinkManager(GetByNameManager):
 
         """
         queryset = self.get_queryset()
-        available_supplylinks = self.filter_by_user()
+        available_supplylinks = self.filter_by_user(user)
         ids = available_supplylinks.values_list('id', flat=True)
         return queryset.exclude(id__in=ids)
 
@@ -272,14 +260,6 @@ class SupplyLink(models.Model):
         verbose_name = _('supply link')
         verbose_name_plural = _('supply links')
 
-    def __init__(self, *args, **kwargs):
-        """
-
-        """
-        super(SupplyLink, self).__init__(*args, **kwargs)
-        self.is_valid = self.validate()
-        self.errors = []
-
     def __str__(self):
         """
 
@@ -336,21 +316,19 @@ class SupplyLink(models.Model):
         """
         return self.requisition.required_parameters
 
-    def validate(self):
+    @property
+    def errors(self):
         """
 
         """
-        is_valid = True
-        self.errors = []
+        errors = []
 
         for req_param in self._required_parameters:
             if req_param not in self._coupling_parameters:
-                is_valid = False
-                self.errors.append('A FieldCoupling is missing for the '
-                                   'required parameter %s.' % req_param)
+                errors.append('A FieldCoupling is missing for the '
+                              'required parameter %s.' % req_param)
 
-        self.is_valid = is_valid
-        return self
+        return errors
 
     def _get_params(self, data):
         """
@@ -373,7 +351,6 @@ class SupplyLink(models.Model):
         """
         is_valid = True
         invalid_couplings = []
-
         for coupling in self.field_couplings.all():
             if not coupling.validate_input(data):
                 is_valid = False
