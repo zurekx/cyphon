@@ -32,7 +32,8 @@ from platforms.tests.test_apihandler import (
     ApiHandlerTransactionTestCase,
 )
 from platforms.twitter.handlers import PublicStreamsAPI
-from platforms.tests.test_apihandler import PassportMixin
+from tests.api_tests import PassportMixin
+
 from query.reservoirqueries.models import ReservoirQuery
 from target.followees.models import Account
 from target.locations.models import Location

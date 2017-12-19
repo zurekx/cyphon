@@ -22,7 +22,7 @@ Provides a base class for testing views for REST API endpoints.
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APITransactionTestCase
 
 # local
 from appusers.models import AppUser
@@ -30,15 +30,42 @@ from appusers.models import AppUser
 API_URL = settings.API_URL
 
 
-class CyphonAPITestCase(APITestCase):
+def settings_exist(settings):
     """
-    Tests REST API endpoints for Containers.
+    Takse a dict of settings and returns a Boolean indicating whether
+    all settings have value.
     """
-    model_url = ''
+    settings_exist = True
+    for key, val in settings.items():
+        if not val:
+            # print('missing key', key, val)
+            settings_exist = False
+    return settings_exist
 
-    def __init__(self, *args, **kwargs):
-        super(CyphonAPITestCase, self).__init__(*args, **kwargs)
-        self.url = API_URL + self.model_url
+
+class PassportMixin(object):
+    """
+    Supplies valid credentials to a Passport used in API tests.
+    """
+
+    @staticmethod
+    def _update_passport(passport, settings):
+        """
+        Supplies valid credentials to a Passport used in tests.
+        """
+        passport.key = settings.get('KEY', '')
+        passport.secret = settings.get('SECRET', '')
+        passport.access_token = settings.get('ACCESS_TOKEN', '')
+        passport.access_token_secret = settings.get('ACCESS_TOKEN_SECRET', '')
+        passport.save()
+
+
+class APITestMixin(object):
+    """
+
+    """
+
+    model_url = ''
 
     def setUp(self, *args, **kwargs):
         # super(CyphonAPITestCase, self).setUp(*args, **kwargs)
@@ -98,3 +125,23 @@ class CyphonAPITestCase(APITestCase):
         """
         response = self.client.get(self.url, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class CyphonAPITestCase(APITestCase, APITestMixin):
+    """
+    Tests REST API endpoints.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(CyphonAPITestCase, self).__init__(*args, **kwargs)
+        self.url = API_URL + self.model_url
+
+
+class CyphonAPITransactionTestCase(APITransactionTestCase, APITestMixin):
+    """
+    Tests REST API endpoints using transactions.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(CyphonAPITransactionTestCase, self).__init__(*args, **kwargs)
+        self.url = API_URL + self.model_url

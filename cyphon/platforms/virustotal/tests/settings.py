@@ -25,7 +25,8 @@ import logging
 from django.conf import settings
 
 # local
-from platforms.tests.test_apihandler import settings_exist
+from tests.api_tests import settings_exist
+
 
 VIRUSTOTAL_SETTINGS = settings.VIRUSTOTAL
 

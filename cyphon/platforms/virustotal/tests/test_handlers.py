@@ -30,12 +30,13 @@ from django.test import SimpleTestCase, TestCase, TransactionTestCase
 from rest_framework.test import APISimpleTestCase
 
 # local
+from ambassador.passports.models import Passport
 from cyphon.celeryapp import app
-from platforms.tests.test_apihandler import PassportMixin
 from platforms.virustotal.handlers import UrlReport
 from procurer.requisitions.models import Requisition
 from procurer.supplychains.models import SupplyChain
 from procurer.supplyorders.models import SupplyOrder
+from tests.api_tests import PassportMixin
 from tests.fixture_manager import get_fixtures
 from .settings import VIRUSTOTAL_SETTINGS, VIRUSTOTAL_TESTS_ENABLED
 
@@ -53,6 +54,7 @@ class UrlScanSupplyChainTestCase(TransactionTestCase, PassportMixin):
     @classmethod
     def setUpClass(cls):
         super(UrlScanSupplyChainTestCase, cls).setUpClass()
+
         # Start up celery worker
         cls.celery_worker = start_worker(app)
         cls.celery_worker.__enter__()
@@ -71,10 +73,20 @@ class UrlScanSupplyChainTestCase(TransactionTestCase, PassportMixin):
         """
         supply_chain = SupplyChain.objects.get_by_natural_key('VirusTotal URL Scan & Report')
         supply_order = SupplyOrder.objects.get(pk=1)
-        result = supply_order.process()
-        # result = supply_chain.start(data={'url': 'dunbararmored.com'}, supply_order=supply_order)
-        print([(manifest.data, manifest.status_code, manifest.response_msg) for manifest in supply_order.manifests.all()])
+        # result = supply_order.process()
+        result = supply_chain.start(supply_order=supply_order)
+        # print([(manifest.data, manifest.status_code, manifest.response_msg) for manifest in supply_order.manifests.all()])
+        print(result)
         # [({'url': 'http://example.com'}, '403', 'Forbidden'), ({'resource': None}, '403', 'Forbidden')]
+
+    def setUp(self):
+        """
+
+        """
+        super(UrlScanSupplyChainTestCase, self).setUp()
+        passport = Passport.objects.get(pk=5)
+        self._update_passport(passport, VIRUSTOTAL_SETTINGS)
+
 
 # class UrlReportTestCase(TestCase):
 #     """
