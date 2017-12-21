@@ -143,6 +143,16 @@ class SupplyOrder(models.Model):
         """
         self.alert = alert
         self.save()
+        return self
+
+    def update_result(self, distillery, doc_id):
+        """
+
+        """
+        self.distillery = distillery
+        self.doc_id = doc_id
+        self.save()
+        return self
 
     def use_alert_data(self):
         """
@@ -154,12 +164,10 @@ class SupplyOrder(models.Model):
             input_data[key] = alert_data.get(key)
         self.input_data = input_data
         self.save()
+        return self
 
     def process(self):
         """
 
         """
-        self.doc_id = self.procurement.process(self)
-        self.distillery = self.procurement.distillery
-        self.save()
-        return self
+        return self.procurement.process(self)
