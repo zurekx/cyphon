@@ -41,11 +41,11 @@
     "model": "supplychains.supplylink",
     "fields": {
       "id": 3,
-      "name": "VirusTotal URL Report after 30s wait",
+      "name": "VirusTotal URL Report after 5s wait",
       "supply_chain": ["VirusTotal URL Scan & Report"],
       "requisition": ["virustotal", "UrlReport"],
       "position": 1,
-      "wait_time": 3,
+      "wait_time": 5,
       "time_unit": "s"
     }
   },
@@ -71,7 +71,7 @@
     "model": "supplychains.fieldcoupling",
     "fields": {
       "id": 3,
-      "supply_link": ["VirusTotal URL Report after 30s wait"],
+      "supply_link": ["VirusTotal URL Report after 5s wait"],
       "parameter": ["virustotal", "UrlReport", "resource"],
       "field_name": "url"
     }
