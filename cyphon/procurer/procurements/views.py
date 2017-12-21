@@ -25,6 +25,7 @@ from rest_framework.decorators import detail_route, list_route
 
 # local
 from alerts.models import Alert
+from cyphon.tasks import procure_order
 from procurer.supplychains.exceptions import SupplyChainError
 from procurer.supplyorders.models import SupplyOrder
 from procurer.supplyorders.serializers import SupplyOrderSerializer
@@ -44,7 +45,7 @@ class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
 
         """
         user = request.user
-        alert_id = request.query_params.get('id')
+        alert_id = request.query_params.get('id') or request.data.get('id')
         return Alert.objects.filter_by_user(user)\
                             .filter(pk=int(alert_id))\
                             .first()
@@ -123,54 +124,49 @@ class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
                 user=request.user,
                 input_data=request.data
             )
-            print('supplyorder', supplyorder)
-            # supplyorder = procurement.process(supplyorder)
-            serializer = SupplyOrderSerializer(data=supplyorder)
-            if serializer.is_valid():
-                return Response(serializer.validated_data)
-            else:
-                return Response(
-                    serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+            supplyorder.process()
+            serializer = SupplyOrderSerializer(supplyorder)
+            return Response(serializer.data)
 
         except SupplyChainError as error:
-            print(vars(error))
             return Response(
                 vars(error),
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-    # @detail_route(methods=['post'], url_path='process-alert')
-    # def process_alert(self, request, *args, **kwargs):
-    #     """Get |Distilleries| that are associated with |Alerts|.
+    @detail_route(methods=['get', 'post'], url_path='process-alert')
+    def process_alert(self, request, *args, **kwargs):
+        """Get |Distilleries| that are associated with |Alerts|.
 
-    #     Parameters
-    #     ----------
-    #     request : :class:`rest_framework.request.Request`
-    #         A Django REST framework HTTP `Request`_ object.
+        Parameters
+        ----------
+        request : :class:`rest_framework.request.Request`
+            A Django REST framework HTTP `Request`_ object.
 
-    #     Returns
-    #     -------
-    #     :class:`rest_framework.response.Response`
-    #         A Django REST framework HTTP `Response`_ object containing
-    #         a list of JSON serialized |Distilleries| associated with
-    #         |Alerts|.
+        Returns
+        -------
+        :class:`rest_framework.response.Response`
+            A Django REST framework HTTP `Response`_ object containing
+            a list of JSON serialized |Distilleries| associated with
+            |Alerts|.
 
-    #     """
-    #     procurement = self.get_object()
+        """
+        procurement = self.get_object()
+        alert = self._get_alert(request)
 
-    #     try:
-    #         procurement.validate(request.data)
-    #         supplyorder = SupplyOrder.objects.create(data=request.data)
-    #         result = procurement.process(request.data)
-    #         return Response(
-    #             vars(error),
-    #             status=status.HTTP_400_BAD_REQUEST
-    #         )
-    #     except SupplyChainError as error:
-    #         print(vars(error))
-    #         return Response(
-    #             vars(error),
-    #             status=status.HTTP_400_BAD_REQUEST
-    #         )
+        try:
+            supplyorder = SupplyOrder.objects.create(
+                procurement=procurement,
+                alert=alert,
+                user=request.user
+            )
+            supplyorder.use_alert_data()
+            supplyorder.process()
+            serializer = SupplyOrderSerializer(supplyorder)
+            return Response(serializer.data)
+
+        except SupplyChainError as error:
+            return Response(
+                vars(error),
+                status=status.HTTP_400_BAD_REQUEST
+            )
