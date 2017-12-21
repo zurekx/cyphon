@@ -197,4 +197,8 @@ class Procurement(models.Model):
         result = self._get_result(supply_order)
         if result:
             doc_obj = self._get_doc_obj(result)
-            return self._process_doc(doc_obj)
+            doc_id = self._process_doc(doc_obj)
+            supply_order.update_result(self.distillery, doc_id)
+
+        # TODO(LH): handle else condition
+        return supply_order
