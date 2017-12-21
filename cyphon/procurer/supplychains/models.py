@@ -157,6 +157,7 @@ class SupplyChain(models.Model):
             ]
             result = chain(*links)()
             return result.get()
+
         except SupplyChainError as error:
             _LOGGER.error('A SupplyChainError occurred: %s', error.msg)
 
