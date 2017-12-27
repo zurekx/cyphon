@@ -95,19 +95,14 @@ def start_supplylink(data, supplylink_id, supplyorder_id):
     return result
 
 
-@app.task(name='tasks.start_supplyorder')
-def procure_order(procurement_id, supplyorder_id):
+@app.task(name='tasks.process_supplyorder')
+def process_supplyorder(supplyorder_id):
     """
 
     """
-    procurement_model = apps.get_model(app_label='procurements',
-                                       model_name='procurement')
-    procurement = procurement_model.objects.get(pk=procurement_id)
-
     supplyorder_model = apps.get_model(app_label='supplyorders',
                                        model_name='supplyorder')
     supplyorder = supplyorder_model.objects.get(pk=supplyorder_id)
-
-    result = procurement.process(supplyorder)
+    result = supplyorder.process()
     close_old_connections()
     return result

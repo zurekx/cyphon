@@ -25,7 +25,7 @@ from rest_framework.decorators import detail_route, list_route
 
 # local
 from alerts.models import Alert
-from cyphon.tasks import procure_order
+from cyphon.tasks import process_supplyorder
 from procurer.supplychains.exceptions import SupplyChainError
 from procurer.supplyorders.models import SupplyOrder
 from procurer.supplyorders.serializers import SupplyOrderSerializer
@@ -47,7 +47,7 @@ class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
         user = request.user
         alert_id = request.query_params.get('id') or request.data.get('id')
         return Alert.objects.filter_by_user(user)\
-                            .filter(pk=int(alert_id))\
+                            .filter(pk=alert_id)\
                             .first()
 
     def _get_serialized_queryset(self, queryset):
@@ -124,7 +124,7 @@ class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
                 user=request.user,
                 input_data=request.data
             )
-            supplyorder.process()
+            process_supplyorder.delay(supplyorder.id)
             serializer = SupplyOrderSerializer(supplyorder)
             return Response(serializer.data)
 
@@ -161,7 +161,7 @@ class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
                 user=request.user
             )
             supplyorder.use_alert_data()
-            supplyorder.process()
+            process_supplyorder.delay(supplyorder.id)
             serializer = SupplyOrderSerializer(supplyorder)
             return Response(serializer.data)
 
