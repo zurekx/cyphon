@@ -173,6 +173,17 @@ class Procurement(models.Model):
     def is_valid(self, data):
         """
 
+        Parameters
+        ----------
+        data : dict
+            Data to be evaluated as potential input for the |Procurement|.
+
+        Returns
+        -------
+        bool
+            A Boolean indicating whether the data is valid input for the
+            Procurement.
+
         """
         try:
             self.validate(data)
@@ -183,15 +194,14 @@ class Procurement(models.Model):
     def process(self, supply_order):
         """
 
-        Attributes
+        Parameters
         ----------
-        data : dict
+        supply_order : SupplyOrder
+            The |SupplyOrder| that will process and save the data.
 
-        user : AppUser
-            The |SupplyChain| that will procure the data.
-
-        munger : DataMunger
-            The |DataMunger| that will process and save the data.
+        Returns
+        -------
+            The processed and updated |SupplyOrder|.
 
         """
         result = self._get_result(supply_order)
