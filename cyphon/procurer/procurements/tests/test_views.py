@@ -18,28 +18,58 @@
 Tests views for Distilleries.
 """
 
+# standard library
+try:
+    from unittest.mock import Mock, patch
+except ImportError:
+    from mock import Mock, patch
+
 # third party
+from celery.contrib.testing.worker import start_worker
 from rest_framework import status
 
 # local
 from alerts.models import Alert
+from ambassador.passports.models import Passport
 from appusers.models import AppUser
+from cyphon.celeryapp import app
 from procurer.procurements.models import Procurement
-from tests.api_tests import CyphonAPITestCase
+from procurer.supplychains.exceptions import SupplyChainError
+from procurer.supplyorders.models import SupplyOrder
+from tests.api_tests import CyphonAPITransactionTestCase, PassportMixin
 from tests.fixture_manager import get_fixtures
 
 
-class ProcurementAPITests(CyphonAPITestCase):
+class ProcurementAPITests(CyphonAPITransactionTestCase, PassportMixin):
     """
     Tests REST API endpoints for Procurements.
     """
+
+    allow_database_queries = True
 
     fixtures = get_fixtures(['alerts', 'procurements', 'quartermasters'])
 
     model_url = 'procurements/'
     obj_url = '1/'
 
+    @classmethod
+    def setUpClass(cls):
+        super(ProcurementAPITests, cls).setUpClass()
+        # Start up celery worker
+        cls.celery_worker = start_worker(app)
+        cls.celery_worker.__enter__()
+
+    @classmethod
+    def tearDownClass(cls):
+        # Close worker
+        cls.celery_worker.__exit__(None, None, None)
+        super(ProcurementAPITests, cls).tearDownClass()
+
     def setUp(self):
+        """
+
+        """
+        super(ProcurementAPITests, self).setUp()
         self.alert = Alert.objects.get(pk=2)
         self.user = AppUser.objects.get(id=2)
 
@@ -94,12 +124,85 @@ class ProcurementAPITests(CyphonAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 0)
 
-    # def test_process(self):
-    #     """
-    #     Tests the GET /api/v1/procurements/process/ REST API endpoint.
-    #     """
-    #     data = {'url': 'example.com'}
-    #     response = self.post_to_api('1/process/', data=data, is_staff=False)
-    #     # self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     print('response.data', response.data)
-    #     # self.assertEqual(response.data['count'], 0)
+    @patch('procurer.procurements.views.process_supplyorder')
+    def test_process_success(self, mock_process):
+        """
+        Tests the POST /api/v1/procurements/process/ REST API endpoint.
+        """
+        data = {'url': 'http://dunbararmored.com'}
+        self.assertEqual(SupplyOrder.objects.count(), 0)
+        response = self.post_to_api('1/process/', data=data, is_staff=False)
+        supplyorder_id = response.data.pop('id')
+        expected = {
+            'results': {},
+            'user': 2,
+            'alert': None,
+            'procurement': 1,
+            'input_data': {
+                'url': 'http://dunbararmored.com'
+            },
+            'doc_id': None,
+            'distillery': None,
+            'manifests': []
+        }
+        self.assertEqual(SupplyOrder.objects.count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, expected)
+        mock_process.delay.assert_called_once_with(supplyorder_id)
+
+    @patch('procurer.procurements.views.process_supplyorder.delay',
+           side_effect=SupplyChainError('an error occured'))
+    def test_process_fail(self, mock_process):
+        """
+        Tests the GET /api/v1/procurements/process/ REST API endpoint
+        when a SupplyChainError is raised.
+        """
+        data = {'url': 'http://dunbararmored.com'}
+        response = self.post_to_api('1/process/', data=data, is_staff=False)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'msg': 'an error occured'})
+
+    @patch('procurer.procurements.views.process_supplyorder')
+    def test_process_alert_success(self, mock_process):
+        """
+        Tests the POST /api/v1/procurements/process-alert/ REST API endpoint
+        for a successful request.
+        """
+        self.assertEqual(SupplyOrder.objects.count(), 0)
+        self.alert.data = {'url': 'http://dunbararmored.com'}
+        self.alert.save()
+        response = self.post_to_api('1/process-alert/',
+                                    data={'id': self.alert.id},
+                                    is_staff=False)
+        supplyorder_id = response.data.pop('id')
+        expected = {
+            'results': {},
+            'user': 2,
+            'alert': 2,
+            'input_data': {
+                'url': 'http://dunbararmored.com'
+            },
+            'procurement': 1,
+            'doc_id': None,
+            'distillery': None,
+            'manifests': []
+        }
+        self.assertEqual(SupplyOrder.objects.count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, expected)
+        mock_process.delay.assert_called_once_with(supplyorder_id)
+
+    @patch('procurer.procurements.views.process_supplyorder.delay',
+           side_effect=SupplyChainError('an error occured'))
+    def test_process_alert_fail(self, mock_process):
+        """
+        Tests the POST /api/v1/procurements/process-alert/ REST API endpoint
+        when a SupplyChainError is raised.
+        """
+        self.alert.data = {'url': 'http://dunbararmored.com'}
+        self.alert.save()
+        response = self.post_to_api('1/process-alert/',
+                                    data={'id': self.alert.id},
+                                    is_staff=False)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'msg': 'an error occured'})
