@@ -229,7 +229,7 @@ PRIVATE_FIELDS = [
 ]
 
 RABBITMQ = {
-    'HOST': 'localhost', #os.getenv('RABBITMQ_DEFAULT_HOST', 'rabbit'),
+    'HOST': os.getenv('RABBITMQ_DEFAULT_HOST', 'rabbit'),
     'VHOST': os.getenv('RABBITMQ_DEFAULT_VHOST', 'cyphon'),
     'USERNAME': os.getenv('RABBITMQ_DEFAULT_USER', 'guest'),
     'PASSWORD': os.getenv('RABBITMQ_DEFAULT_PASS', 'guest'),
