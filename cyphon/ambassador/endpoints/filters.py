@@ -49,8 +49,8 @@ class EndpointFilterBackend(DjangoFilterBackend):
         Returns
         -------
         QuerySet
-            A |QuerySet| filtered to only show |Actions| for which the
-            current user has an available |Courier|.
+            A |QuerySet| filtered to only show |Endpoints| for which the
+            current user has an available |Emissary|.
 
         """
         has_user = Q(emissary__passport__users=request.user)
