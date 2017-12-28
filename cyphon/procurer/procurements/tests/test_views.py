@@ -99,7 +99,7 @@ class ProcurementAPITests(CyphonAPITransactionTestCase, PassportMixin):
         self.alert.save()
         response = self.get_api_response('by-alert/?id=2', is_staff=False)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['count'], 2)
 
     def test_by_alert_no_alert(self):
         """
