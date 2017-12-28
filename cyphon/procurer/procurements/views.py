@@ -26,6 +26,7 @@ from rest_framework.decorators import detail_route, list_route
 # local
 from alerts.models import Alert
 from cyphon.tasks import process_supplyorder
+from cyphon.views import CustomModelViewSet
 from procurer.supplychains.exceptions import SupplyChainError
 from procurer.supplyorders.models import SupplyOrder
 from procurer.supplyorders.serializers import SupplyOrderSerializer
@@ -33,16 +34,18 @@ from .models import Procurement
 from .serializers import ProcurementSerializer#, ProcurementProcessSerializer
 
 
-class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
+class ProcurementViewSet(CustomModelViewSet):
     """REST API views for Procurements."""
 
     queryset = Procurement.objects.all()
+    custom_filter_backends = ['procurer.procurements.filters.ProcurementFilterBackend']
     serializer_class = ProcurementSerializer
 
     @staticmethod
     def _get_alert(request):
         """
-
+        Takes a Request wit an `id` parameter and returns the Alert
+        associated with the id if it exists. Otherwise, returns None.
         """
         user = request.user
         alert_id = request.query_params.get('id') or request.data.get('id')
@@ -52,7 +55,8 @@ class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
 
     def _get_serialized_queryset(self, queryset):
         """
-
+        Takes a QuerySet and returns a Response containing the
+        serialized data.
         """
         page = self.paginate_queryset(queryset)
 
@@ -65,7 +69,7 @@ class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
 
     @list_route(methods=['get', 'post'], url_path='by-alert')
     def filtered_by_alert(self, request, *args, **kwargs):
-        """Get |Distilleries| that are associated with |Alerts|.
+        """Return a list view of Procurements compatible with a given Alert.
 
         Parameters
         ----------
@@ -89,7 +93,6 @@ class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
             )
             filtered_qs = Procurement.objects.filter_by_alert(
                 alert=alert,
-                user=request.user,
                 queryset=filtered_by_user
             )
         else:
@@ -99,7 +102,7 @@ class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
 
     @detail_route(methods=['post'], url_path='process')
     def process(self, request, *args, **kwargs):
-        """Get |Distilleries| that are associated with |Alerts|.
+        """Create and process a SupplyOrder.
 
         Parameters
         ----------
@@ -136,7 +139,7 @@ class ProcurementViewSet(viewsets.ReadOnlyModelViewSet):
 
     @detail_route(methods=['get', 'post'], url_path='process-alert')
     def process_alert(self, request, *args, **kwargs):
-        """Get |Distilleries| that are associated with |Alerts|.
+        """Create and process a SupplyOrder based on an Alert.
 
         Parameters
         ----------
