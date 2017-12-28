@@ -67,7 +67,7 @@ class ContainerAPITests(CyphonAPITestCase):
         response = self.get_api_response('?warehouse=2')
         results = response.data['results']
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 3)
+        self.assertEqual(response.data['count'], 6)
         self.assertEqual(results[0]['name'], 'mail')
         self.assertEqual(results[1]['name'], 'snmptrap')
         self.assertEqual(results[2]['name'], 'test_doc')
@@ -77,7 +77,7 @@ class ContainerAPITests(CyphonAPITestCase):
         Tests the /containers/in-use/ endpoint.
         """
         response = self.get_api_response('in-use/')
-        self.assertEqual(len(response.data), 5)
+        self.assertEqual(len(response.data), 6)
 
     def test_get_targets(self):
         """

@@ -305,8 +305,8 @@ ALERT_LIST = {
         'assigned_user': None,
         'incidents': 1,
         'distillery': {
-            'id': 6,
-            'url': 'http://testserver/api/v1/distilleries/6/',
+            'id': 8,
+            'url': 'http://testserver/api/v1/distilleries/8/',
             'name': 'elasticsearch.test_index.test_logs'
         },
         'content_date': None,

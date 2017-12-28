@@ -568,9 +568,9 @@ class AlertDistilleryAPITests(AlertBaseAPITests):
         response = self.get_api_response(is_staff=False)
         expected = [
             {
-                'id': 6,
+                'id': 8,
                 'name': 'elasticsearch.test_index.test_logs',
-                'url': 'http://testserver/api/v1/distilleries/6/'
+                'url': 'http://testserver/api/v1/distilleries/8/'
             },
             {
                 'id': 1,

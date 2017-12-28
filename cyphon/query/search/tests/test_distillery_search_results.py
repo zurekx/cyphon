@@ -142,7 +142,7 @@ class DistillerySearchResultsTestCase(TestCase):
         Tests that a list of QueryFieldsets is created for each text field
         on a distillery.
         """
-        distillery = Distillery.objects.get(pk=5)
+        distillery = Distillery.objects.get(pk=8)
         search_query = SearchQuery('test "more testing"', self.user)
         distillery_results = self._get_instance(search_query, distillery)
 
@@ -175,7 +175,7 @@ class DistillerySearchResultsTestCase(TestCase):
         Tests that the results and result count from a distillery
         search get put onto the results and count attribute
         """
-        distillery = Distillery.objects.get(pk=5)
+        distillery = Distillery.objects.get(pk=8)
         search_query = SearchQuery('test "more testing"', self.user)
         distillery_results = self._get_instance(search_query, distillery)
 
@@ -183,7 +183,7 @@ class DistillerySearchResultsTestCase(TestCase):
         self.assertEqual(distillery_results.results, MOCK_RESULTS_LIST)
 
     def test_time_search(self):
-        distillery = Distillery.objects.get(pk=6)
+        distillery = Distillery.objects.get(pk=9)
         search_query = SearchQuery('body=test', self.user)
         before_iso = '2017-11-27T06:00:00+05:00'
         before_date = parser.parse(before_iso)
@@ -271,7 +271,7 @@ class DistillerySearchResultsListTestCase(TestCase):
         search_query = SearchQuery('test', self.user)
         distillery_results_list = self._get_instance(search_query)
 
-        self.assertEqual(distillery_results_list.count, 6)
+        self.assertEqual(distillery_results_list.count, 9)
 
     def test_result_length(self):
         """
@@ -280,7 +280,7 @@ class DistillerySearchResultsListTestCase(TestCase):
         """
         distillery_results_list = self._get_instance(SearchQuery('test', self.user))
 
-        self.assertEqual(len(distillery_results_list.results), 6)
+        self.assertEqual(len(distillery_results_list.results), 9)
 
     def test_as_dict(self):
         """

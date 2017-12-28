@@ -27,13 +27,14 @@ from django.contrib.gis.geos import Point
 # local
 from aggregator.pipes.models import Pipe
 from ambassador.passports.models import Passport
-from platforms.tests.test_apihandler import ApiHandlerTestCase, PassportMixin
+from platforms.tests.test_apihandler import ApiHandlerTestCase
 from platforms.twitter.handlers import SearchAPI
 from query.reservoirqueries.models import ReservoirQuery
 from target.followees.models import Account
 from target.locations.models import Location
 from target.searchterms.models import SearchTerm
 from target.timeframes.models import TimeFrame
+from tests.api_tests import PassportMixin
 from .settings import TWITTER_SETTINGS, TWITTER_TESTS_ENABLED
 
 

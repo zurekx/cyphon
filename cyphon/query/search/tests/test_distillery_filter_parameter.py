@@ -44,7 +44,7 @@ class DistilleryFilterParameterTestCase(TestCase):
             3, '@source=test_index.*', self.user)
 
         self.assertTrue(parameter.is_valid())
-        self.assertEqual(len(parameter.distilleries), 3)
+        self.assertEqual(len(parameter.distilleries), 6)
         self.assertEqual(
             str(parameter.distilleries[0]),
             'elasticsearch.test_index.test_docs',

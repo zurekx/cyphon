@@ -320,9 +320,9 @@ class SearchDistilleriesViewTestCase(SearchViewBaseTestCase):
             'next': None,
             'previous': None,
             'distillery': {
-                'id': 6,
+                'id': 9,
                 'name': 'elasticsearch.test_index.test_mail',
-                'url': 'http://testserver/api/v1/distilleries/6/',
+                'url': 'http://testserver/api/v1/distilleries/9/',
             },
             'results': self.MOCK_RESULTS_LIST
         })
@@ -357,7 +357,7 @@ class SearchDistilleryViewTestCase(SearchViewBaseTestCase):
         self.assertEqual(response.data['results']['previous'], None)
         self.assertEqual(response.data['results']['distillery'], {
             'id': 6,
-            'name': 'elasticsearch.test_index.test_mail',
+            'name': 'elasticsearch.test_index.test_scan_ecorp',
             'url': 'http://testserver/api/v1/distilleries/6/',
         })
         self.assertEqual(

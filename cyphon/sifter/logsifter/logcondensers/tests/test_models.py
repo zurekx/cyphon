@@ -71,9 +71,9 @@ class LogCondenserTestCase(LogCondenserBaseTestCase, CondenserTestCaseMixin):
                    return_value='some text'):
             actual = self.condenser.process(self.test_doc)
             expected = {
-                'message': 'some text',
+                'location': 'some text',
                 'content': {
-                    'host': 'some text',
+                    'from': 'some text',
                     'date_str': 'some text'
                 }
             }
