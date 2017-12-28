@@ -20,15 +20,18 @@
 
 # standard library
 try:
-    from unittest.mock import Mock, patch
+    from unittest.mock import patch
 except ImportError:
-    from mock import Mock, patch
+    from mock import patch
 import logging
 
 # third party
 from django.test import TestCase
 
 # local
+from alerts.models import Alert
+from ambassador.passports.models import Passport
+from appusers.models import AppUser
 from distilleries.models import Distillery
 from procurer.procurements.models import Procurement
 from procurer.supplychains.exceptions import SupplyChainError
@@ -41,19 +44,82 @@ class ProcurementManagerTestCase(TestCase):
     Tests the ProcurementManager class.
     """
 
-    fixtures = get_fixtures(['procurements'])
+    fixtures = get_fixtures(['alerts', 'procurements', 'quartermasters'])
 
-    def test_filter_by_user(self):
-        """
-        Tests the filter_by_user method.
-        """
-        pass
+    def setUp(self):
+        super(ProcurementManagerTestCase, self).setUp()
+        self.alert = Alert.objects.get(pk=2)
+        self.user = AppUser.objects.get(pk=2)
 
-    def test_filter_by_alert(self):
+    def test_filter_by_user_w_co(self):
         """
-        Tests the filter_by_alert method.
+        Tests the filter_by_user method when the procurement is
+        associated with the same company as the user.
         """
-        pass
+        filtered_qs = Procurement.objects.filter_by_user(self.user)
+        self.assertEqual(filtered_qs.count(), 2)
+
+    def test_filter_by_user_no_co(self):
+        """
+        Tests the filter_by_user method when the user is not associated
+        with the company associated with the procurement.
+        """
+        user = AppUser.objects.get(pk=4)
+        filtered_qs = Procurement.objects.filter_by_user(user)
+        self.assertEqual(filtered_qs.count(), 1)
+
+    def test_filter_by_user_staff(self):
+        """
+        Tests the filter_by_user method when the user is not associated
+        with the company associated with the procurement but the user is
+        staff.
+        """
+        user = AppUser.objects.get(pk=1)
+        filtered_qs = Procurement.objects.filter_by_user(user)
+        self.assertEqual(filtered_qs.count(), 3)
+
+    def test_filter_by_user_no_passport(self):
+        """
+        Tests the filter_by_user method when the user is associated with
+        a different company than the procurement.
+        """
+        passport = Passport.objects.get(pk=5)
+        passport.public = False
+        passport.save()
+        filtered_qs = Procurement.objects.filter_by_user(self.user)
+        self.assertEqual(filtered_qs.count(), 0)
+
+    def test_filter_by_user_w_qs(self):
+        """
+        Tests the filter_by_user method when a QuerySet is supplied.
+        """
+        none_qs = Procurement.objects.none()
+        filtered_qs = Procurement.objects.filter_by_user(self.user, none_qs)
+        self.assertEqual(filtered_qs.count(), 0)
+
+    def test_filter_by_alert_incompat(self):
+        """
+        Tests the filter_by_alert method for an incompatible alert.
+        """
+        filtered_qs = Procurement.objects.filter_by_alert(self.alert)
+        self.assertEqual(filtered_qs.count(), 0)
+
+    def test_filter_by_alert_incompat(self):
+        """
+        Tests the filter_by_alert method for a compatible alert.
+        """
+        self.alert.data = {'url': 'example.com'}
+        self.alert.save()
+        filtered_qs = Procurement.objects.filter_by_alert(self.alert)
+        self.assertEqual(filtered_qs.count(), 3)
+
+    def test_filter_by_alert_w_qs(self):
+        """
+        Tests the filter_by_alert method when a QuerySet is supplied.
+        """
+        none_qs = Procurement.objects.none()
+        filtered_qs = Procurement.objects.filter_by_alert(self.alert, none_qs)
+        self.assertEqual(filtered_qs.count(), 0)
 
 
 class ProcurementTestCase(TestCase):
@@ -63,9 +129,6 @@ class ProcurementTestCase(TestCase):
     fixtures = get_fixtures(['procurements', 'supplyorders'])
 
     def setUp(self):
-        """
-
-        """
         super(ProcurementTestCase, self).setUp()
         self.procurement = Procurement.objects.get(pk=1)
         logging.disable(logging.ERROR)
