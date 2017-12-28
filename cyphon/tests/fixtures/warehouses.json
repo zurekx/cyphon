@@ -62,8 +62,8 @@
     "model": "warehouses.collection",
     "fields": {
       "id": 5,
-      "warehouse": 3,
-      "name": "test_syslogs"
+      "warehouse": 2,
+      "name": "test_scan_acme"
     }
   },
   {
@@ -71,13 +71,29 @@
     "fields": {
       "id": 6,
       "warehouse": 2,
-      "name": "test_logs"
+      "name": "test_scan_ecorp"
     }
   },
   {
     "model": "warehouses.collection",
     "fields": {
       "id": 7,
+      "warehouse": 3,
+      "name": "test_syslogs"
+    }
+  },
+  {
+    "model": "warehouses.collection",
+    "fields": {
+      "id": 8,
+      "warehouse": 2,
+      "name": "test_logs"
+    }
+  },
+  {
+    "model": "warehouses.collection",
+    "fields": {
+      "id": 9,
       "warehouse": 2,
       "name": "test_mail"
     }
@@ -85,7 +101,7 @@
   {
     "model": "warehouses.collection",
     "fields": {
-      "id": 8,
+      "id": 10,
       "warehouse": 1,
       "name": "orphan"
     }

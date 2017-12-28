@@ -76,5 +76,27 @@
       "is_shell": false,
       "categories": []
     }
+  },
+  {
+    "model": "distilleries.distillery",
+    "fields": {
+      "name": "elasticsearch.test_index.test_scan_acme",
+      "collection": ["elasticsearch", "test_index", "test_scan_acme"],
+      "container": ["URL Scan"],
+      "company": ["Acme"],
+      "is_shell": false,
+      "categories": []
+    }
+  },
+  {
+    "model": "distilleries.distillery",
+    "fields": {
+      "name": "elasticsearch.test_index.test_scan_ecorp",
+      "collection": ["elasticsearch", "test_index", "test_scan_ecorp"],
+      "container": ["URL Scan"],
+      "company": ["ECorp"],
+      "is_shell": false,
+      "categories": []
+    }
   }
 ]

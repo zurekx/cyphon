@@ -57,7 +57,7 @@ class DistilleryAPITests(CyphonAPITestCase):
         """
         response = self.get_api_response()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 7)
+        self.assertEqual(response.data['count'], 9)
 
     def test_filtered_distilleries(self):
         """
@@ -66,7 +66,7 @@ class DistilleryAPITests(CyphonAPITestCase):
         self.user = AppUser.objects.get(id=2)
         response = self.get_api_response(is_staff=False)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 3)
+        self.assertEqual(response.data['count'], 4)
 
     def test_have_alerts(self):
         """

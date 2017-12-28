@@ -25,5 +25,23 @@
       "condenser": ["URL Scan"],
       "distillery": ["elasticsearch.test_index.test_scan"]
     }
+  },
+  {
+    "model": "datamungers.datamunger",
+    "fields": {
+      "id": 4,
+      "name": "URL Scan Acme",
+      "condenser": ["URL Scan"],
+      "distillery": ["elasticsearch.test_index.test_scan_acme"]
+    }
+  },
+  {
+    "model": "datamungers.datamunger",
+    "fields": {
+      "id": 5,
+      "name": "URL Scan ECorp",
+      "condenser": ["URL Scan"],
+      "distillery": ["elasticsearch.test_index.test_scan_ecorp"]
+    }
   }
 ]

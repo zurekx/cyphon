@@ -66,7 +66,7 @@ class CollectionAPITests(CyphonAPITestCase):
         """
         response = self.get_api_response()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 8)
+        self.assertEqual(response.data['count'], 10)
 
     def test_get_collection(self):
         """

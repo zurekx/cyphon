@@ -7,5 +7,23 @@
       "supply_chain": ["VirusTotal URL Scan & Report"],
       "munger": ["URL Scan"]
     }
+  },
+  {
+    "model": "procurements.procurement",
+    "fields": {
+      "id": 2,
+      "name": "VirusTotal URL Report Acme",
+      "supply_chain": ["VirusTotal URL Scan & Report"],
+      "munger": ["URL Scan Acme"]
+    }
+  },
+  {
+    "model": "procurements.procurement",
+    "fields": {
+      "id": 3,
+      "name": "VirusTotal URL Report ECorp",
+      "supply_chain": ["VirusTotal URL Scan & Report"],
+      "munger": ["URL Scan ECorp"]
+    }
   }
 ]

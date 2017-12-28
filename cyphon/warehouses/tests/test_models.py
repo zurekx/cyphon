@@ -274,7 +274,7 @@ class CollectionTestCase(TestCase):
         Tests the in_time_series method when the Collection is part of a
         time_series.
         """
-        collection = Collection.objects.get(pk=5)
+        collection = Collection.objects.get(pk=7)
         actual = collection.in_time_series()
         expected = True
         self.assertIs(actual, expected)
