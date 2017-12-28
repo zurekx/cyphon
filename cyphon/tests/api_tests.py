@@ -67,19 +67,6 @@ class APITestMixin(object):
 
     model_url = ''
 
-    def setUp(self, *args, **kwargs):
-        # super(CyphonAPITestCase, self).setUp(*args, **kwargs)
-        try:
-            user = AppUser.objects.get(email='test@test.com')
-            user.delete()
-        except ObjectDoesNotExist:
-            pass
-
-        self.user = AppUser.objects.create_user(
-            email='test@test.com',
-            password='test'
-        )
-
     def authenticate(self, is_staff=True):
         """
         Forces authentication and returns a response in the specified format.
@@ -136,6 +123,19 @@ class CyphonAPITestCase(APITestCase, APITestMixin):
         super(CyphonAPITestCase, self).__init__(*args, **kwargs)
         self.url = API_URL + self.model_url
 
+    def setUp(self, *args, **kwargs):
+        # super(CyphonAPITestCase, self).setUp(*args, **kwargs)
+        try:
+            user = AppUser.objects.get(email='test@test.com')
+            user.delete()
+        except ObjectDoesNotExist:
+            pass
+
+        self.user = AppUser.objects.create_user(
+            email='test@test.com',
+            password='test'
+        )
+
 
 class CyphonAPITransactionTestCase(APITransactionTestCase, APITestMixin):
     """
@@ -145,3 +145,16 @@ class CyphonAPITransactionTestCase(APITransactionTestCase, APITestMixin):
     def __init__(self, *args, **kwargs):
         super(CyphonAPITransactionTestCase, self).__init__(*args, **kwargs)
         self.url = API_URL + self.model_url
+
+    def setUp(self, *args, **kwargs):
+        # super(CyphonAPITransactionTestCase, self).setUp(*args, **kwargs)
+        try:
+            user = AppUser.objects.get(email='test@test.com')
+            user.delete()
+        except ObjectDoesNotExist:
+            pass
+
+        self.user = AppUser.objects.create_user(
+            email='test@test.com',
+            password='test'
+        )
