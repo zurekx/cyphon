@@ -62,7 +62,7 @@ class ProcurementManager(GetByNameManager):
         return procurement_qs.filter(supply_chain__in=supplychains,
                                      munger__distillery__in=distilleries)
 
-    def filter_by_alert(self, alert, user, queryset=None):
+    def filter_by_alert(self, alert, queryset=None):
         """Get |Procurements| that can be executed by the given user.
 
         Returns
@@ -167,6 +167,18 @@ class Procurement(models.Model):
         """
         Takes a data dictionary and returns a Boolean indicating whether
         the data is valid input for the Procurement's SupplyChain.
+
+        Parameters
+        ----------
+        data : dict
+            Data to be evaluated as potential input for the |Procurement|.
+
+        Returns
+        -------
+        bool
+            A Boolean indicating whether the data is valid input for the
+            Procurement.
+
         """
         return self.supply_chain.validate_input(data)
 
