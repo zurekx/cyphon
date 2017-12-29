@@ -43,6 +43,7 @@ from bottler.tastes.views import TasteViewSet
 from distilleries.views import DistilleryViewSet
 from monitors.views import MonitorViewSet
 from procurer.procurements.views import ProcurementViewSet
+from procurer.supplyorders.views import SupplyOrderViewSet
 from query.collectionqueries.views import (
     CollectionQueryViewSet,
     QueryFieldsetViewSet,
@@ -113,6 +114,7 @@ router.register(r'labels', LabelViewSet)
 router.register(r'labelfields', LabelFieldViewSet)
 router.register(r'monitors', MonitorViewSet)
 router.register(r'procurements', ProcurementViewSet)
+router.register(r'supplyorders', SupplyOrderViewSet)
 router.register(r'tags', TagViewSet)
 router.register(r'tastes', TasteViewSet)
 router.register(r'topics', TopicViewSet)
