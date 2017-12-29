@@ -6,6 +6,7 @@ from django.conf import settings
 import django.contrib.postgres.fields.jsonb
 from django.db import migrations, models
 import django.db.models.deletion
+import django.utils.timezone
 
 
 class Migration(migrations.Migration):
@@ -25,6 +26,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('input_data', django.contrib.postgres.fields.jsonb.JSONField(default=dict, verbose_name='input data')),
+                ('created_date', models.DateTimeField(db_index=True, default=django.utils.timezone.now)),
                 ('doc_id', models.CharField(blank=True, db_index=True, max_length=255, null=True, verbose_name='document id')),
                 ('alert', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='supply_orders', related_query_name='supply_order', to='alerts.Alert', verbose_name='alert')),
                 ('distillery', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='distilleries.Distillery', verbose_name='distillery')),
@@ -34,6 +36,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'supply order',
                 'verbose_name_plural': 'supply orders',
+                'ordering': ['-id'],
             },
         ),
     ]

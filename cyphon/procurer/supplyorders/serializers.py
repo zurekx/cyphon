@@ -39,6 +39,7 @@ class SupplyOrderSerializer(serializers.ModelSerializer):
         model = SupplyOrder
         fields = (
             'id',
+            'created_date',
             'procurement',
             'alert',
             'user',

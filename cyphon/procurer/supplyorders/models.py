@@ -25,6 +25,7 @@ import logging
 from django.conf import settings
 from django.contrib.postgres.fields.jsonb import JSONField
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 # local
@@ -42,13 +43,12 @@ class SupplyOrderManager(models.Manager):
     """
 
     def filter_by_user(self, user, queryset=None):
-        """Get |SupplyOrders| that can be executed by the given user.
+        """Get |SupplyOrders| accessible by a given user.
 
         Returns
         -------
         |Queryset|
-            A |Queryset| of |SupplyOrders| can be executed by the given
-            user.
+            A |Queryset| of |SupplyOrders| accessible by a given user.
 
         """
         if queryset is not None:
@@ -56,8 +56,10 @@ class SupplyOrderManager(models.Manager):
         else:
             supplyorder_qs = self.get_queryset()
 
-        procurements = Procurement.objects.filter_by_user(user)
-        return supplyorder_qs.filter(procurement__in=procurements)
+        if not user.is_staff:
+            return supplyorder_qs.filter(user=user)
+        else:
+            return supplyorder_qs
 
 
 class SupplyOrder(models.Model):
@@ -105,6 +107,7 @@ class SupplyOrder(models.Model):
         verbose_name=_('document id'),
         db_index=True,
     )
+    created_date = models.DateTimeField(default=timezone.now, db_index=True)
 
     objects = SupplyOrderManager()
 
@@ -113,6 +116,7 @@ class SupplyOrder(models.Model):
 
         verbose_name = _('supply order')
         verbose_name_plural = _('supply orders')
+        ordering = ['-id']
 
     @property
     def results(self):
