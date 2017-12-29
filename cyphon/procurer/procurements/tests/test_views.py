@@ -66,9 +66,6 @@ class ProcurementAPITests(CyphonAPITransactionTestCase, PassportMixin):
         super(ProcurementAPITests, cls).tearDownClass()
 
     def setUp(self):
-        """
-
-        """
         super(ProcurementAPITests, self).setUp()
         self.alert = Alert.objects.get(pk=2)
         self.user = AppUser.objects.get(id=2)
