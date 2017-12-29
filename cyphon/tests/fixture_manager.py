@@ -70,6 +70,7 @@ FIXTURE_DEPENDENCIES = {
     'mailmungers': ['mailcondensers', 'distilleries'],
     'mailsieves': [],
     'monitors': ['distilleries', 'groups'],
+    'manifests': ['stamps', 'supplyorders'],
     'parameters': ['locations', 'users'],
     'passports': ['users'],
     'pipes': ['reservoirs'],

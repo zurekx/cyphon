@@ -1,0 +1,11 @@
+[
+  {
+    "model": "manifests.manifest",
+    "fields": {
+      "id": 1,
+      "supply_order": 2,
+      "data": {"foo": "bar"},
+      "stamp": 1
+    }
+  }
+]
