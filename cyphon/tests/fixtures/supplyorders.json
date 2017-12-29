@@ -1,0 +1,26 @@
+[
+  {
+    "model": "supplyorders.supplyorder",
+    "fields": {
+      "id": 1,
+      "procurement": ["VirusTotal URL Report"],
+      "alert": 1,
+      "input_data": {"url": "http://dunbararmored.com"},
+      "user": 1,
+      "distillery": ["elasticsearch.test_index.test_scan_ecorp"],
+      "doc_id": "123"
+    }
+  },
+  {
+    "model": "supplyorders.supplyorder",
+    "fields": {
+      "id": 2,
+      "procurement": ["VirusTotal URL Report"],
+      "alert": 1,
+      "input_data": {"url": "http://dunbararmored.com"},
+      "user": 2,
+      "distillery": ["elasticsearch.test_index.test_scan_acme"],
+      "doc_id": "456"
+    }
+  }
+]
