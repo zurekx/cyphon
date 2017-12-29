@@ -50,9 +50,7 @@ class UserFilterBackend(DjangoFilterBackend):
         Returns
         -------
         QuerySet
-            A |QuerySet| filtered to only show |Alerts| that are either
-            associated with at least one of a given user's |Group| or
-            are not associated with any |Group|.
+            A |QuerySet| filtered by user.
 
         """
         user = request.user
