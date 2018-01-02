@@ -3,6 +3,7 @@
     "model": "supplyorders.supplyorder",
     "fields": {
       "id": 1,
+      "created_date": "2017-12-29T21:28:29.353954Z",
       "procurement": ["VirusTotal URL Report"],
       "alert": 1,
       "input_data": {"url": "http://dunbararmored.com"},
@@ -15,6 +16,7 @@
     "model": "supplyorders.supplyorder",
     "fields": {
       "id": 2,
+      "created_date": "2017-12-29T21:28:29.353954Z",
       "procurement": ["VirusTotal URL Report"],
       "alert": 1,
       "input_data": {"url": "http://dunbararmored.com"},
