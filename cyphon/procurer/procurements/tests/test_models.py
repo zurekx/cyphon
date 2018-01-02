@@ -80,8 +80,8 @@ class ProcurementManagerTestCase(TestCase):
 
     def test_filter_by_user_no_passport(self):
         """
-        Tests the filter_by_user method when the user is associated with
-        a different company than the procurement.
+        Tests the filter_by_user method when the user has no access to a
+        Passport.
         """
         passport = Passport.objects.get(pk=5)
         passport.public = False
