@@ -196,7 +196,7 @@ class Parameter(models.Model):
 
     def __str__(self):
         """String representation of a Parameter."""
-        return '<Parameter: %s - %s>' % (self.requisition, self.param_name)
+        return '<Parameter: %s>' % self.pk
 
     def validate(self, value):
         """
