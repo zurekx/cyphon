@@ -91,6 +91,12 @@ class SupplyChain(models.Model):
         verbose_name = _('supply chain')
         verbose_name_plural = _('supply chains')
 
+    def __str__(self):
+        """
+
+        """
+        return '<SupplyChain: %s>' % self.name
+
     @cached_property
     def _first_link(self):
         """Return the first SupplyLink in the SupplyChain."""
@@ -124,7 +130,6 @@ class SupplyChain(models.Model):
 
         if supply_links:
             for supply_link in self.supply_links.all():
-                supply_link.validate()
                 if supply_link.errors:
                     errors += supply_link.errors
         else:
@@ -323,12 +328,10 @@ class SupplyLink(models.Model):
 
         """
         errors = []
-
         for req_param in self._required_parameters:
             if req_param not in self._coupling_parameters:
                 errors.append('A FieldCoupling is missing for the '
                               'required parameter %s.' % req_param)
-
         return errors
 
     def _get_params(self, data):
@@ -445,7 +448,7 @@ class FieldCoupling(models.Model):
 
     def __str__(self):
         """String representation of a FieldCoupling."""
-        return '%s:%s' % (self.supply_link, self.parameter)
+        return '<FieldCoupling: %s>' % self.pk
 
     @cached_property
     def _param_name(self):
