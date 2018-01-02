@@ -118,6 +118,12 @@ class SupplyOrder(models.Model):
         verbose_name_plural = _('supply orders')
         ordering = ['-id']
 
+    def __str__(self):
+        """
+
+        """
+        return '<SupplyOrder: %s>' % self.pk
+
     @property
     def results(self):
         """
