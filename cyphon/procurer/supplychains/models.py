@@ -380,7 +380,7 @@ class SupplyLink(models.Model):
 
         Returns
         -------
-        |Convoy|
+        dict
 
         Raises
         ------
