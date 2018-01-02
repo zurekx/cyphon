@@ -20,9 +20,9 @@ Tests views for Distilleries.
 
 # standard library
 try:
-    from unittest.mock import Mock, patch
+    from unittest.mock import patch
 except ImportError:
-    from mock import Mock, patch
+    from mock import patch
 
 # third party
 from celery.contrib.testing.worker import start_worker
@@ -30,10 +30,8 @@ from rest_framework import status
 
 # local
 from alerts.models import Alert
-from ambassador.passports.models import Passport
 from appusers.models import AppUser
 from cyphon.celeryapp import app
-from procurer.procurements.models import Procurement
 from procurer.supplychains.exceptions import SupplyChainError
 from procurer.supplyorders.models import SupplyOrder
 from tests.api_tests import CyphonAPITransactionTestCase, PassportMixin
@@ -130,6 +128,7 @@ class ProcurementAPITests(CyphonAPITransactionTestCase, PassportMixin):
         self.assertEqual(SupplyOrder.objects.count(), 0)
         response = self.post_to_api('1/process/', data=data, is_staff=False)
         supplyorder_id = response.data.pop('id')
+        response.data.pop('created_date')
         expected = {
             'results': {},
             'user': 2,
@@ -172,6 +171,7 @@ class ProcurementAPITests(CyphonAPITransactionTestCase, PassportMixin):
                                     data={'id': self.alert.id},
                                     is_staff=False)
         supplyorder_id = response.data.pop('id')
+        response.data.pop('created_date')
         expected = {
             'results': {},
             'user': 2,
