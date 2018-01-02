@@ -63,5 +63,18 @@
       "public": true,
       "users": []
     }
+  },
+  {
+    "model": "passports.passport",
+    "fields": {
+      "id": 6,
+      "name": "VirusTotal Private",
+      "key": "examplekey6",
+      "secret": "",
+      "access_token": "",
+      "access_token_secret": "",
+      "public": false,
+      "users": [1, 2, 4]
+    }
   }
 ]
