@@ -120,6 +120,10 @@ class Procurement(models.Model):
 
     objects = ProcurementManager()
 
+    def __str__(self):
+        """String representation of a FieldCoupling."""
+        return '%s %s' % (self.__class__.__name__, self.pk)
+
     class Meta(object):
         """Metadata options."""
 
