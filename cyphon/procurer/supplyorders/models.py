@@ -122,7 +122,7 @@ class SupplyOrder(models.Model):
         """
 
         """
-        return '<SupplyOrder: %s>' % self.pk
+        return '%s %s' % (self.__class__.__name__, self.pk)
 
     @property
     def results(self):

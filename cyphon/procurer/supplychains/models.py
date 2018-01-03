@@ -95,7 +95,7 @@ class SupplyChain(models.Model):
         """
 
         """
-        return '<SupplyChain: %s>' % self.name
+        return '%s %s' % (self.__class__.__name__, self.pk)
 
     @cached_property
     def _first_link(self):
@@ -148,23 +148,19 @@ class SupplyChain(models.Model):
         """
 
         """
-        try:
-            # use object ids instead of objects, which aren't JSON serializable
-            # and can't be used in celery tasks
-            supply_links = self.supply_links.all()
-            supply_link_ids = list(supply_links.values_list('pk', flat=True))
+        # use object ids instead of objects, which aren't JSON serializable
+        # and can't be used in celery tasks
+        supply_links = self.supply_links.all()
+        supply_link_ids = list(supply_links.values_list('pk', flat=True))
 
-            links = [start_supplylink.s(supply_order.input_data,
-                                        supply_link_ids[0], supply_order.id)]
-            links += [
-                start_supplylink.s(supply_link_id, supply_order.id)
-                for supply_link_id in supply_link_ids[1:]
-            ]
-            result = chain(*links)()
-            return result.get()
-
-        except SupplyChainError as error:
-            _LOGGER.error('A SupplyChainError occurred: %s', error.msg)
+        links = [start_supplylink.s(supply_order.input_data,
+                                    supply_link_ids[0], supply_order.id)]
+        links += [
+            start_supplylink.s(supply_link_id, supply_order.id)
+            for supply_link_id in supply_link_ids[1:]
+        ]
+        result = chain(*links)()
+        return result.get()
 
 
 class SupplyLinkManager(GetByNameManager):
@@ -173,7 +169,7 @@ class SupplyLinkManager(GetByNameManager):
     Adds methods to the default Django model manager.
     """
 
-    def filter_by_user(self, user):
+    def filter_by_user(self, user, queryset=None):
         """Get |SupplyLinks| that can be executed by the given user.
 
         Returns
@@ -183,12 +179,16 @@ class SupplyLinkManager(GetByNameManager):
             user.
 
         """
-        queryset = self.get_queryset()
+        if queryset is not None:
+            supplylink_qs = queryset
+        else:
+            supplylink_qs = self.get_queryset()
+
         has_user = models.Q(requisition__emissary__passport__users=user)
         is_public = models.Q(requisition__emissary__passport__public=True)
-        return queryset.filter(has_user | is_public).distinct()
+        return supplylink_qs.filter(has_user | is_public).distinct()
 
-    def exclude_by_user(self, user):
+    def exclude_by_user(self, user, queryset=None):
         """Get |SupplyLinks| that cannot be executed by the given user.
 
         Returns
@@ -198,10 +198,14 @@ class SupplyLinkManager(GetByNameManager):
             user.
 
         """
-        queryset = self.get_queryset()
+        if queryset is not None:
+            supplylink_qs = queryset
+        else:
+            supplylink_qs = self.get_queryset()
+
         available_supplylinks = self.filter_by_user(user)
         ids = available_supplylinks.values_list('id', flat=True)
-        return queryset.exclude(id__in=ids)
+        return supplylink_qs.exclude(id__in=ids)
 
 
 class SupplyLink(models.Model):
@@ -270,7 +274,7 @@ class SupplyLink(models.Model):
         """
 
         """
-        return '<SupplyLink: %s>' % self.name
+        return '%s %s' % (self.__class__.__name__, self.pk)
 
     @cached_property
     def input_fields(self):
@@ -330,8 +334,8 @@ class SupplyLink(models.Model):
         errors = []
         for req_param in self._required_parameters:
             if req_param not in self._coupling_parameters:
-                errors.append('A FieldCoupling is missing for the '
-                              'required parameter %s.' % req_param)
+                errors.append('A FieldCoupling is missing for %s, '
+                              'which is required.' % req_param)
         return errors
 
     def _get_params(self, data):
@@ -387,6 +391,9 @@ class SupplyLink(models.Model):
         SupplyChainError
 
         """
+        if data is None:
+            return
+
         self.validate_input(data)
 
         params = self._get_params(data)
@@ -401,8 +408,8 @@ class SupplyLink(models.Model):
         if transport.cargo:
             return transport.cargo.data
         else:
-            # TODO(LH): add message to exception
-            raise SupplyChainError()
+            _LOGGER.error('An error occurred while executing %s for %s',
+                          self, supply_order)
 
 
 class FieldCoupling(models.Model):
@@ -448,7 +455,7 @@ class FieldCoupling(models.Model):
 
     def __str__(self):
         """String representation of a FieldCoupling."""
-        return '<FieldCoupling: %s>' % self.pk
+        return '%s %s' % (self.__class__.__name__, self.pk)
 
     @cached_property
     def _param_name(self):

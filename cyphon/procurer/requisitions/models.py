@@ -78,7 +78,7 @@ class Requisition(Endpoint):
 
     def __str__(self):
         """String representation of a Requisition."""
-        return '<Requisition: %s %s>' % (self.platform, self.api_class)
+        return 'Requisition: %s %s' % (self.platform, self.api_class)
 
     @property
     def required_parameters(self):
@@ -196,7 +196,7 @@ class Parameter(models.Model):
 
     def __str__(self):
         """String representation of a Parameter."""
-        return '<Parameter: %s>' % self.pk
+        return '%s %s' % (self.__class__.__name__, self.pk)
 
     def validate(self, value):
         """
