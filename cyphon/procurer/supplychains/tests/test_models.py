@@ -33,6 +33,7 @@ from testfixtures import LogCapture
 # local
 from appusers.models import AppUser
 from cyphon.celeryapp import app
+from procurer.suppliers.models import Supplier
 from procurer.supplychains.exceptions import SupplyChainError
 from procurer.supplychains.models import FieldCoupling, SupplyChain, SupplyLink
 from procurer.supplyorders.models import SupplyOrder
@@ -74,6 +75,7 @@ class SupplyChainManagerTestCase(SupplyChainBaseTestCase):
         Tests the filter_by_user method when a QuerySet is provided.
         """
         supplychain_qs = SupplyChain.objects.exclude(pk=1)
+
         user = AppUser.objects.get(pk=2)
         supplychains = SupplyChain.objects.filter_by_user(user, supplychain_qs)
         self.assertEqual(supplychains.count(), 1)
@@ -153,7 +155,7 @@ class SupplyChainTestCase(SupplyChainBaseTestCase):
         Tests the validate_input method for invalid input.
         """
         data = {'foobar': 'url'}
-        msg = "The following couplings were invalid: \['<FieldCoupling: 2>'\]"
+        msg = "The following couplings were invalid: \['FieldCoupling 2'\]"
         with six.assertRaisesRegex(self, SupplyChainError, msg):
             self.supplychain.validate_input(data)
 
@@ -186,23 +188,18 @@ class SupplyChainTransactionTestCase(TransactionTestCase):
             'VirusTotal URL Scan & Report')
 
     @patch('procurer.supplychains.models.SupplyLink.process',
-           return_value={'url': 'foobar'})
-    def test_start_success(self, mock_process):
+           side_effect=[{'url': 'foobar1'}, {'url': 'foobar2'}])
+    def test_start(self, mock_process):
         """
-
+        Tests the start method.
         """
         supplyorder = SupplyOrder.objects.get(pk=1)
-        self.supplychain.start(supplyorder)
+        result = self.supplychain.start(supplyorder)
         mock_process.assert_has_calls([
             call({'url': 'http://dunbararmored.com'}, supplyorder),
-            call({'url': 'foobar'}, supplyorder)
+            call({'url': 'foobar1'}, supplyorder)
         ])
-
-    def test_start_fail(self):
-        """
-
-        """
-        pass
+        self.assertEqual(result, {'url': 'foobar2'})
 
 
 class SupplyLinkManagerTestCase(SupplyChainBaseTestCase):
@@ -210,59 +207,115 @@ class SupplyLinkManagerTestCase(SupplyChainBaseTestCase):
     Tests the SupplyLinkManager class.
     """
 
-    def test_filter_by_user(self):
+    def test_filter_by_user_no_qs(self):
         """
-
+        Tests the filter_by_user method when a QuerySet is not provided.
         """
-        pass
+        user = AppUser.objects.get(pk=2)
+        supplylinks = SupplyLink.objects.filter_by_user(user=user)
+        self.assertEqual(supplylinks.count(), 3)
 
-    def test_exclude_by_user(self):
+        user = AppUser.objects.get(pk=3)
+        supplylinks = SupplyLink.objects.filter_by_user(user=user)
+        self.assertEqual(supplylinks.count(), 2)
+
+    def test_filter_by_user_w_qs(self):
         """
-
+        Tests the filter_by_user method when a QuerySet is provided.
         """
-        pass
+        supplylink_qs = SupplyLink.objects.exclude(pk=1)
+
+        user = AppUser.objects.get(pk=2)
+        supplylinks = SupplyLink.objects.filter_by_user(user, supplylink_qs)
+        self.assertEqual(supplylinks.count(), 2)
+
+        user = AppUser.objects.get(pk=3)
+        supplylinks = SupplyLink.objects.filter_by_user(user, supplylink_qs)
+        self.assertEqual(supplylinks.count(), 1)
+
+    def test_exclude_by_user_no_qs(self):
+        """
+        Tests the exclude_by_user method when a QuerySet is not provided.
+        """
+        user = AppUser.objects.get(pk=2)
+        supplylinks = SupplyLink.objects.exclude_by_user(user=user)
+        self.assertEqual(supplylinks.count(), 0)
+
+        user = AppUser.objects.get(pk=3)
+        supplylinks = SupplyLink.objects.exclude_by_user(user=user)
+        self.assertEqual(supplylinks.count(), 1)
+
+    def test_exclude_by_user_w_qs(self):
+        """
+        Tests the exclude_by_user method when a QuerySet is provided.
+        """
+        supplylink_qs = SupplyLink.objects.exclude(pk=1)
+
+        user = AppUser.objects.get(pk=2)
+        supplylinks = SupplyLink.objects.exclude_by_user(user, supplylink_qs)
+        self.assertEqual(supplylinks.count(), 0)
+
+        user = AppUser.objects.get(pk=3)
+        supplylinks = SupplyLink.objects.exclude_by_user(user, supplylink_qs)
+        self.assertEqual(supplylinks.count(), 1)
 
 
-class SupplyLinkTestCase(TestCase):
+class SupplyLinkTestCase(SupplyChainBaseTestCase):
     """
     Tests the SupplyLink class.
     """
+
+    def setUp(self):
+        self.supplylink = SupplyLink.objects.get(pk=1)
 
     def test_str(self):
         """
 
         """
-        pass
+        self.assertEqual(str(self.supplylink), 'SupplyLink 1')
 
     def test_input_fields(self):
         """
-
+        Tests the input_fields property.
         """
-        pass
+        actual = self.supplylink.input_fields
+        expected = {'url': 'CharField'}
+        self.assertEqual(actual, expected)
 
     def test_coupling(self):
         """
-
+        Tests the coupling property.
         """
-        pass
+        actual = self.supplylink.coupling
+        expected = {'url': 'resource'}
+        self.assertEqual(actual, expected)
 
     def test_countdown_seconds(self):
         """
-
+        Tests the countdown_seconds property.
         """
-        pass
+        supplylink = SupplyLink.objects.get(pk=3)
+        actual = supplylink.countdown_seconds
+        expected = 5.0
+        self.assertEqual(actual, expected)
 
     def test_platform(self):
         """
-
+        Tests the platform property.
         """
-        pass
+        actual = self.supplylink.platform
+        expected = Supplier.objects.get_by_natural_key('virustotal')
+        self.assertEqual(actual, expected)
 
     def test_errors(self):
         """
 
         """
-        pass
+        FieldCoupling.objects.all().delete()
+        actual = self.supplylink.errors
+        expected = ['A FieldCoupling is missing for Parameter 1, '
+                    'which is required.']
+        self.assertEqual(actual, expected)
 
     def test_validate_input(self):
         """
@@ -275,6 +328,25 @@ class SupplyLinkTestCase(TestCase):
 
         """
         pass
+
+    # @patch('procurer.supplychains.models.SupplyLink.process',
+    #        return_value=None)
+    # def test_start_fail(self, mock_process):
+    #     """
+
+    #     """
+    #     supplyorder = SupplyOrder.objects.get(pk=1)
+    #     with LogCapture() as log_capture:
+    #         result = self.supplychain.start(supplyorder)
+    #         log_capture.check(
+    #             ('procurer.supplychains.models',
+    #              'ERROR',
+    #              'foobar'),
+    #         )
+    #         self.assertEqual(result, None)
+    #         # mock_process.assert_has_calls([
+    #         #     call({'url': 'http://dunbararmored.com'}, supplyorder),
+    #         # ])
 
 
 class FieldCouplingTestCase(SupplyChainBaseTestCase):
