@@ -408,7 +408,7 @@ class SupplyLink(models.Model):
         if transport.cargo:
             return transport.cargo.data
         else:
-            _LOGGER.error('An error occurred while executing %s for %s',
+            _LOGGER.error('An error occurred while executing %s for %s.',
                           self, supply_order)
 
 
