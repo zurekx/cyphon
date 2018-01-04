@@ -18,14 +18,9 @@
 
 """
 
-# third party
-# from django.db import models
-
 # local
-from ambassador.transport import Cargo, Transport
+from ambassador.transport import Transport
 from procurer.manifests.models import Manifest
-# from cyphon.transaction import close_old_connections
-# from sifter.datasifter.datachutes.models import DataChute
 
 
 class Convoy(Transport):
