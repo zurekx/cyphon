@@ -28,10 +28,12 @@ import logging
 from django.conf.urls import url
 from django.contrib import admin
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.utils import IntegrityError
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
+from django.utils.safestring import mark_safe
 from django.views.decorators.csrf import csrf_protect
 
 LOGGER = logging.getLogger(__name__)
@@ -42,6 +44,21 @@ CONFIG_TOOL_CLASSES = (
     'grp-closed',
     'config-tool',
 )
+
+
+class EditLinkMixin(object):
+    """Mixin for creating a link to the change page for a model instance."""
+
+    @staticmethod
+    def edit_link(instance):
+        """Create a link to the change page for a model instance."""
+        ref = 'admin:%s_%s_change' % (instance._meta.app_label,
+                                      instance._meta.model_name)
+        url = reverse(ref, args=[instance.pk])
+        if instance.pk:
+            return mark_safe(u'<a href="{u}">edit</a>'.format(u=url))
+        else:
+            return ''
 
 
 class ConfigToolAdmin(admin.ModelAdmin):
