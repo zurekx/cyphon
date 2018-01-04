@@ -20,9 +20,9 @@
 
 # standard library
 try:
-    from unittest.mock import call, patch
+    from unittest.mock import call, Mock, patch
 except ImportError:
-    from mock import call, patch
+    from mock import call, Mock, patch
 
 # third party
 from celery.contrib.testing.worker import start_worker
@@ -43,7 +43,7 @@ from tests.fixture_manager import get_fixtures
 
 class SupplyChainBaseTestCase(TestCase):
     """
-
+    Base class for testing models in the supplychains app.
     """
 
     fixtures = get_fixtures(['supplychains', 'supplyorders', 'quartermasters'])
@@ -51,6 +51,8 @@ class SupplyChainBaseTestCase(TestCase):
     def setUp(self):
         self.supplychain = SupplyChain.objects.get_by_natural_key(
             'VirusTotal URL Scan & Report')
+        self.supplylink = SupplyLink.objects.get(pk=1)
+        self.fieldcoupling = FieldCoupling.objects.get(pk=1)
 
 
 class SupplyChainManagerTestCase(SupplyChainBaseTestCase):
@@ -129,8 +131,8 @@ class SupplyChainTestCase(SupplyChainBaseTestCase):
         parameter.required = True
         parameter.save()
         actual = self.supplychain.errors
-        expected = ['A FieldCoupling is missing for the required parameter '
-                    '<Parameter: 3>.']
+        expected = ['A FieldCoupling is missing for Parameter 3, '
+                    'which is required.']
         self.assertEqual(actual, expected)
 
     def test_errors_for_valid_chain(self):
@@ -189,7 +191,7 @@ class SupplyChainTransactionTestCase(TransactionTestCase):
 
     @patch('procurer.supplychains.models.SupplyLink.process',
            side_effect=[{'url': 'foobar1'}, {'url': 'foobar2'}])
-    def test_start(self, mock_process):
+    def test_start_success(self, mock_process):
         """
         Tests the start method.
         """
@@ -200,6 +202,20 @@ class SupplyChainTransactionTestCase(TransactionTestCase):
             call({'url': 'foobar1'}, supplyorder)
         ])
         self.assertEqual(result, {'url': 'foobar2'})
+
+    @patch('procurer.supplychains.models.SupplyLink.process',
+           return_value=None)
+    def test_start_failed(self, mock_process):
+        """
+        Tests the start method when a SupplyLink process returns None.
+        """
+        supplyorder = SupplyOrder.objects.get(pk=1)
+        result = self.supplychain.start(supplyorder)
+        mock_process.assert_has_calls([
+            call({'url': 'http://dunbararmored.com'}, supplyorder),
+            call(None, supplyorder)
+        ])
+        self.assertEqual(result, None)
 
 
 class SupplyLinkManagerTestCase(SupplyChainBaseTestCase):
@@ -265,12 +281,9 @@ class SupplyLinkTestCase(SupplyChainBaseTestCase):
     Tests the SupplyLink class.
     """
 
-    def setUp(self):
-        self.supplylink = SupplyLink.objects.get(pk=1)
-
     def test_str(self):
         """
-
+        Tests the __str__ method.
         """
         self.assertEqual(str(self.supplylink), 'SupplyLink 1')
 
@@ -307,9 +320,17 @@ class SupplyLinkTestCase(SupplyChainBaseTestCase):
         expected = Supplier.objects.get_by_natural_key('virustotal')
         self.assertEqual(actual, expected)
 
-    def test_errors(self):
+    def test_errors_wo_errors(self):
         """
+        Tests the errors property without errors.
+        """
+        actual = self.supplylink.errors
+        expected = []
+        self.assertEqual(actual, expected)
 
+    def test_errors_w_errors(self):
+        """
+        Tests the errors property with errors.
         """
         FieldCoupling.objects.all().delete()
         actual = self.supplylink.errors
@@ -317,36 +338,64 @@ class SupplyLinkTestCase(SupplyChainBaseTestCase):
                     'which is required.']
         self.assertEqual(actual, expected)
 
-    def test_validate_input(self):
+    def test_validate_input_valid(self):
         """
-
+        Tests the validate_input method for valid input.
         """
-        pass
+        actual = self.supplylink.validate_input({'url': 'foobar'})
+        expected = True
+        self.assertEqual(actual, expected)
 
-    def test_process(self):
+    def test_validate_input_invalid(self):
         """
-
+        Tests the validate_input method for invalid input.
         """
-        pass
+        msg = "The following couplings were invalid: \['FieldCoupling 1'\]"
+        with six.assertRaisesRegex(self, SupplyChainError, msg):
+            self.supplylink.validate_input({'foobar': 'url'})
 
-    # @patch('procurer.supplychains.models.SupplyLink.process',
-    #        return_value=None)
-    # def test_start_fail(self, mock_process):
-    #     """
+    @patch('procurer.supplychains.models.SupplyLink.requisition')
+    @patch('procurer.supplychains.models.time.sleep')
+    def test_process_success(self, mock_sleep, mock_req):
+        """
+        Tests the process method when the SupplyLink's Requisition
+        returns a Cargo object.
+        """
+        supplyorder = SupplyOrder.objects.get(pk=1)
+        data = {'url': 'foobar', 'foobar': 'url'}
+        results = {'results': 'foobar'}
+        mock_transport = Mock()
+        mock_transport.cargo.data = results
+        mock_req.create_request_handler = Mock(return_value=mock_transport)
 
-    #     """
-    #     supplyorder = SupplyOrder.objects.get(pk=1)
-    #     with LogCapture() as log_capture:
-    #         result = self.supplychain.start(supplyorder)
-    #         log_capture.check(
-    #             ('procurer.supplychains.models',
-    #              'ERROR',
-    #              'foobar'),
-    #         )
-    #         self.assertEqual(result, None)
-    #         # mock_process.assert_has_calls([
-    #         #     call({'url': 'http://dunbararmored.com'}, supplyorder),
-    #         # ])
+        result = self.supplylink.process(data, supplyorder)
+        self.assertEqual(result, results)
+        mock_sleep.assert_called_once_with(self.supplylink.countdown_seconds)
+        mock_transport.run.assert_called_once_with({'resource': 'foobar'})
+        self.assertEqual(mock_transport.record.supply_order, supplyorder)
+        mock_transport.record.save.assert_called_once_with()
+
+    @patch('procurer.supplychains.models.SupplyLink.requisition')
+    def test_process_fail(self, mock_req):
+        """
+        Tests the process method when the SupplyLink's Requisition does
+        not return a Cargo object.
+        """
+        supplyorder = SupplyOrder.objects.get(pk=1)
+        data = {'url': 'foobar', 'foobar': 'url'}
+        mock_transport = Mock()
+        mock_transport.cargo = None
+        mock_req.create_request_handler = Mock(return_value=mock_transport)
+        with LogCapture() as log_capture:
+            result = self.supplylink.process(data, supplyorder)
+            msg = ('An error occurred while executing SupplyLink 1 for '
+                   'SupplyOrder 1.')
+            log_capture.check(
+                ('procurer.supplychains.models',
+                 'ERROR',
+                 msg),
+            )
+            self.assertEqual(result, None)
 
 
 class FieldCouplingTestCase(SupplyChainBaseTestCase):
@@ -356,18 +405,34 @@ class FieldCouplingTestCase(SupplyChainBaseTestCase):
 
     def test_mapping(self):
         """
-
+        Tests the mapping property.
         """
-        pass
+        actual = self.fieldcoupling.mapping
+        expected = {'url': 'resource'}
+        self.assertEqual(actual, expected)
 
     def test_input_field(self):
         """
-
+        Tests the input_field property.
         """
-        pass
+        actual = self.fieldcoupling.input_field
+        expected = {'url': 'CharField'}
+        self.assertEqual(actual, expected)
 
-    def test_validate_input(self):
+    def test_validate_input_valid(self):
         """
+        Tests the validate_input method for valid input.
+        """
+        data = {'url': 'foobar'}
+        actual = self.fieldcoupling.validate_input(data)
+        expected = True
+        self.assertEqual(actual, expected)
 
+    def test_validate_input_invalid(self):
         """
-        pass
+        Tests the validate_input method for invalid input.
+        """
+        data = {}
+        actual = self.fieldcoupling.validate_input(data)
+        expected = False
+        self.assertEqual(actual, expected)
