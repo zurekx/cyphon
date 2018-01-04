@@ -21,4 +21,23 @@
 # third party
 from django.contrib import admin
 
-# Register your models here.
+# local
+from .models import Requisition, Parameter
+
+
+@admin.register(Parameter)
+class ParameternAdmin(admin.ModelAdmin):
+    """
+    Customizes admin pages for Parameters.
+    """
+
+    model = Parameter
+
+
+@admin.register(Requisition)
+class RequisitionAdmin(admin.ModelAdmin):
+    """
+    Customizes admin pages for Requisitions.
+    """
+
+    model = Requisition

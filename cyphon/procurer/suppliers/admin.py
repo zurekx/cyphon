@@ -21,4 +21,13 @@
 # third party
 from django.contrib import admin
 
-# Register your models here.
+# local
+from .models import Supplier
+
+
+@admin.register(Supplier)
+class SupplierAdmin(admin.ModelAdmin):
+    """
+    Customizes admin pages for Suppliers.
+    """
+    model = Supplier

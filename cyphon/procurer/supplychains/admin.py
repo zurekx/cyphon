@@ -21,4 +21,93 @@
 # third party
 from django.contrib import admin
 
-# Register your models here.
+# local
+from cyphon.admin import EditLinkMixin
+from .models import FieldCoupling, SupplyChain, SupplyLink
+
+
+@admin.register(FieldCoupling)
+class FieldCouplingAdmin(admin.ModelAdmin):
+    """
+    Customizes admin pages for FieldCouplings.
+    """
+    model = FieldCoupling
+
+    list_display = [
+        'id',
+        'supply_link',
+        'parameter',
+        'field_name',
+    ]
+    list_display_links = ['id', 'supply_link']
+    fields = [
+        'parameter',
+        'field_name',
+    ]
+
+
+class FieldCouplingInlineAdmin(admin.TabularInline):
+    """
+    Customizes admin inline tables for FieldCouplings.
+    """
+
+    model = FieldCoupling
+    show_change_link = True
+    extra = 1
+
+
+@admin.register(SupplyLink)
+class SupplyLinkAdmin(admin.ModelAdmin):
+    """
+    Customizes admin pages for SupplyLinks.
+    """
+    model = SupplyLink
+    inlines = [FieldCouplingInlineAdmin, ]
+
+    list_display = [
+        'id',
+        'name',
+        'supply_chain',
+        'requisition',
+        'position',
+        'wait_time',
+        'time_unit',
+    ]
+    list_display_links = ['id', 'name', ]
+    fields = [
+        'name',
+        'supply_chain',
+        'requisition',
+        'position',
+        'wait_time',
+        'time_unit',
+    ]
+    save_as = True
+
+
+class SupplyLinkInlineAdmin(admin.TabularInline, EditLinkMixin):
+    """
+    Customizes admin inline tables for FieldCouplings.
+    """
+
+    model = SupplyLink
+    readonly_fields = ('edit_link', )
+    show_change_link = True
+    extra = 1
+
+
+@admin.register(SupplyChain)
+class SupplyChainAdmin(admin.ModelAdmin):
+    """
+    Customizes admin pages for SupplyChains.
+    """
+
+    list_display = [
+        'id',
+        'name',
+    ]
+    list_display_links = ['id', 'name', ]
+    fields = [
+        'name',
+    ]
+    inlines = [SupplyLinkInlineAdmin, ]
