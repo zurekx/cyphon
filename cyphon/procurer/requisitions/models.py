@@ -76,10 +76,6 @@ class Requisition(Endpoint):
         verbose_name = _('requisition')
         verbose_name_plural = _('requisitions')
 
-    def __str__(self):
-        """String representation of a Requisition."""
-        return 'Requisition: %s %s' % (self.platform, self.api_class)
-
     @property
     def required_parameters(self):
         """Get a QuerySet of required Parameters.
@@ -196,7 +192,7 @@ class Parameter(models.Model):
 
     def __str__(self):
         """String representation of a Parameter."""
-        return '%s %s' % (self.__class__.__name__, self.pk)
+        return '%s:%s' % (self.requisition, self.param_name)
 
     def validate(self, value):
         """

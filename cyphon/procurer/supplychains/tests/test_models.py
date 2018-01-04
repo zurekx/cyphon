@@ -285,7 +285,7 @@ class SupplyLinkTestCase(SupplyChainBaseTestCase):
         """
         Tests the __str__ method.
         """
-        self.assertEqual(str(self.supplylink), 'SupplyLink 1')
+        self.assertEqual(str(self.supplylink), 'VirusTotal URL Report')
 
     def test_input_fields(self):
         """

@@ -95,7 +95,7 @@ class SupplyChain(models.Model):
         """
 
         """
-        return '%s %s' % (self.__class__.__name__, self.pk)
+        return self.name
 
     @cached_property
     def _first_link(self):
@@ -274,7 +274,7 @@ class SupplyLink(models.Model):
         """
 
         """
-        return '%s %s' % (self.__class__.__name__, self.pk)
+        return self.name
 
     @cached_property
     def input_fields(self):
@@ -334,8 +334,8 @@ class SupplyLink(models.Model):
         errors = []
         for req_param in self._required_parameters:
             if req_param not in self._coupling_parameters:
-                errors.append('A FieldCoupling is missing for %s, '
-                              'which is required.' % req_param)
+                errors.append('A FieldCoupling is missing for Parameter %s, '
+                              'which is required.' % req_param.pk)
         return errors
 
     def _get_params(self, data):
@@ -362,7 +362,7 @@ class SupplyLink(models.Model):
         for coupling in self.field_couplings.all():
             if not coupling.validate_input(data):
                 is_valid = False
-                invalid_couplings.append(str(coupling))
+                invalid_couplings.append('FieldCoupling %s' % coupling.pk)
 
         if not is_valid:
             error_msg = ('The following couplings were invalid: %s'
@@ -408,8 +408,8 @@ class SupplyLink(models.Model):
         if transport.cargo:
             return transport.cargo.data
         else:
-            _LOGGER.error('An error occurred while executing %s for %s.',
-                          self, supply_order)
+            _LOGGER.error('An error occurred while executing SupplyLink '
+                          '%s for SupplyOrder %s.', self.pk, supply_order.pk)
 
 
 class FieldCoupling(models.Model):
@@ -450,12 +450,12 @@ class FieldCoupling(models.Model):
 
         ordering = ['supply_link', 'parameter']
         unique_together = ['supply_link', 'parameter']
-        verbose_name = _('supply link')
-        verbose_name_plural = _('supply links')
+        verbose_name = _('field coupling')
+        verbose_name_plural = _('field couplings')
 
     def __str__(self):
         """String representation of a FieldCoupling."""
-        return '%s %s' % (self.__class__.__name__, self.pk)
+        return '%s: %s' % (self.supply_link, self.parameter)
 
     @cached_property
     def _param_name(self):
