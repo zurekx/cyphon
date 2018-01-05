@@ -37,7 +37,7 @@ _RETRIES = 6
 
 class VirusTotalHandler(Convoy):
     """
-    Base class for interacting with JIRA APIs.
+    Base class for interacting with VirusTotal APIs.
     """
 
     base_url = 'https://www.virustotal.com/vtapi/v2/'
