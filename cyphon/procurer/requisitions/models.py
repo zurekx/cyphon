@@ -59,13 +59,8 @@ class Requisition(Endpoint):
     platform : |Supplier|
         The data platform which the API endpoint accesses.
 
-    url : str
-        The URL for the REST API request.
-
     """
     platform = models.ForeignKey(Supplier, verbose_name=_('supplier'))
-
-    url = models.URLField(verbose_name=_('URL'))
 
     objects = EndpointManager()
 

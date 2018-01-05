@@ -41,7 +41,6 @@ class Migration(migrations.Migration):
                 ('api_module', models.CharField(default='handlers', help_text='The module that will handle the API request.', max_length=32, validators=[django.core.validators.RegexValidator('[a-zA-Z_][a-zA-Z0-9_]*', 'Not a valid Python identifier')])),
                 ('api_class', models.CharField(help_text='The class that will handle the API request.', max_length=32, validators=[django.core.validators.RegexValidator('[a-zA-Z_][a-zA-Z0-9_]*', 'Not a valid Python identifier')])),
                 ('visa_required', models.BooleanField(default=False, help_text='Whether API calls are restricted by a Visa.')),
-                ('url', models.URLField(verbose_name='URL')),
                 ('platform', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='suppliers.Supplier', verbose_name='supplier')),
             ],
             options={
@@ -52,7 +51,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='parameter',
             name='requisition',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='requisitions.Requisition', verbose_name='requisition'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='parameters', related_query_name='parameter', to='requisitions.Requisition', verbose_name='requisition'),
         ),
         migrations.AlterUniqueTogether(
             name='requisition',
