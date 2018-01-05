@@ -60,6 +60,7 @@ class Requisition(Endpoint):
         The data platform which the API endpoint accesses.
 
     """
+
     platform = models.ForeignKey(Supplier, verbose_name=_('supplier'))
 
     objects = EndpointManager()
@@ -139,7 +140,7 @@ class ParameterManager(models.Manager):
             requisition = Requisition.objects.get_by_natural_key(*requisition_key)
             return self.get(requisition=requisition, param_name=param_name)
         except ObjectDoesNotExist:
-            _LOGGER.error('%s:%s.%s.%s does not exist',
+            _LOGGER.error('%s %s %s %s does not exist',
                           self.model.__name__, platform, api_class, param_name)
 
 
@@ -147,6 +148,7 @@ class Parameter(models.Model):
     """
 
     """
+
     requisition = models.ForeignKey(
         Requisition,
         related_name='parameters',
@@ -187,7 +189,7 @@ class Parameter(models.Model):
 
     def __str__(self):
         """String representation of a Parameter."""
-        return '%s:%s' % (self.requisition, self.param_name)
+        return '%s : %s' % (self.requisition, self.param_name)
 
     def validate(self, value):
         """
