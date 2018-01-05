@@ -21,16 +21,6 @@
     "model": "requisitions.parameter",
     "fields": {
       "id": 1,
-      "requisition": ["virustotal", "UrlReport"],
-      "param_name": "resource",
-      "param_type": "CharField",
-      "required": true
-    }
-  },
-  {
-    "model": "requisitions.parameter",
-    "fields": {
-      "id": 2,
       "requisition": ["virustotal", "UrlScan"],
       "param_name": "url",
       "param_type": "CharField",
@@ -40,11 +30,21 @@
   {
     "model": "requisitions.parameter",
     "fields": {
-      "id": 3,
+      "id": 2,
       "requisition": ["virustotal", "UrlScan"],
       "param_name": "foobar",
-      "param_type": "CharField",
+      "param_type": "IntegerField",
       "required": false
+    }
+  },
+  {
+    "model": "requisitions.parameter",
+    "fields": {
+      "id": 3,
+      "requisition": ["virustotal", "UrlReport"],
+      "param_name": "resource",
+      "param_type": "CharField",
+      "required": true
     }
   }
 ]
