@@ -77,6 +77,12 @@ class SupplyOrder(models.Model):
         related_query_name='supply_order',
         verbose_name=_('procurement')
     )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        verbose_name=_('user'),
+    )
     alert = models.ForeignKey(
         Alert,
         related_name='supply_orders',
@@ -84,12 +90,6 @@ class SupplyOrder(models.Model):
         verbose_name=_('alert'),
         blank=True,
         null=True
-    )
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        null=True,
-        blank=True,
-        verbose_name=_('user'),
     )
     input_data = JSONField(default=dict, verbose_name=_('input data'))
     distillery = models.ForeignKey(
