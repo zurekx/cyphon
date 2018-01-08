@@ -28,10 +28,7 @@ from .models import FieldCoupling, SupplyChain, SupplyLink
 
 @admin.register(FieldCoupling)
 class FieldCouplingAdmin(admin.ModelAdmin):
-    """
-    Customizes admin pages for FieldCouplings.
-    """
-    model = FieldCoupling
+    """Customizes admin pages for FieldCouplings."""
 
     list_display = [
         'id',
@@ -47,9 +44,7 @@ class FieldCouplingAdmin(admin.ModelAdmin):
 
 
 class FieldCouplingInlineAdmin(admin.TabularInline):
-    """
-    Customizes admin inline tables for FieldCouplings.
-    """
+    """Customizes admin inline tables for FieldCouplings."""
 
     model = FieldCoupling
     show_change_link = True
@@ -58,12 +53,9 @@ class FieldCouplingInlineAdmin(admin.TabularInline):
 
 @admin.register(SupplyLink)
 class SupplyLinkAdmin(admin.ModelAdmin):
-    """
-    Customizes admin pages for SupplyLinks.
-    """
-    model = SupplyLink
-    inlines = [FieldCouplingInlineAdmin, ]
+    """Customizes admin pages for SupplyLinks."""
 
+    inlines = [FieldCouplingInlineAdmin, ]
     list_display = [
         'id',
         'name',
@@ -86,9 +78,7 @@ class SupplyLinkAdmin(admin.ModelAdmin):
 
 
 class SupplyLinkInlineAdmin(admin.TabularInline, EditLinkMixin):
-    """
-    Customizes admin inline tables for FieldCouplings.
-    """
+    """Customizes admin inline tables for FieldCouplings."""
 
     model = SupplyLink
     readonly_fields = ('edit_link', )
@@ -98,9 +88,7 @@ class SupplyLinkInlineAdmin(admin.TabularInline, EditLinkMixin):
 
 @admin.register(SupplyChain)
 class SupplyChainAdmin(admin.ModelAdmin):
-    """
-    Customizes admin pages for SupplyChains.
-    """
+    """Customizes admin pages for SupplyChains."""
 
     list_display = [
         'id',

@@ -20,5 +20,47 @@
 
 # third party
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 
-# Register your models here.
+# local
+from .models import SupplyOrder
+
+
+@admin.register(SupplyOrder)
+class SupplyOrderAdmin(admin.ModelAdmin):
+    """Customizes admin pages for SupplyOrders."""
+
+    list_display = [
+        'id',
+        'procurement',
+        'user',
+        'alert',
+    ]
+    list_display_links = ['id', 'procurement']
+    fieldsets = (
+        (_('Request Info'), {
+            'fields': (
+                'user',
+                'created_date',
+                'procurement',
+            ),
+        }),
+        (_('Data'), {
+            'classes': ('pre', ),
+            'fields': (
+                'input_data',
+                'distillery',
+                'doc_id',
+                'results',
+            ),
+        }),
+    )
+    readonly_fields = [
+        'procurement',
+        'user',
+        'alert',
+        'input_data',
+        'distillery',
+        'doc_id',
+        'created_date'
+    ]

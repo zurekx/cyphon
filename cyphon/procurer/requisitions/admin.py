@@ -27,17 +27,13 @@ from .models import Requisition, Parameter
 
 @admin.register(Parameter)
 class ParameternAdmin(admin.ModelAdmin):
-    """
-    Customizes admin pages for Parameters.
-    """
+    """Customizes admin pages for Parameters."""
 
-    model = Parameter
+    pass
 
 
 @admin.register(Requisition)
 class RequisitionAdmin(admin.ModelAdmin):
-    """
-    Customizes admin pages for Requisitions.
-    """
+    """Customizes admin pages for Requisitions."""
 
-    model = Requisition
+    pass

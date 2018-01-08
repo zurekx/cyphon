@@ -21,4 +21,36 @@
 # third party
 from django.contrib import admin
 
-# Register your models here.
+# local
+from cyphon.admin import JSONDataAdmin
+from .models import Manifest
+
+
+@admin.register(Manifest)
+class ManifestAdmin(JSONDataAdmin):
+    """Customizes admin pages for |Manifests|."""
+
+    exclude = ['data']
+    readonly_fields = [
+        'supply_order',
+        'stamp',
+        'data_prettified'
+    ]
+    list_display = [
+        'id',
+        'supply_order',
+        'get_status_code',
+        'get_user'
+    ]
+    search_fields = [
+        'stamp__user__email'
+    ]
+    list_per_page = 25
+    list_select_related = True
+
+    fieldsets = (
+        (None, {
+            'fields': ['supply_order', 'stamp', 'data_prettified'],
+            'classes': ['pre'],
+        }),
+    )

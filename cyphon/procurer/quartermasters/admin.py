@@ -21,4 +21,12 @@
 # third party
 from django.contrib import admin
 
-# Register your models here.
+# local
+from .models import Quartermaster
+
+
+@admin.register(Quartermaster)
+class QuartermasterAdmin(admin.ModelAdmin):
+    """Customizes admin pages for Quartermasters."""
+
+    pass

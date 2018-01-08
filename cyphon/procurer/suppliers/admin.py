@@ -22,12 +22,8 @@
 from django.contrib import admin
 
 # local
+from ambassador.platforms.admin import PlatformAdmin
 from .models import Supplier
 
 
-@admin.register(Supplier)
-class SupplierAdmin(admin.ModelAdmin):
-    """
-    Customizes admin pages for Suppliers.
-    """
-    model = Supplier
+admin.site.register(Supplier, PlatformAdmin)
