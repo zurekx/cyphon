@@ -25,7 +25,9 @@ except ImportError:
     from mock import Mock, patch
 
 # third party
+from django.core.exceptions import ValidationError
 from django.test import TestCase
+import six
 from testfixtures import LogCapture
 
 # local
@@ -176,3 +178,32 @@ class ParameterTestCase(RequisitionBaseTestCase):
         actual = parameter.validate(data)
         expected = False
         self.assertEqual(actual, expected)
+
+    def test_save_valid_default(self):
+        """
+        Tests the save method with a valid default value.
+        """
+        param = Parameter(
+            requisition=self.requisition,
+            param_name='foobar',
+            param_type='IntegerField',
+            default=0
+        )
+        try:
+            param.clean()
+        except ValidationError:
+            self.fail('A ValidationError was raised unexpectedly')
+
+    def test_save_invalid_default(self):
+        """
+        Tests the save method for an invalid default value.
+        """
+        param = Parameter(
+            requisition=self.requisition,
+            param_name='foobar',
+            param_type='IntegerField',
+            default=None
+        )
+        msg = ('Default value is incompatible with the parameter type.')
+        with six.assertRaisesRegex(self, ValidationError, msg):
+            param.clean()
