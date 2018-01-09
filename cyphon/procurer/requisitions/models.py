@@ -153,41 +153,54 @@ class Parameter(models.Model):
         Requisition,
         related_name='parameters',
         related_query_name='parameter',
-        verbose_name=_('requisition')
+        verbose_name=_('requisition'),
     )
     param_name = models.CharField(
         max_length=64,
-        verbose_name=_('parameter name')
+        verbose_name=_('parameter name'),
+        help_text=_('The name of the parameter in the REST API request.')
     )
     param_type = models.CharField(
         max_length=64,
         choices=FIELD_TYPE_CHOICES,
-        verbose_name=_('parameter type')
+        verbose_name=_('parameter type'),
+        help_text=_('The data type of the parameter.')
     )
     default = models.CharField(
         max_length=255,
         verbose_name=_('default value'),
         null=True,
-        blank=True
+        blank=True,
+        help_text=_('The default value for the parameter.')
     )
     choices = ArrayField(
         ArrayField(models.CharField(max_length=255), size=2),
         verbose_name=_('choices'),
         null=True,
-        blank=True
+        blank=True,
+        help_text=_('A list of choices for the parameter, '
+                    'in the format: (value, label), (value, label)')
     )
-    required = models.BooleanField(default=False, verbose_name=_('required'))
+    required = models.BooleanField(
+        default=False,
+        verbose_name=_('required'),
+        help_text=_('Whether the paremeter is required to fulfill '
+                    'the request.')
+    )
     help_text = models.CharField(
         max_length=255,
         verbose_name=_('help text'),
         null=True,
-        blank=True
+        blank=True,
+        help_text=_('An explanation of the parameter to help users '
+                    'understand its purpose.')
     )
     verbose_name = models.CharField(
         max_length=255,
         verbose_name=_('verbose name'),
         null=True,
-        blank=True
+        blank=True,
+        help_text=_('A human-readable name for the parameter.')
     )
 
     objects = ParameterManager()
