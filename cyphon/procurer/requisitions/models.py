@@ -23,7 +23,7 @@ import logging
 
 # third party
 from django.contrib.postgres.fields import ArrayField
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -164,7 +164,12 @@ class Parameter(models.Model):
         choices=FIELD_TYPE_CHOICES,
         verbose_name=_('parameter type')
     )
-    default = models.CharField(max_length=255, verbose_name=_('default value'))
+    default = models.CharField(
+        max_length=255,
+        verbose_name=_('default value'),
+        null=True,
+        blank=True
+    )
     choices = ArrayField(
         ArrayField(models.CharField(max_length=255), size=2),
         verbose_name=_('choices'),
@@ -172,10 +177,17 @@ class Parameter(models.Model):
         blank=True
     )
     required = models.BooleanField(default=False, verbose_name=_('required'))
-    help_text = models.CharField(max_length=255, verbose_name=_('help text'))
+    help_text = models.CharField(
+        max_length=255,
+        verbose_name=_('help text'),
+        null=True,
+        blank=True
+    )
     verbose_name = models.CharField(
         max_length=255,
-        verbose_name=_('verbose name')
+        verbose_name=_('verbose name'),
+        null=True,
+        blank=True
     )
 
     objects = ParameterManager()
@@ -191,6 +203,26 @@ class Parameter(models.Model):
         """String representation of a Parameter."""
         return '%s : %s' % (self.requisition, self.param_name)
 
+    def save(self, *args, **kwargs):
+        """
+        Overrides the save() method to validate the default value.
+        """
+        if self.default is not None \
+                and not self._validate_data_type(self.value):
+            msg = _('Default value is incompatible with the parameter type.')
+            raise ValidationError(msg)
+        return super(Parameter, self).save(*args, **kwargs)
+
+    def _validate_data_type(self, value):
+        """
+
+        """
+        try:
+            restore_type(field_type=self.param_type, value=value)
+            return True
+        except ValueError:
+            return False
+
     def validate(self, value):
         """
 
@@ -198,8 +230,4 @@ class Parameter(models.Model):
         if value in [None, '']:
             return not self.required
         else:
-            try:
-                restore_type(field_type=self.param_type, value=value)
-                return True
-            except ValueError:
-                return False
+            return self._validate_data_type(value)
