@@ -62,5 +62,6 @@ class SupplyOrderAdmin(admin.ModelAdmin):
         'input_data',
         'distillery',
         'doc_id',
-        'created_date'
+        'results',
+        'created_date',
     ]
