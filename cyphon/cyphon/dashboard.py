@@ -175,6 +175,7 @@ class CyphonIndexDashboard(Dashboard):
             css_classes=('grp-collapse grp-closed',),
             models=(
                 'contexts.models.Context',
+                'procurer.procurements.models.Procurement',
             ),
         ))
 
@@ -238,6 +239,8 @@ class CyphonIndexDashboard(Dashboard):
             models=(
                 'responder.dispatches.models.Dispatch',
                 'aggregator.invoices.models.Invoice',
+                'procurer.manifests.models.Manifest',
+                'procurer.supplyorders.models.SupplyOrder',
                 'ambassador.stamps.models.Stamp',
                 'aggregator.streams.models.Stream',
             ),
@@ -264,6 +267,17 @@ class CyphonIndexDashboard(Dashboard):
                         'responder.actions.models.Action',
                         'responder.couriers.models.Courier',
                         'responder.destinations.models.Destination',
+                    ),
+                ),
+                modules.ModelList(
+                    _('API Requests'),
+                    css_classes=('grp-collapse grp-open',),
+                    models=(
+                        'procurer.requisitions.models.Requisition',
+                        'procurer.quartermasters.models.Quartermaster',
+                        'procurer.suppliers.models.Supplier',
+                        'procurer.supplychains.models.SupplyLink',
+                        'procurer.supplychains.models.SupplyChain',
                     ),
                 ),
                 modules.ModelList(
