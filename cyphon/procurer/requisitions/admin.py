@@ -32,8 +32,16 @@ class ParameternAdmin(admin.ModelAdmin):
     pass
 
 
+class ParameterInlineAdmin(admin.TabularInline):
+    """Customizes admin inline tables for Parameters."""
+
+    model = Parameter
+    show_change_link = True
+    extra = 1
+
+
 @admin.register(Requisition)
 class RequisitionAdmin(admin.ModelAdmin):
     """Customizes admin pages for Requisitions."""
 
-    pass
+    inlines = [ParameterInlineAdmin, ]
