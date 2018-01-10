@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -386,3 +386,26 @@ class FieldSearchParameterTestCase(TestCase):
         self.assertTrue(parameter.is_valid())
         self.assertEqual(
             parameter.data_field.field_type, 'GenericIPAddressField')
+
+    def test_nested_field(self):
+        """
+        Tests that a nested field returns a data field.
+        """
+        parameter = FieldSearchParameter(0, 'content.text=test')
+
+        self.assertTrue(parameter.is_valid())
+        self.assertEqual(parameter.data_field.field_type, 'TextField')
+
+        parameter = FieldSearchParameter(0, 'not.exist=test')
+
+        self.assertFalse(parameter.is_valid())
+        self.assertEqual(
+            parameter.errors,
+            [FieldSearchParameter.FIELD_DOES_NOT_EXIST.format('not.exist')])
+
+        parameter = FieldSearchParameter(0, 'content.exist=test')
+
+        self.assertFalse(parameter.is_valid())
+        self.assertEqual(
+            parameter.errors,
+            [FieldSearchParameter.FIELD_DOES_NOT_EXIST.format('content.exist')])

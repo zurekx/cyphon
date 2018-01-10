@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -255,7 +255,7 @@ class DistillerySearchResultsListTestCase(TestCase):
         Tests that the distilleries from a distillery filter are used for
         getting distillery results.
         """
-        search_query = SearchQuery('@source=test_database.test_posts test', self.user)
+        search_query = SearchQuery('@source="test_posts" test', self.user)
         distillery_results_list = self._get_instance(search_query)
 
         self.assertEqual(len(distillery_results_list.distilleries), 1)
@@ -287,7 +287,7 @@ class DistillerySearchResultsListTestCase(TestCase):
         Tests that the as_dict() function returns the correct
         dictionary shape.
         """
-        search_query = SearchQuery('@source=test_database.test_posts test', self.user)
+        search_query = SearchQuery('@source="test_posts" test', self.user)
         distillery_results_list = self._get_instance(search_query)
         factory = RequestFactory()
         request = factory.get('/api/v1/search/')

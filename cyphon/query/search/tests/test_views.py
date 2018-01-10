@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -310,7 +310,7 @@ class SearchDistilleriesViewTestCase(SearchViewBaseTestCase):
         Tests that the correct result shape is returned from the endpoint.
         """
         response = self._get_mock_response(
-            '?query=%40source%3D*.test_mail+something'
+            '?query=%40source%3D%22test_mail%22+something'
         )
         self._is_valid_response(response)
         self.assertEqual(response.data['results']['count'], 1)
@@ -370,7 +370,7 @@ class SearchDistilleryViewTestCase(SearchViewBaseTestCase):
         Tests that distillery filter parameters are ignored.
         """
         response = self._get_empty_mock_response(
-            '2/?query=%40source%3D*.test_mail+something',
+            '2/?query=%40source%3D%22test_mail%22+something',
         )
         self._is_valid_response(response)
         self.assertEqual(response.data['query']['distilleries'], None)
@@ -379,3 +379,14 @@ class SearchDistilleryViewTestCase(SearchViewBaseTestCase):
             'name': 'mongodb.test_database.test_docs',
             'url': 'http://testserver/api/v1/distilleries/2/',
         })
+
+    def test_distillery_not_found(self):
+        response = self._get_empty_mock_response('12/?query=woo')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data['detail'], 'Distillery 12 not found.')
+
+    def test_empty_search_query(self):
+        response = self._get_empty_mock_response('6/?query=')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['query']['errors'][0],
+                         'Search query is empty.')

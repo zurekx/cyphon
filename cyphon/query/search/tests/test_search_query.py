@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -104,7 +104,7 @@ class SearchQueryTestCase(TestCase):
         """
         Tests that a distillery filter string is correctly identified.
         """
-        query = SearchQuery('@source=*.test_logs', self.user)
+        query = SearchQuery('@source="test_logs"', self.user)
 
         self.assertTrue(query.is_valid())
         self.assertIsNotNone(query.distillery_filter_parameter)
@@ -116,7 +116,7 @@ class SearchQueryTestCase(TestCase):
         """
         Tests that a distillery with a hyphen is correctly identified.
         """
-        query = SearchQuery('@source=test-logs.*', self.user)
+        query = SearchQuery('@source="test-logs"', self.user)
 
         self.assertFalse(query.is_valid())
         self.assertIsNotNone(query.distillery_filter_parameter)
@@ -145,13 +145,13 @@ class SearchQueryTestCase(TestCase):
         used.
         """
         query = SearchQuery(
-            '@source=*.test_logs @source=*.test_logs', self.user)
+            '@source="test_logs" @source="test_logs"', self.user)
 
         self.assertFalse(query.is_valid())
         self.assertEqual(len(query.errors), 1)
         self.assertEqual(
             query.errors[0],
             SearchQuery.MULTIPLE_DISTILLERY_FILTERS.format(
-                '@source=*.test_logs', 1,
+                '@source="test_logs"', 1,
             ),
         )
