@@ -20,6 +20,7 @@
 
 # third party
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 
 # local
 from cyphon.admin import EditLinkMixin
@@ -66,14 +67,23 @@ class SupplyLinkAdmin(admin.ModelAdmin):
         'time_unit',
     ]
     list_display_links = ['id', 'name', ]
-    fields = [
-        'name',
-        'supply_chain',
-        'requisition',
-        'position',
-        'wait_time',
-        'time_unit',
-    ]
+    fieldsets = (
+        (None, {
+            'description': _(''),
+            'fields': (
+                'name',
+                'supply_chain',
+                'requisition',
+                'position',
+            )
+        }),
+        (_('Wait Time'), {
+            'description': _(''),
+            'fields': (
+                ('wait_time', 'time_unit', ),
+            )
+        }),
+    )
     save_as = True
 
 
