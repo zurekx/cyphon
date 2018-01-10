@@ -158,7 +158,7 @@ class Parameter(models.Model):
     param_name = models.CharField(
         max_length=64,
         verbose_name=_('parameter name'),
-        help_text=_('The name of the parameter in the REST API request.')
+        help_text=_('The name of the parameter in the API request.')
     )
     param_type = models.CharField(
         max_length=64,

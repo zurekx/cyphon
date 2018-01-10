@@ -245,8 +245,7 @@ class SupplyLink(models.Model):
     requisition = models.ForeignKey(
         Requisition,
         verbose_name=_('requisition'),
-        help_text=_('The Requisition that defines the REST API request '
-                    'being made.')
+        help_text=_('The Requisition that defines the API request being made.')
     )
     position = models.IntegerField(
         default=0,
@@ -449,7 +448,7 @@ class FieldCoupling(models.Model):
         related_name='field_couplings',
         related_query_name='field_coupling',
         verbose_name=_('parameter'),
-        help_text=_('The target parameter in the REST API request.')
+        help_text=_('The target parameter in the API request.')
     )
     field_name = models.CharField(
         max_length=64,

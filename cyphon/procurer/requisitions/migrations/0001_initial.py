@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
             name='Parameter',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('param_name', models.CharField(help_text='The name of the parameter in the REST API request.', max_length=64, verbose_name='parameter name')),
+                ('param_name', models.CharField(help_text='The name of the parameter in the API request.', max_length=64, verbose_name='parameter name')),
                 ('param_type', models.CharField(choices=[('BooleanField', 'BooleanField'), ('CharField', 'CharField'), ('ChoiceField', 'ChoiceField'), ('DateTimeField', 'DateTimeField'), ('EmailField', 'EmailField'), ('FileField', 'FileField'), ('FloatField', 'FloatField'), ('IntegerField', 'IntegerField'), ('GenericIPAddressField', 'IPAddressField'), ('ListField', 'ListField'), ('PointField', 'PointField'), ('TextField', 'TextField'), ('URLField', 'URLField'), ('EmbeddedDocument', 'EmbeddedDocument')], help_text='The data type of the parameter.', max_length=64, verbose_name='parameter type')),
                 ('default', models.CharField(blank=True, help_text='The default value for the parameter.', max_length=255, null=True, verbose_name='default value')),
                 ('choices', django.contrib.postgres.fields.ArrayField(base_field=django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=255), size=2), blank=True, help_text='A list of choices for the parameter, in the format: (value, label), (value, label)"', null=True, size=None, verbose_name='choices')),
