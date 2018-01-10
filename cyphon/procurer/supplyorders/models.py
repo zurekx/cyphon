@@ -75,7 +75,7 @@ class SupplyOrder(models.Model):
         Procurement,
         related_name='supply_orders',
         related_query_name='supply_order',
-        verbose_name=_('procurement')
+        verbose_name=_('procurement'),
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -89,16 +89,21 @@ class SupplyOrder(models.Model):
         related_query_name='supply_order',
         verbose_name=_('alert'),
         blank=True,
-        null=True
+        null=True,
     )
-    input_data = JSONField(default=dict, verbose_name=_('input data'))
+    input_data = JSONField(
+        default=dict,
+        verbose_name=_('input data'),
+        help_text=_('The data used to make the request.')
+    )
     distillery = models.ForeignKey(
         Distillery,
         blank=True,
         null=True,
         verbose_name=_('distillery'),
         db_index=True,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        help_text=_('The Distillery where the results are saved.')
     )
     doc_id = models.CharField(
         max_length=255,
@@ -106,6 +111,7 @@ class SupplyOrder(models.Model):
         null=True,
         verbose_name=_('document id'),
         db_index=True,
+        help_text=_('The id of the document containing the results.')
     )
     created_date = models.DateTimeField(default=timezone.now, db_index=True)
 
