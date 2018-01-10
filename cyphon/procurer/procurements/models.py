@@ -109,13 +109,16 @@ class Procurement(models.Model):
         SupplyChain,
         related_name='procurements',
         related_query_name='procurement',
-        verbose_name=_('supply chain')
+        verbose_name=_('supply chain'),
+        help_text=_('The Supply Chain used to acquire data.')
     )
     munger = models.ForeignKey(
         DataMunger,
         related_name='procurements',
         related_query_name='procurement',
-        verbose_name=_('data munger')
+        verbose_name=_('data munger'),
+        help_text=_('The Data Munger used to process the data '
+                    'obtained through the Supply Chain.')
     )
 
     objects = ProcurementManager()

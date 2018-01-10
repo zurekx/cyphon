@@ -38,8 +38,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255, unique=True, verbose_name='name')),
-                ('munger', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='procurements', related_query_name='procurement', to='datamungers.DataMunger', verbose_name='data munger')),
-                ('supply_chain', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='procurements', related_query_name='procurement', to='supplychains.SupplyChain', verbose_name='supply chain')),
+                ('munger', models.ForeignKey(help_text='The Data Munger used to process the data obtained through the Supply Chain.', on_delete=django.db.models.deletion.CASCADE, related_name='procurements', related_query_name='procurement', to='datamungers.DataMunger', verbose_name='data munger')),
+                ('supply_chain', models.ForeignKey(help_text='The Supply Chain used to acquire data.', on_delete=django.db.models.deletion.CASCADE, related_name='procurements', related_query_name='procurement', to='supplychains.SupplyChain', verbose_name='supply chain')),
             ],
             options={
                 'ordering': ['name'],
