@@ -41,51 +41,50 @@ from tests.fixture_manager import get_fixtures
 from .settings import VIRUSTOTAL_SETTINGS, VIRUSTOTAL_TESTS_ENABLED
 
 
-class UrlScanSupplyChainTestCase(TransactionTestCase, PassportMixin):
-    """
+# class UrlScanSupplyChainTestCase(TransactionTestCase, PassportMixin):
+#     """
 
-    """
+#     """
 
-    allow_database_queries = True
+#     allow_database_queries = True
 
-    fixtures = get_fixtures(['supplyorders', 'quartermasters'])
-    # fixtures = get_fixtures(['virustotal'])
+#     fixtures = get_fixtures(['supplyorders', 'quartermasters'])
 
-    @classmethod
-    def setUpClass(cls):
-        super(UrlScanSupplyChainTestCase, cls).setUpClass()
+#     @classmethod
+#     def setUpClass(cls):
+#         super(UrlScanSupplyChainTestCase, cls).setUpClass()
 
-        # Start up celery worker
-        cls.celery_worker = start_worker(app)
-        cls.celery_worker.__enter__()
+#         # Start up celery worker
+#         cls.celery_worker = start_worker(app)
+#         cls.celery_worker.__enter__()
 
-    @classmethod
-    def tearDownClass(cls):
-        super(UrlScanSupplyChainTestCase, cls).tearDownClass()
+#     @classmethod
+#     def tearDownClass(cls):
+#         # Close worker
+#         cls.celery_worker.__exit__(None, None, None)
+#         super(UrlScanSupplyChainTestCase, cls).tearDownClass()
 
-        # Close worker
-        cls.celery_worker.__exit__(None, None, None)
+#     def setUp(self):
+#         """
 
-    @skipUnless(VIRUSTOTAL_TESTS_ENABLED, 'VirusTotal API tests disabled')
-    def test_process_request(self):
-        """
+#         """
+#         super(UrlScanSupplyChainTestCase, self).setUp()
+#         passport = Passport.objects.get_by_natural_key('VirusTotal Public')
+#         self._update_passport(passport, VIRUSTOTAL_SETTINGS)
 
-        """
-        supply_chain = SupplyChain.objects.get_by_natural_key('VirusTotal URL Scan & Report')
-        supply_order = SupplyOrder.objects.get(pk=1)
-        # result = supply_order.process()
-        result = supply_chain.start(supply_order=supply_order)
-        # print([(manifest.data, manifest.status_code, manifest.response_msg) for manifest in supply_order.manifests.all()])
-        print(result)
-        # [({'url': 'http://example.com'}, '403', 'Forbidden'), ({'resource': None}, '403', 'Forbidden')]
+#     @skipUnless(VIRUSTOTAL_TESTS_ENABLED, 'VirusTotal API tests disabled')
+#     def test_process_request(self):
+#         """
 
-    def setUp(self):
-        """
-
-        """
-        super(UrlScanSupplyChainTestCase, self).setUp()
-        passport = Passport.objects.get(pk=5)
-        self._update_passport(passport, VIRUSTOTAL_SETTINGS)
+#         """
+#         supply_chain = SupplyChain.objects.get_by_natural_key('VirusTotal URL Scan & Report')
+#         supply_order = SupplyOrder.objects.get(pk=1)
+#         # result = supply_order.process()
+#         result = supply_chain.start(supply_order=supply_order)
+#         # print([(manifest.data, manifest.status_code, manifest.response_msg) for manifest in supply_order.manifests.all()])
+#         print(result)
+#         supply_order = SupplyOrder.objects.get(pk=1)
+#         # [({'url': 'http://example.com'}, '403', 'Forbidden'), ({'resource': None}, '403', 'Forbidden')]
 
 
 # class UrlReportTestCase(TestCase):
