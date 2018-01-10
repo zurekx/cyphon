@@ -239,25 +239,34 @@ class SupplyLink(models.Model):
         SupplyChain,
         related_name='supply_links',
         related_query_name='supply_link',
-        verbose_name=_('supply chain')
+        verbose_name=_('supply chain'),
+        help_text=_('The Supply Chain to which this Supply Link belongs.')
     )
-    requisition = models.ForeignKey(Requisition, verbose_name=_('requisition'))
+    requisition = models.ForeignKey(
+        Requisition,
+        verbose_name=_('requisition'),
+        help_text=_('The Requisition that defines the REST API request '
+                    'being made.')
+    )
     position = models.IntegerField(
         default=0,
         verbose_name=_('position'),
-        help_text=_('An integer representing the order of this step in the '
-                    'Supply Chain. Steps are performed in ascending order, '
-                    'with the lowest number performed first.')
+        help_text=_('An integer representing the order of this Supply '
+                    'Link in the Supply Chain.')
     )
     wait_time = models.IntegerField(
         default=0,
-        verbose_name=_('wait interval')
+        verbose_name=_('wait interval'),
+        help_text=_('An integer representing the time to wait before '
+                    'executing the Requisition following execution of '
+                    'the previous step in the Supply Chain.')
     )
     time_unit = models.CharField(
         max_length=3,
         default='m',
         choices=TIME_UNIT_CHOICES,
-        verbose_name=_('time unit')
+        verbose_name=_('time unit'),
+        help_text=_('Units for the wait time.')
     )
 
     objects = SupplyLinkManager()
@@ -432,17 +441,21 @@ class FieldCoupling(models.Model):
         SupplyLink,
         related_name='field_couplings',
         related_query_name='field_coupling',
-        verbose_name=_('supply link')
+        verbose_name=_('supply link'),
+        help_text=_('The Supply Link that uses this Field Coupling.')
     )
     parameter = models.ForeignKey(
         Parameter,
         related_name='field_couplings',
         related_query_name='field_coupling',
-        verbose_name=_('parameter')
+        verbose_name=_('parameter'),
+        help_text=_('The target parameter in the REST API request.')
     )
     field_name = models.CharField(
         max_length=64,
-        verbose_name=_('field name')
+        verbose_name=_('field name'),
+        help_text=_('The name of the data field that will supply a value '
+                    'for the parameter.')
     )
 
     class Meta(object):

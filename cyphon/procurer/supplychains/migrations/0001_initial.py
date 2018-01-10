@@ -36,13 +36,13 @@ class Migration(migrations.Migration):
             name='FieldCoupling',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('field_name', models.CharField(max_length=64, verbose_name='field name')),
-                ('parameter', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='field_couplings', related_query_name='field_coupling', to='requisitions.Parameter', verbose_name='parameter')),
+                ('field_name', models.CharField(help_text='The name of the data field that will supply a value for the parameter.', max_length=64, verbose_name='field name')),
+                ('parameter', models.ForeignKey(help_text='The target parameter in the REST API request.', on_delete=django.db.models.deletion.CASCADE, related_name='field_couplings', related_query_name='field_coupling', to='requisitions.Parameter', verbose_name='parameter')),
             ],
             options={
                 'ordering': ['supply_link', 'parameter'],
-                'verbose_name': 'supply link',
-                'verbose_name_plural': 'supply links',
+                'verbose_name': 'field coupling',
+                'verbose_name_plural': 'field couplings',
             },
         ),
         migrations.CreateModel(
@@ -61,11 +61,11 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255, unique=True, verbose_name='name')),
-                ('position', models.IntegerField(default=0, help_text='An integer representing the order of this step in the Supply Chain. Steps are performed in ascending order, with the lowest number performed first.', verbose_name='position')),
-                ('requisition', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='requisitions.Requisition', verbose_name='requisition')),
-                ('supply_chain', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='supply_links', related_query_name='supply_link', to='supplychains.SupplyChain', verbose_name='supply chain')),
-                ('time_unit', models.CharField(choices=[('s', 'Seconds'), ('m', 'Minutes'), ('h', 'Hours'), ('d', 'Days')], default='m', max_length=3, verbose_name='time unit')),
-                ('wait_time', models.IntegerField(default=0, verbose_name='wait interval')),
+                ('position', models.IntegerField(default=0, help_text='An integer representing the order of this Supply Link in the Supply Chain.', verbose_name='position')),
+                ('requisition', models.ForeignKey(help_text='The Requisition that defines the REST API request being made.', on_delete=django.db.models.deletion.CASCADE, to='requisitions.Requisition', verbose_name='requisition')),
+                ('supply_chain', models.ForeignKey(help_text='The Supply Chain to which this Supply Link belongs.', on_delete=django.db.models.deletion.CASCADE, related_name='supply_links', related_query_name='supply_link', to='supplychains.SupplyChain', verbose_name='supply chain')),
+                ('time_unit', models.CharField(choices=[('s', 'Seconds'), ('m', 'Minutes'), ('h', 'Hours'), ('d', 'Days')], default='m', help_text='Units for the wait time.', max_length=3, verbose_name='time unit')),
+                ('wait_time', models.IntegerField(default=0, help_text='An integer representing the time to wait before executing the Requisition following execution of the previous step in the Supply Chain.', verbose_name='wait interval')),
             ],
             options={
                 'ordering': ['supply_chain', 'position'],
@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='fieldcoupling',
             name='supply_link',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='field_couplings', related_query_name='field_coupling', to='supplychains.SupplyLink', verbose_name='supply link'),
+            field=models.ForeignKey(help_text='The Supply Link that uses this Field Coupling.', on_delete=django.db.models.deletion.CASCADE, related_name='field_couplings', related_query_name='field_coupling', to='supplychains.SupplyLink', verbose_name='supply link'),
         ),
         migrations.AlterUniqueTogether(
             name='supplylink',
