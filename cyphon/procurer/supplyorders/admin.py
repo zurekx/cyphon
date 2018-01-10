@@ -43,6 +43,7 @@ class SupplyOrderAdmin(admin.ModelAdmin):
                 'user',
                 'created_date',
                 'procurement',
+                'alert',
             ),
         }),
         (_('Data'), {
