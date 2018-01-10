@@ -72,8 +72,8 @@ class SupplyLinkAdmin(admin.ModelAdmin):
             'description': _(''),
             'fields': (
                 'name',
-                'supply_chain',
                 'requisition',
+                'supply_chain',
                 'position',
             )
         }),
