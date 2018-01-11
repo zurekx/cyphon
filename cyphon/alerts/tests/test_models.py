@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -28,6 +28,7 @@ except ImportError:
 
 # third party
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 
@@ -100,7 +101,7 @@ class AlertModelTestCase(TestCase):
         Edit distillery so that it has a Company with a Codebook.
         """
         distillery = Distillery.objects.get_by_natural_key(
-            'elasticsearch', 'test_index', 'test_mail')
+            'elasticsearch.test_index.test_mail')
         distillery.company = Company.objects.get(pk=1)
         distillery.save()
         return distillery
@@ -161,6 +162,30 @@ class AlertCompanyTestCase(AlertModelTestCase):
         """
         alert = Alert.objects.get(pk=7)
         self.assertEqual(alert.company, None)
+
+
+class AlertMuzzleHashTestCase(AlertModelTestCase):
+    """
+    Tests the save method with respect to an Alert's muzzle_hash.
+    """
+
+    def test_duplicate_alert(self):
+        """
+        Checks that duplicate muzzle hashes are not generated when Alert
+        levels are changed.
+        """
+        new_alert = Alert.objects.get(pk=1)
+        new_alert.pk = None
+        new_alert.level = 'MEDIUM'
+        new_alert.save()
+
+        # create a potential duplicate alert
+        old_alert = Alert.objects.get(pk=1)
+        old_alert.level = 'MEDIUM'
+        try:
+            old_alert.save()
+        except IntegrityError:
+            self.fail('Alert raised IntergrityError unexpectedly')
 
 
 class AlertContentDateTestCase(AlertModelTestCase):

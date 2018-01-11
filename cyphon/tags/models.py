@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -50,8 +50,16 @@ from utils.validators.validators import lowercase_validator
 _LEMMATIZER = nltk.stem.WordNetLemmatizer()
 _LOGGER = logging.getLogger(__name__)
 
-nltk.download('punkt')
-nltk.download('wordnet')
+
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+
+try:
+    nltk.data.find('corpora/wordnet')
+except LookupError:
+    nltk.download('wordnet')
 
 
 class Topic(Taxonomy):
@@ -193,7 +201,7 @@ class Tag(models.Model):
     class Meta(object):
         """Metadata options."""
 
-        ordering = ['name']
+        ordering = ['topic', 'name']
         unique_together = ['name', 'topic']
 
     def __str__(self):
@@ -340,7 +348,12 @@ class DataTagger(models.Model):
 
     """
     container = models.ForeignKey(Container)
-    field_name = models.CharField(max_length=255)
+    field_name = models.CharField(
+        max_length=255,
+        help_text=_('The name of the Container field that should be analyzed '
+                    'for tagging. Use dot notation to indicate nested fields '
+                    '(e.g., "user.name").')
+    )
     topics = models.ManyToManyField(
         Topic,
         help_text=_('Restrict tagging to these topics. '
@@ -385,7 +398,7 @@ class DataTagger(models.Model):
             (tag, created) = Tag.objects.get_or_create(name=tag_name,
                                                        topic=topic)
             return tag
-        except ValidationError as error:
+        except (IndexError, ValidationError) as error:
             _LOGGER.error('An error occurred while creating '
                           'a new tag "%s": %s', tag_name, error)
 
@@ -411,7 +424,7 @@ class DataTagger(models.Model):
         try:
             topic = self.topics.all()[0]
             return Tag.objects.get(name=tag_name, topic=topic)
-        except ObjectDoesNotExist:
+        except (IndexError, ObjectDoesNotExist):
             if self.create_tags:
                 return self._create_tag(tag_name)
 

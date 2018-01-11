@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -31,7 +31,6 @@ from django.test import TestCase
 
 # local
 from alerts.models import Alert
-from cyphon.documents import DocumentObj
 from distilleries.models import Distillery
 from monitors.models import Monitor
 from tests.fixture_manager import get_fixtures
@@ -40,12 +39,14 @@ from tests.mock import patch_find_by_id
 EARLY = datetime.strptime('2016-01-01 09:04:00 +0000', '%Y-%m-%d %H:%M:%S %z')
 ON_TIME = datetime.strptime('2016-01-01 09:05:00 +0000', '%Y-%m-%d %H:%M:%S %z')
 LATE = datetime.strptime('2016-01-01 09:06:00 +0000', '%Y-%m-%d %H:%M:%S %z')
+VERY_LATE = datetime.strptime('2016-01-02 09:05:00 +0000', '%Y-%m-%d %H:%M:%S %z')
 
 
 class MonitorManagerTestCase(TestCase):
     """
     Tests clean method of the MonitorManager class.
     """
+
     fixtures = get_fixtures(['monitors'])
 
     def test_find_enabled(self):
@@ -61,6 +62,14 @@ class MonitorManagerTestCase(TestCase):
 
         self.assertEqual(enabled_monitors.count(),
                          Monitor.objects.filter(enabled=True).count())
+
+    def test_find_relevant(self):
+        """
+        Tests the find_relevant method of the MonitorManager class.
+        """
+        distillery = Distillery.objects.get(pk=1)
+        relevant_monitors = Monitor.objects.find_relevant(distillery)
+        self.assertEqual(relevant_monitors.count(), 3)
 
 
 class MonitorTestCase(TestCase):
@@ -86,20 +95,36 @@ class MonitorTestCase(TestCase):
         """
         self.assertEqual(str(self.monitor_grn), 'health_alerts')
 
-    def test_save_overdue(self):
+    def test_save_new(self):
+        """
+        Tests that the status is to GREEN on a new Monitor.
+        """
+        monitor = Monitor.objects.create(
+            name='new monitor',
+            time_interval=1,
+            time_unit='d',
+            alerts_enabled=True,
+            repeating_alerts=True,
+            alert_level='HIGH'
+        )
+        self.assertEqual(monitor.status, 'GREEN')
+
+    @patch('monitors.models.timezone.now', return_value=EARLY)
+    def test_save_overdue(self, mock_now):
         """
         Tests the save method for a green Monitor when the interval
-        is lengthened.
+        is shortened.
         """
         self.monitor_grn.time_unit = 's'
         self.monitor_grn.save()
         monitor_grn = Monitor.objects.get(pk=1)
         self.assertEqual(monitor_grn.status, 'RED')
 
-    def test_save_not_overdue(self):
+    @patch('monitors.models.timezone.now', return_value=LATE)
+    def test_save_not_overdue(self, mock_now):
         """
         Tests the save method for a red Monitor when the interval
-        is shortened.
+        is lengthened.
         """
         self.monitor_red.time_unit = 'd'
         self.monitor_red.save()
@@ -109,11 +134,11 @@ class MonitorTestCase(TestCase):
     def test_get_interval_in_seconds(self):
         """
         Tests the _get_interval_in_seconds method of the Monitor class
-        when there is a ast_healthy value.
+        when there is a last_healthy value.
         """
         self.assertEqual(self.monitor_grn._get_interval_in_seconds(), 300)
 
-    @patch('monitors.models.timezone.now', return_value=LATE)
+    @patch('monitors.models.timezone.now', return_value=VERY_LATE)
     def test_get_inactive_no_lasthealth(self, mock_now):
         """
         Tests the _get_inactive_seconds method of the Monitor class when
@@ -121,14 +146,14 @@ class MonitorTestCase(TestCase):
         """
         monitor = self.monitor_red_repeating
         assert monitor.last_healthy == None
-        self.assertEqual(monitor._get_inactive_seconds(), 360)
+        self.assertEqual(monitor._get_inactive_seconds(), 86700)
 
-    @patch('monitors.models.timezone.now', return_value=LATE)
+    @patch('monitors.models.timezone.now', return_value=VERY_LATE)
     def test_get_inactive_seconds(self, mock_now):
         """
         Tests the _get_inactive_seconds method of the Monitor class.
         """
-        self.assertEqual(self.monitor_grn._get_inactive_seconds(), 360)
+        self.assertEqual(self.monitor_grn._get_inactive_seconds(), 86700)
 
     @patch('monitors.models.timezone.now', return_value=EARLY)
     def test_is_overdue_for_not_late(self, mock_now):
@@ -171,30 +196,32 @@ class MonitorTestCase(TestCase):
         self.assertEqual(alert.distillery, self.monitor_red.last_active_distillery)
         self.assertEqual(alert.doc_id, self.monitor_red.last_saved_doc)
 
-    @patch('monitors.models.timezone.now', return_value=LATE)
-    def test_process(self, mock_now):
+    @patch('monitors.models.timezone.now', return_value=ON_TIME)
+    def test_update_status(self, mock_now):
         """
-        Tests the process method of the Monitor class.
+        Tests the update_status method of the Monitor class.
         """
         monitor = self.monitor_red
-        assert monitor.last_healthy != LATE
-        assert monitor.last_active_distillery.pk != 2
+        assert monitor.last_healthy != ON_TIME
+        assert monitor.last_active_distillery.pk != 1
         assert monitor.last_saved_doc != '11'
         assert monitor.status != 'GREEN'
 
-        distillery = Distillery.objects.get(pk=2)
-        collection = str(distillery)
-        doc_id = '11'
+        docs = [
+            {'count': 1, 'results': [{'_id': 1, 'created_date': LATE}]},
+            {'count': 1, 'results': [{'_id': 2, 'created_date': VERY_LATE}]},
+        ]
+        with patch('monitors.models.Distillery.find', side_effect=docs) \
+                as mock_find:
+            monitor.update_status()
+            mock_find.call_count = 2
 
-        doc_obj = DocumentObj(doc_id=doc_id, collection=collection)
-        monitor.process(doc_obj)
-
-        # get a fresh instance from the database
-        updated_monitor = Monitor.objects.get(pk=monitor.pk)
-        self.assertEqual(updated_monitor.last_healthy, LATE)
-        self.assertEqual(updated_monitor.last_active_distillery.pk, distillery.pk)
-        self.assertEqual(updated_monitor.last_saved_doc, doc_id)
-        self.assertEqual(updated_monitor.status, 'GREEN')
+            # get a fresh instance from the database
+            updated_monitor = Monitor.objects.get(pk=monitor.pk)
+            self.assertEqual(updated_monitor.last_healthy, VERY_LATE)
+            self.assertEqual(updated_monitor.last_active_distillery.pk, 1)
+            self.assertEqual(updated_monitor.last_saved_doc, '2')
+            self.assertEqual(updated_monitor.status, 'GREEN')
 
     @patch_find_by_id()
     @patch('alerts.models.Alert.teaser')
@@ -246,8 +273,8 @@ class MonitorTestCase(TestCase):
     def test_overdue_red_enabled(self, mock_now, mock_teaser):
         """
         Tests the update_status method of the Monitor class when the
-        health check is overdue, the current status is 'RED', and alerts
-        are enabled.
+        health check is overdue, the current status is 'RED', alerts
+        are enabled, but repeating alerts are disabled.
         """
         monitor = self.monitor_red
         assert self.monitor_red.status == 'RED'
@@ -288,12 +315,12 @@ class MonitorTestCase(TestCase):
 
     @patch_find_by_id()
     @patch('alerts.models.Alert.teaser')
-    @patch('monitors.models.timezone.now', return_value=LATE)
+    @patch('monitors.models.timezone.now', return_value=VERY_LATE)
     def test_overdue_red_repeating(self, mock_now, mock_teaser):
         """
         Tests the update_status method of the Monitor class when the
-        health check is overdue, the current status is 'RED', and alerts
-        are disabled.
+        health check is overdue, the current status is 'RED', alerts
+        are enabled, and repeating alerts are enabled.
         """
         monitor = self.monitor_red_repeating
         assert monitor.status == 'RED'
@@ -306,14 +333,14 @@ class MonitorTestCase(TestCase):
 
         # get a fresh instance from the database
         updated_monitor = Monitor.objects.get(pk=monitor.pk)
-        self.assertEqual(updated_monitor.last_updated, LATE)
+        self.assertEqual(updated_monitor.last_updated, VERY_LATE)
         self.assertEqual(updated_monitor.status, 'RED')
         self.assertEqual(Alert.objects.count(), 1)
         self.assertEqual(result, 'RED')
 
     @patch_find_by_id()
     @patch('alerts.models.Alert.teaser')
-    @patch('monitors.models.timezone.now', return_value=LATE)
+    @patch('monitors.models.timezone.now', return_value=VERY_LATE)
     def test_overdue_not_red_enabled(self, mock_now, mock_teaser):
         """
         Tests the update_status method of the Monitor class when the
@@ -329,11 +356,11 @@ class MonitorTestCase(TestCase):
 
         # get a fresh instance from the database
         updated_monitor = Monitor.objects.get(pk=monitor.pk)
-        self.assertEqual(updated_monitor.last_updated, LATE)
+        self.assertEqual(updated_monitor.last_updated, VERY_LATE)
         self.assertEqual(updated_monitor.status, 'RED')
         self.assertEqual(Alert.objects.count(), 1)
         alert = Alert.objects.all()[0]
-        title = 'Health monitor "health_alerts" has seen no activity for over 6 m.'
+        title = 'Health monitor "health_alerts" has seen no activity for over 1 d.'
         self.assertEqual(alert.title, title)
         self.assertEqual(alert.alarm, monitor)
         self.assertEqual(alert.level, monitor.alert_level)

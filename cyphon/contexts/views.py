@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -102,4 +102,8 @@ class ContextViewSet(CustomModelViewSet):
         else:
             msg = 'A document id must be provided.'
             result = {'error': msg}
+
+        if 'error' in result:
+            return Response(data=result, status=400)
+
         return Response(result)

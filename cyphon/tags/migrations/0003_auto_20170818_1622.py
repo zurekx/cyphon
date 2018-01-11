@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             name='DataTagger',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('field_name', models.CharField(max_length=255)),
+                ('field_name', models.CharField(max_length=255, help_text='The name of the Container field that should be analyzed for tagging. Use dot notation to indicate nested fields (e.g., "user.name").')),
                 ('exact_match', models.BooleanField(default=False, help_text='Match the entire content of the field. If checked, please select one and only one tag topic for analyzing this field.')),
                 ('create_tags', models.BooleanField(default=False, help_text='Create new tags from this field (only available when using exact match).')),
                 ('container', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='containers.Container')),
@@ -59,6 +59,10 @@ class Migration(migrations.Migration):
             model_name='tag',
             name='topic',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='tags', related_query_name='tag', to='tags.Topic'),
+        ),
+        migrations.AlterModelOptions(
+            name='tag',
+            options={'ordering': ['topic', 'name']},
         ),
         migrations.AlterUniqueTogether(
             name='tag',
