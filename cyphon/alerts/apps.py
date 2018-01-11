@@ -20,13 +20,14 @@
 
 # third party
 from django.apps import AppConfig
+from django.utils.translation import ugettext_lazy as _
 
 
 class AlertsConfig(AppConfig):
     """Store metadata for the Alerts application."""
 
     name = 'alerts'
-    verbose_name = 'Alerts'
+    verbose_name = _('Alerts')
 
     def ready(self):
         """Perform initialization tasks."""
