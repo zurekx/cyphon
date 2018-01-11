@@ -1,4 +1,4 @@
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -38,7 +38,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='cyphon',
-    version='1.0.1',
+    version='1.5.3',
     install_requires=REQUIREMENTS,
     packages=find_packages(),
     include_package_data=True,
