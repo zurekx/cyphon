@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -157,4 +157,3 @@ class Faucet(Transport):
         else:
             LOGGER.error('There are no results to process. '
                          'Call the start() method to get data from the API.')
-

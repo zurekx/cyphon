@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -103,4 +103,3 @@ class TasteInlineForm(auto_forms.ModelForm, AutoCompleteModelFormMixin):
         self._restore_value('location', 'FilterLocationFieldsByBottleAndLabel')
         self._restore_value('datetime', 'FilterDateTimeFieldsByBottleAndLabel')
         self._restore_value('date_string', 'FilterCharFieldsByBottleAndLabel')
-

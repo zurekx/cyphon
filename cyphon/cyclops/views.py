@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -25,6 +25,23 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 
+# local
+from .conf import CYCLOPS_JS_URL, CYCLOPS_CSS_URL, CYCLOPS_VERSION
+
+DEVELOPMENT_ENABLED = settings.CYCLOPS.get('DEVELOPMENT_ENABLED', False)
+DEVELOPMENT_URL = settings.CYCLOPS.get('DEVELOPMENT_URL',
+                                       'http://localhost:8080/')
+CSS_URL = (
+    '{}cyclops.css'.format(DEVELOPMENT_URL)
+    if DEVELOPMENT_ENABLED
+    else CYCLOPS_CSS_URL
+)
+JS_URL = (
+    '{}cyclops.js'.format(DEVELOPMENT_URL)
+    if DEVELOPMENT_ENABLED
+    else CYCLOPS_JS_URL
+)
+
 
 @login_required(login_url='/login/')
 def application(request):
@@ -42,32 +59,13 @@ def application(request):
     :class:`~django.http.HttpResponse`
 
     """
-    css_url = settings.CYCLOPS['CDN_FORMAT'].format(
-        settings.CYCLOPS['VERSION'],
-        'css',
-    )
-    js_url = settings.CYCLOPS['CDN_FORMAT'].format(
-        settings.CYCLOPS['VERSION'],
-        'js',
-    )
-    css_file = '{0}/{1}'.format(
-        settings.CYCLOPS['LOCAL_FOLDER_NAME'],
-        settings.CYCLOPS['LOCAL_CSS_FILENAME'],
-    )
-    js_file = '{0}/{1}'.format(
-        settings.CYCLOPS['LOCAL_FOLDER_NAME'],
-        settings.CYCLOPS['LOCAL_JS_FILENAME'],
-    )
-
     return render(request, 'cyclops/app.html', {
         'notifications_enabled': config.PUSH_NOTIFICATIONS_ENABLED,
         'mapbox_access_token': settings.CYCLOPS['MAPBOX_ACCESS_TOKEN'],
-        'local_assets_enabled': settings.CYCLOPS['LOCAL_ASSETS_ENABLED'],
-        'cyclops_version': settings.CYCLOPS['VERSION'],
-        'css_file': css_file,
-        'js_file': js_file,
-        'css_url': css_url,
-        'js_url': js_url,
+        'cyclops_version': CYCLOPS_VERSION,
+        'cyphon_version': request.cyphon_version,
+        'css_url': CSS_URL,
+        'js_url': JS_URL,
     })
 
 

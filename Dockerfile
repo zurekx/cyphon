@@ -2,7 +2,7 @@
 # Dockerfile to run a Django-based web application
 # Based on a Python 3.6 image
 #
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -30,6 +30,7 @@ ARG GID=1000
 ENV CYPHON_HOME /usr/src/app
 ENV LOG_DIR     /var/log/cyphon
 ENV PATH        $PATH:$CYPHON_HOME
+ENV NLTK_DATA   /usr/share/nltk_data
 
 # copy requirements.txt to the image
 COPY requirements.txt $CYPHON_HOME/requirements.txt
@@ -38,8 +39,9 @@ COPY requirements.txt $CYPHON_HOME/requirements.txt
 RUN apk add -U --repository http://dl-5.alpinelinux.org/alpine/edge/testing/ \
       binutils \
       gdal \
-      py-gdal \
       postgis \
+      proj4-dev \
+      py-gdal \
       su-exec \
  && ln -s /usr/lib/libgdal.so.20 /usr/lib/libgdal.so \
  && ln -s /usr/lib/libgeos_c.so.1 /usr/lib/libgeos_c.so \
@@ -53,9 +55,12 @@ RUN apk add -U --repository http://dl-5.alpinelinux.org/alpine/edge/testing/ \
       postgis \
       postgresql-dev \
       python3-dev \
-      proj4-dev \
+      jpeg-dev \
+      zlib-dev \
+      tiff-dev \
  && pip install -r $CYPHON_HOME/requirements.txt \
- && apk del build-deps
+ && apk del build-deps \
+ && python -m nltk.downloader -d /usr/local/share/nltk_data punkt wordnet
 
 # create unprivileged user
 RUN addgroup -S -g $GID cyphon && adduser -S -G cyphon -u $UID cyphon

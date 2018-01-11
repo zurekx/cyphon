@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -179,6 +179,18 @@ class CyphonIndexDashboard(Dashboard):
         ))
 
         self.children.append(modules.ModelList(
+            _('Tagging Data'),
+            column=1,
+            css_classes=('grp-collapse grp-closed',),
+            models=(
+                'tags.models.DataTagger',
+                'articles.models.Article',
+                'tags.models.Topic',
+                'tags.models.Tag',
+            ),
+        ))
+
+        self.children.append(modules.ModelList(
             _('Configuring Alerts'),
             column=1,
             css_classes=('grp-collapse grp-closed',),
@@ -227,6 +239,7 @@ class CyphonIndexDashboard(Dashboard):
                 'responder.dispatches.models.Dispatch',
                 'aggregator.invoices.models.Invoice',
                 'ambassador.stamps.models.Stamp',
+                'aggregator.streams.models.Stream',
             ),
         ))
 
@@ -270,7 +283,7 @@ class CyphonIndexDashboard(Dashboard):
                     ),
                 ),
                 modules.ModelList(
-                    _('Push Notifications'),
+                    _('Notifications'),
                     css_classes=('grp-collapse grp-open',),
                     models=(
                         'constance.*',

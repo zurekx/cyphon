@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -40,6 +40,7 @@ from django.utils.translation import ugettext_lazy as _
 from categories.models import Category
 from companies.models import Company
 from cyphon.documents import DocumentObj
+from cyphon.models import GetByNameMixin, SelectRelatedManager
 from bottler.containers.models import Container
 from distilleries import signals
 from utils.dateutils.dateutils import parse_date
@@ -51,37 +52,14 @@ _PAGE_SIZE = settings.PAGE_SIZE
 _LOGGER = logging.getLogger(__name__)
 
 
-class DistilleryManager(models.Manager):
+class DistilleryManager(SelectRelatedManager, GetByNameMixin):
     """Manage |Distillery| objects.
 
     Adds methods to the default Django model manager.
     """
 
-    def get_queryset(self):
-        """Get the initial |Distillery| queryset.
-
-        Overrides the default `get_queryset` method to also select
-        related objects.
-
-        Returns
-        -------
-        |Queryset|
-            A |Queryset| of |Distilleries|.
-
-        See also
-        --------
-        Django's documentation contains instructions on how to
-        `select related`_ objects and `modify an initial queryset`_.
-
-        """
-        default_queryset = super(DistilleryManager, self).get_queryset()
-        return default_queryset.select_related()
-
-    def get_by_natural_key(self, backend, warehouse_name, collection_name):
-        """Get a |Distillery| by its natural key.
-
-        Allows retrieval of a |Distillery| by its natural key instead of
-        its primary key.
+    def get_by_collection_nk(self, backend, warehouse_name, collection_name):
+        """Get a |Distillery| by the natural key of its |Collection|.
 
         Parameters
         ----------
@@ -145,8 +123,8 @@ class Distillery(models.Model):
     company : Company
         The |Company| associated with the data.
 
-    categories : `list` of `Categories`
-        A |list| of |Categories| that characterize the data.
+    categories : `QuerySet` of `Categories`
+        A |QuerySet| of |Categories| that characterize the data.
 
     is_shell : bool
         Whether the Distillery is only used to model and retrieve data,
@@ -157,6 +135,10 @@ class Distillery(models.Model):
 
     _DATE_KEY = _DISTILLERY_SETTINGS['DATE_KEY']
 
+    name = models.CharField(
+        max_length=255,
+        unique=True
+    )
     collection = models.OneToOneField(
         Collection,
         primary_key=True,
@@ -188,7 +170,7 @@ class Distillery(models.Model):
         """Metadata options."""
 
         verbose_name_plural = 'distilleries'
-        ordering = ['collection']
+        ordering = ['name']
 
     def __str__(self):
         """Get a string representation of the Distillery instance.
@@ -340,6 +322,18 @@ class Distillery(models.Model):
         return self.collection.name
 
     @cached_property
+    def engine(self):
+        """The |Engine| associated with the Distillery.
+
+        Returns
+        -------
+        |Engine|
+            The |Engine| that services the Distillery's |Collection|.
+
+        """
+        return self.collection.engine
+
+    @cached_property
     def warehouse(self):
         """The |Warehouse| used by the Distillery.
 
@@ -406,8 +400,11 @@ class Distillery(models.Model):
 
         Returns
         -------
-        |list| of |dict|
-            Documents matching the query.
+        |dict|
+            A dictionary with keys 'count' and 'results'. The 'count'
+            value is the total number of documents matching the search
+            criteria. The 'results' value is a list of documents from
+            the search result, with the doc ids added to each document.
 
         """
         return self.collection.find(query, sorter, page, page_size)

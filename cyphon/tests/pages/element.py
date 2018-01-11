@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -19,6 +19,7 @@
 """
 
 # standard library
+import socket
 import time
 
 # third party
@@ -214,7 +215,7 @@ class AutocompleteElement(HtmlElement):
             )
             options = self.driver.find_elements_by_xpath(option_path)
             return len(options)
-        except TimeoutException:
+        except (TimeoutException, socket.timeout):
             return 0
 
     def get_value(self):

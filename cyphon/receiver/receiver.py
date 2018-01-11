@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -32,7 +32,7 @@ sys.path.append(CYPHON_PATH)
 sys.path.append(os.path.dirname(os.path.dirname(CYPHON_PATH)))
 
 # set the default Django settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cyphon.settings.default')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cyphon.settings.prod')
 
 # add path to virtualenv site packages so required packages can be found
 from django.conf import settings
@@ -104,10 +104,10 @@ def process_msg(channel, method, properties, body):
         'logchutes', 'monitors', 'watchdogs'.
 
     """
+    channel.basic_ack(delivery_tag=method.delivery_tag)
     consumers = {
         'datachutes': DataChute.objects.process,
         'logchutes': LogChute.objects.process,
-        'monitors': Monitor.objects.process,
         'watchdogs': Watchdog.objects.process,
     }
 
@@ -147,14 +147,11 @@ def consume_queue(routing_key='watchdogs'):
 
         channel = conn.channel()
         exchange = BROKER['EXCHANGE']
-        exchange_type = BROKER['EXCHANGE_TYPE']
         durable = BROKER['DURABLE']
 
         queue_name = routing_key
 
-        channel.exchange_declare(exchange=exchange,
-                                 type=exchange_type,
-                                 durable=durable)
+        channel.exchange_declare(exchange=exchange, durable=durable)
 
         channel.queue_declare(queue=queue_name)
 
@@ -164,10 +161,8 @@ def consume_queue(routing_key='watchdogs'):
 
         LOGGER.info('Waiting for messages')
         # print(' [*] Waiting for messages. To exit press CTRL+C')
-
-        channel.basic_consume(process_msg,
-                              queue=queue_name,
-                              no_ack=True)
+        channel.basic_qos(prefetch_count=1)
+        channel.basic_consume(process_msg, queue=queue_name)
 
         channel.start_consuming()
 
@@ -184,7 +179,7 @@ def create_consumers(routing_key, num):
     ----------
     routing_key : str
         Indicates how the messages will be processed. Options are
-        'datachutes', 'logchutes', 'monitors', 'watchdogs'.
+        'datachutes', 'logchutes', 'watchdogs'.
 
     num : str
         A string representation of an integer representing the number of

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -177,8 +177,9 @@ class Location(models.Model):
         representing circles of the specified radius that together cover the
         area of the original Location.
         """
-        assert self.shape != 'Other', 'Shape must be Point, Polygon, or ' + \
-                                      'Muiltpolygon'
+        if self.shape == 'Other':  # pragma: no cover
+            raise ValueError('Shape must be Point, Polygon, or Muiltpolygon')
+
         polygon = self.bbox
         points = shapes.factor_polygon_into_circles(polygon, radius_km)
         radius = units.km_to_meters(radius_km)

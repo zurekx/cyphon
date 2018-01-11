@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -38,6 +38,7 @@ from utils.validators.validators import (
     db_name_validator,
     field_name_validator,
     key_file_validator,
+    lowercase_validator,
     validate_str_substitution,
     validate_timeframe,
 )
@@ -183,10 +184,8 @@ class DbNameValidatorTestCase(TestCase):
         """
         Test case for a name that ends with '$'.
         """
-        try:
+        with self.assertRaises(ValidationError):
             db_name_validator('id$')
-        except ValidationError:
-            self.fail('Name raised ValidationError unexpectedly')
 
     def test_underscore(self):
         """
@@ -201,8 +200,10 @@ class DbNameValidatorTestCase(TestCase):
         """
         Test case for a name with an asterisk.
         """
-        with self.assertRaises(ValidationError):
+        try:
             db_name_validator('logstash-')
+        except ValidationError:
+            self.fail('Name raised ValidationError unexpectedly')
 
     def test_asterisk(self):
         """
@@ -224,6 +225,13 @@ class DbNameValidatorTestCase(TestCase):
         """
         with self.assertRaises(ValidationError):
             db_name_validator('http log')
+
+    def test_period(self):
+        """
+        Test case for a name with a period.
+        """
+        with self.assertRaises(ValidationError):
+            db_name_validator('http.log')
 
 
 class FieldNameValidatorTestCase(TestCase):
@@ -338,3 +346,25 @@ class KeyFieldValidatorTestCase(TestCase):
         mock_fieldfile.name = 'bad_file_name.pem.jar'
         with self.assertRaises(ValidationError):
             key_file_validator(mock_fieldfile)
+
+
+class LowercaseValidatorTestCase(TestCase):
+    """
+    Tests the lowercase_validator function.
+    """
+
+    def test_valid_str(self):
+        """
+        Test case for an all lowercase string.
+        """
+        try:
+            lowercase_validator('hg213i75%^&$efg')
+        except ValidationError:
+            self.fail('String raised ValidationError unexpectedly')
+
+    def test_invalid_str(self):
+        """
+        Test case for a string containing an uppercase character.
+        """
+        with self.assertRaises(ValidationError):
+            lowercase_validator('hg213i75%^&$Efg')

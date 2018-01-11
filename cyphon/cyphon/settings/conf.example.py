@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -24,26 +24,28 @@
 
 # standard library
 import os
-import sys
+
+# third party
+from ec2_metadata import ec2_metadata
+
+# local
+from utils.settings import ON_EC2
 
 
+#: A unique, unpredictable value used to provide cryptographic signing.
 SECRET_KEY = 'this-should-be-a-string-of-random-characters'
 
 HOST_SETTINGS = {
-    'ALLOWED_HOSTS': ['localhost'],
-    'CORS_ORIGIN_WHITELIST': ['localhost:8000'],
+    'ALLOWED_HOSTS': [addr.strip() for addr in os.getenv(
+        'ALLOWED_HOSTS', 'localhost').split(',')],
 }
 
-TEST = 'test' in sys.argv
+if ON_EC2:
+    HOST_SETTINGS['ALLOWED_HOSTS'].append(ec2_metadata.private_ipv4)
 
-FUNCTIONAL_TESTS = {
-    'ENABLED': os.getenv('FUNCTIONAL_TESTS_ENABLED', False),
-    'DRIVER': os.getenv('FUNCTIONAL_TESTS_DRIVER', 'LOCALHOST'),  # 'DOCKER', 'SAUCELABS'
-    'HOST': os.getenv('FUNCTIONAL_TESTS_HOST', 'localhost'),
-    'PORT': os.getenv('FUNCTIONAL_TESTS_PORT', '4444'),
-    'PLATFORM': os.getenv('FUNCTIONAL_TESTS_PLATFORM', 'ANY'),
-    'BROWSER': os.getenv('FUNCTIONAL_TESTS_BROWSER', 'chrome'),
-    'VERSION': os.getenv('FUNCTIONAL_TESTS_VERSION', ''),
+LOCALIZATION = {
+    'DEFAULT_LANGUAGE': 'en-us',  # http://www.i18nguy.com/unicode/language-identifiers.html
+    'TIME_ZONE': 'UTC',    # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 }
 
 PAGE_SIZE = 10
@@ -52,9 +54,6 @@ PROJ_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 HOME_DIR = os.path.dirname(PROJ_DIR)
 KEYS_DIR = os.path.join(HOME_DIR, 'keys')
 
-ALERTS = {
-    'ALERT_URL': '/#/alerts?alertDetail=',
-}
 
 APPUSERS = {
     'CUSTOM_FILTER_BACKENDS': []
@@ -67,14 +66,9 @@ CODEBOOKS = {
 
 CYCLOPS = {
     'ENABLED': True,
-    'VERSION': '0.4.0',
-    'CDN_FORMAT': 'https://cdn.rawgit.com/dunbarcyber/cyclops/{0}/dist/cyclops.{1}',
     'MAPBOX_ACCESS_TOKEN': '',
-    'LOCAL_ASSETS_ENABLED': False,
-    'LOCAL_ASSETS_PATH': os.path.abspath(os.path.join(PROJ_DIR, '../../cyclops/dist')),
-    'LOCAL_FOLDER_NAME': 'cyclops',
-    'LOCAL_CSS_FILENAME': 'cyclops.css',
-    'LOCAL_JS_FILENAME': 'cyclops.js',
+    'DEVELOPMENT_ENABLED': False,
+    'DEVELOPMENT_URL': 'http://localhost:8080/',
 }
 
 DATASIFTER = {
@@ -96,7 +90,7 @@ DISTILLERIES = {
     'RAW_DATA_KEY': '_raw_data',
 
     # dictionary key for adding a label to a document
-    'LABEL_KEY':  '_metadata',
+    'LABEL_KEY': '_metadata',
 
     # dictionary key for saving the name of the backend where the raw data is stored
     'BACKEND_KEY': 'backend',
@@ -116,18 +110,45 @@ DISTILLERIES = {
 }
 
 ELASTICSEARCH = {
-    'HOSTS': ['{0}:{1}'.format(os.getenv('ELASTICSEARCH_HOST', 'elasticsearch'),
-                               os.getenv('ELASTICSEARCH_PORT', '9200'))],
-    'TIMEOUT': 30,
+    'HOSTS': [
+        {
+            'host': os.getenv('ELASTICSEARCH_HOST', 'elasticsearch'),
+            'port': int(os.getenv('ELASTICSEARCH_PORT', '9200')),
+            'http_auth': os.getenv('ELASTICSEARCH_HTTP_AUTH'),
+            'use_ssl': bool(int(os.getenv('ELASTICSEARCH_USE_SSL', False))),
+        },
+    ],
+    # Note: the keyword arguments provided below are passed to the
+    # *Elasticsearch* constructor, and should not contain host-specific
+    # keyword arguments for individual connections, which are instead
+    # configured in the 'HOSTS' list above.
+    'KWARGS': {
+        'timeout': 30,
+    },
+    'INDEX': {
+        'index.mapping.ignore_malformed': True,
+        'number_of_shards': 1,
+    },
 }
 
 EMAIL = {
-    'NAME': 'Cyphon',
-    'HOST': 'smtp.gmail.com',
-    'HOST_USER': 'user@',
-    'HOST_PASSWORD': 'you',
+    'DEFAULT_FROM': 'webmaster@localhost',
+    'HOST': 'localhost',  # e.g., 'smtp.gmail.com'
+    'HOST_USER': '',
+    'HOST_PASSWORD': '',
     'PORT': 587,
+    'SUBJECT_PREFIX': '[Cyphon] ',
     'USE_TLS': True,
+}
+
+FUNCTIONAL_TESTS = {
+    'ENABLED': os.getenv('FUNCTIONAL_TESTS_ENABLED', False),
+    'DRIVER': os.getenv('FUNCTIONAL_TESTS_DRIVER', 'LOCALHOST'),  # 'DOCKER', 'SAUCELABS'
+    'HOST': os.getenv('FUNCTIONAL_TESTS_HOST', 'localhost'),
+    'PORT': os.getenv('FUNCTIONAL_TESTS_PORT', '4444'),
+    'PLATFORM': os.getenv('FUNCTIONAL_TESTS_PLATFORM', 'ANY'),
+    'BROWSER': os.getenv('FUNCTIONAL_TESTS_BROWSER', 'chrome'),
+    'VERSION': os.getenv('FUNCTIONAL_TESTS_VERSION', ''),
 }
 
 GEOIP = {
@@ -210,7 +231,6 @@ RABBITMQ = {
     'USERNAME': os.getenv('RABBITMQ_DEFAULT_USER', 'guest'),
     'PASSWORD': os.getenv('RABBITMQ_DEFAULT_PASS', 'guest'),
     'EXCHANGE': 'cyphon',
-    'EXCHANGE_TYPE': 'direct',
     'DURABLE': True,
 }
 
