@@ -1,0 +1,7 @@
+procurer.quartermasters.apps
+============================
+
+.. automodule:: procurer.quartermasters.apps
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,13 @@
+procurer.supplyorders.models
+============================
+
+.. figure:: ../_static/images/graphs/supplyorders-graph.png
+    :target: ../graphs/supplyorders.graph.html
+    :alt: SupplyOrders model graph
+
+    Graph of models in the :ref:`supplyorders` app and related apps.
+
+.. automodule:: procurer.supplyorders.models
+    :members:
+    :undoc-members:
+    :show-inheritance:

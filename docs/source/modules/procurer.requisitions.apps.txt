@@ -1,0 +1,7 @@
+procurer.requisitions.apps
+==========================
+
+.. automodule:: procurer.requisitions.apps
+    :members:
+    :undoc-members:
+    :show-inheritance:

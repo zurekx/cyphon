@@ -1,0 +1,7 @@
+procurer.suppliers.apps
+=======================
+
+.. automodule:: procurer.suppliers.apps
+    :members:
+    :undoc-members:
+    :show-inheritance:

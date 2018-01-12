@@ -1,0 +1,23 @@
+.. _supplyorders:
+
+procurer.supplyorders
+=====================
+
+.. image:: ../_static/images/icons/supplyorder.png
+    :width: 100px
+    :align: left
+
+.. include:: ../summaries/supplyorders.summary.txt
+
+:ref:`supplyorders-graph`
+
+Submodules
+----------
+
+.. toctree::
+
+   procurer.supplyorders.admin
+   procurer.supplyorders.apps
+   procurer.supplyorders.models
+   procurer.supplyorders.serializers
+   procurer.supplyorders.views

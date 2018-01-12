@@ -1,0 +1,24 @@
+.. _procurements:
+
+procurer.procurements
+=====================
+
+.. image:: ../_static/images/icons/procurement.png
+    :width: 100px
+    :align: left
+
+.. include:: ../summaries/procurements.summary.txt
+
+:ref:`procurements-graph`
+
+Submodules
+----------
+
+.. toctree::
+
+   procurer.procurements.admin
+   procurer.procurements.apps
+   procurer.procurements.filters
+   procurer.procurements.models
+   procurer.procurements.serializers
+   procurer.procurements.views

@@ -1,0 +1,13 @@
+procurer.manifests.models
+=========================
+
+.. figure:: ../_static/images/graphs/manifests-graph.png
+    :target: ../graphs/manifests.graph.html
+    :alt: Manifests model graph
+
+    Graph of models in the :ref:`manifests` app and related apps.
+
+.. automodule:: procurer.manifests.models
+    :members:
+    :undoc-members:
+    :show-inheritance:

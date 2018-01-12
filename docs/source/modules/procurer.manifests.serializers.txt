@@ -1,0 +1,7 @@
+procurer.manifests.serializers
+==============================
+
+.. automodule:: procurer.manifests.serializers
+    :members:
+    :undoc-members:
+    :show-inheritance:

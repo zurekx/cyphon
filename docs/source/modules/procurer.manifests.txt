@@ -1,0 +1,22 @@
+.. _manifests:
+
+procurer.manifests
+==================
+
+.. image:: ../_static/images/icons/manifest.png
+    :width: 100px
+    :align: left
+
+.. include:: ../summaries/manifests.summary.txt
+
+:ref:`manifests-graph`
+
+Submodules
+----------
+
+.. toctree::
+
+   procurer.manifests.admin
+   procurer.manifests.apps
+   procurer.manifests.models
+   procurer.manifests.serializers

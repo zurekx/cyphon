@@ -1,0 +1,7 @@
+procurer.supplychains.admin
+===========================
+
+.. automodule:: procurer.supplychains.admin
+    :members:
+    :undoc-members:
+    :show-inheritance:

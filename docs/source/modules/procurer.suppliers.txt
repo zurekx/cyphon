@@ -1,0 +1,21 @@
+.. _suppliers:
+
+procurer.suppliers
+==================
+
+.. image:: ../_static/images/icons/supplier.png
+    :width: 100px
+    :align: left
+
+.. include:: ../summaries/suppliers.summary.txt
+
+:ref:`suppliers-graph`
+
+Submodules
+----------
+
+.. toctree::
+
+   procurer.suppliers.admin
+   procurer.suppliers.apps
+   procurer.suppliers.models

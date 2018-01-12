@@ -1,0 +1,13 @@
+procurer.suppliers.models
+=========================
+
+.. figure:: ../_static/images/graphs/suppliers-graph.png
+    :target: ../graphs/suppliers.graph.html
+    :alt: Suppliers model graph
+
+    Graph of models in the :ref:`suppliers` app and related apps.
+
+.. automodule:: procurer.suppliers.models
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,7 @@
+procurer.supplyorders.views
+===========================
+
+.. automodule:: procurer.supplyorders.views
+    :members:
+    :undoc-members:
+    :show-inheritance:

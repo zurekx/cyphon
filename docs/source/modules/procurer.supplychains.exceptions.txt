@@ -1,0 +1,7 @@
+procurer.supplychains.exceptions
+================================
+
+.. automodule:: procurer.supplychains.exceptions
+    :members:
+    :undoc-members:
+    :show-inheritance:

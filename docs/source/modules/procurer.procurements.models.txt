@@ -1,0 +1,13 @@
+procurer.procurements.models
+============================
+
+.. figure:: ../_static/images/graphs/procurements-graph.png
+    :target: ../graphs/procurements.graph.html
+    :alt: Procurements model graph
+
+    Graph of models in the :ref:`procurements` app and related apps.
+
+.. automodule:: procurer.procurements.models
+    :members:
+    :undoc-members:
+    :show-inheritance:

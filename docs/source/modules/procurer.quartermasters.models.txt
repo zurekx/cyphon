@@ -1,0 +1,13 @@
+procurer.quartermasters.models
+==============================
+
+.. figure:: ../_static/images/graphs/quartermasters-graph.png
+    :target: ../graphs/quartermasters.graph.html
+    :alt: Quartermasters model graph
+
+    Graph of models in the :ref:`quartermasters` app and related apps.
+
+.. automodule:: procurer.quartermasters.models
+    :members:
+    :undoc-members:
+    :show-inheritance:

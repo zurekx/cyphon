@@ -1,0 +1,21 @@
+.. _quartermasters:
+
+procurer.quartermasters
+=======================
+
+.. image:: ../_static/images/icons/quartermaster.png
+    :width: 100px
+    :align: left
+
+.. include:: ../summaries/quartermasters.summary.txt
+
+:ref:`quartermasters-graph`
+
+Submodules
+----------
+
+.. toctree::
+
+   procurer.quartermasters.admin
+   procurer.quartermasters.apps
+   procurer.quartermasters.models

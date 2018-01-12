@@ -1,0 +1,13 @@
+procurer.requisitions.models
+============================
+
+.. figure:: ../_static/images/graphs/requisitions-graph.png
+    :target: ../graphs/requisitions.graph.html
+    :alt: Requisitions model graph
+
+    Graph of models in the :ref:`requisitions` app and related apps.
+
+.. automodule:: procurer.requisitions.models
+    :members:
+    :undoc-members:
+    :show-inheritance:

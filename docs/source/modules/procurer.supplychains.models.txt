@@ -1,0 +1,13 @@
+procurer.supplychains.models
+============================
+
+.. figure:: ../_static/images/graphs/supplychains-graph.png
+    :target: ../graphs/supplychains.graph.html
+    :alt: SupplyChains model graph
+
+    Graph of models in the :ref:`supplychains` app and related apps.
+
+.. automodule:: procurer.supplychains.models
+    :members:
+    :undoc-members:
+    :show-inheritance:

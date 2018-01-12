@@ -28,6 +28,7 @@ Packages
    responder
    parsers
    platforms
+   procurer
    query
    responder
    sifter

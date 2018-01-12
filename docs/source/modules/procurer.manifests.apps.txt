@@ -1,0 +1,7 @@
+procurer.manifests.apps
+=======================
+
+.. automodule:: procurer.manifests.apps
+    :members:
+    :undoc-members:
+    :show-inheritance:

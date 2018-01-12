@@ -1,0 +1,7 @@
+procurer.procurements.serializers
+=================================
+
+.. automodule:: procurer.procurements.serializers
+    :members:
+    :undoc-members:
+    :show-inheritance:

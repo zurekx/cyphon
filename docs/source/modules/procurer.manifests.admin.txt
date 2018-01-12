@@ -1,0 +1,7 @@
+procurer.manifests.admin
+========================
+
+.. automodule:: procurer.manifests.admin
+    :members:
+    :undoc-members:
+    :show-inheritance:

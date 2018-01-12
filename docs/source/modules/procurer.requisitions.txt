@@ -1,0 +1,21 @@
+.. _requisitions:
+
+procurer.requisitions
+=====================
+
+.. image:: ../_static/images/icons/requisition.png
+    :width: 100px
+    :align: left
+
+.. include:: ../summaries/requisitions.summary.txt
+
+:ref:`requisitions-graph`
+
+Submodules
+----------
+
+.. toctree::
+
+   procurer.requisitions.admin
+   procurer.requisitions.apps
+   procurer.requisitions.models

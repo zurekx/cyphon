@@ -1,0 +1,38 @@
+.. _procurer:
+
+procurer
+========
+
+.. image:: ../_static/images/icons/procurer.png
+    :width: 120px
+    :align: left
+
+.. include:: ../summaries/procurer.summary.txt
+
+Subpackages
+-----------
+
+.. toctree::
+
+   procurer.manifests
+   procurer.procurements
+   procurer.quartermasters
+   procurer.requisitions
+   procurer.suppliers
+   procurer.supplychains
+   procurer.supplyorders
+
+Submodules
+-----------
+
+.. toctree::
+
+   procurer.convoy
+
+Module contents
+---------------
+
+.. automodule:: sifter.mailsifter
+    :members:
+    :undoc-members:
+    :show-inheritance:

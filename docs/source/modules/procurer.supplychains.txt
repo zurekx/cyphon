@@ -1,0 +1,22 @@
+.. _supplychains:
+
+procurer.supplychains
+=====================
+
+.. image:: ../_static/images/icons/supplychain.png
+    :width: 100px
+    :align: left
+
+.. include:: ../summaries/supplychains.summary.txt
+
+:ref:`supplychains-graph`
+
+Submodules
+----------
+
+.. toctree::
+
+   procurer.supplychains.admin
+   procurer.supplychains.apps
+   procurer.supplychains.exceptions
+   procurer.supplychains.models
