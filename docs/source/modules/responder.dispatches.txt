@@ -18,3 +18,5 @@ Submodules
 
    responder.dispatches.admin
    responder.dispatches.models
+   responder.dispatches.serializers
+   responder.dispatches.views

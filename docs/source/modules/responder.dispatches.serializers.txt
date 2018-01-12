@@ -1,0 +1,7 @@
+responder.dispatches.serializers
+================================
+
+.. automodule:: responder.dispatches.serializers
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,7 @@
+responder.dispatches.views
+==========================
+
+.. automodule:: responder.dispatches.views
+    :members:
+    :undoc-members:
+    :show-inheritance:
