@@ -16,7 +16,7 @@ Overview
 
 To graph these models::
 
-    $ python manage.py graph_models actions couriers destinations -X Endpoint,Platform -g -o actions-graph.png
+    $ python manage.py graph_models actions couriers destinations -X Emissary,Endpoint,Platform -g -o actions-graph.png
 
 Related Graphs
 --------------
