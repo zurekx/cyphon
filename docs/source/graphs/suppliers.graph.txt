@@ -1,0 +1,25 @@
+.. _suppliers-graph:
+
+Suppliers Graph
+===============
+
+.. figure:: ../_static/images/graphs/suppliers-graph.png
+    :target: ../_static/images/graphs/suppliers-graph.png
+    :alt: Suppliers model graph
+
+    Graph of models in the :ref:`suppliers` app and related apps.
+
+Overview
+--------
+
+.. include:: ../summaries/suppliers.summary.txt
+
+To graph these models::
+
+    $ python manage.py graph_models suppliers requisitions -X Endpoint,Parameter,Platform -g -o suppliers-graph.png
+
+Related Graphs
+--------------
+
+* :ref:`platforms-graph`
+* :ref:`requisitions-graph`

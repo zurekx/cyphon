@@ -1,0 +1,25 @@
+.. _procurements-graph:
+
+Procurements Graph
+==================
+
+.. figure:: ../_static/images/graphs/procurements-graph.png
+    :target: ../_static/images/graphs/procurements-graph.png
+    :alt: Procurements model graph
+
+    Graph of models in the :ref:`procurements` app and related apps.
+
+Overview
+--------
+
+.. include:: ../summaries/procurements.summary.txt
+
+To graph these models::
+
+    $ python manage.py graph_models procurements datamungers supplychains -X Munger -g -o procurements-graph.png
+
+Related Graphs
+--------------
+
+* :ref:`datamungers-graph`
+* :ref:`supplychains-graph`

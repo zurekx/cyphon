@@ -1,0 +1,25 @@
+.. _supplychains-graph:
+
+SupplyChains Graph
+==================
+
+.. figure:: ../_static/images/graphs/supplychains-graph.png
+    :target: ../_static/images/graphs/supplychains-graph.png
+    :alt: SupplyChains model graph
+
+    Graph of models in the :ref:`supplychains` app and related apps.
+
+Overview
+--------
+
+.. include:: ../summaries/supplychains.summary.txt
+
+To graph these models::
+
+    $ python manage.py graph_models supplychains requisitions -X Endpoint -g -o supplychains-graph.png
+
+Related Graphs
+--------------
+
+* :ref:`endpoints-graph`
+* :ref:`requisitions-graph`

@@ -1,0 +1,26 @@
+.. _manifests-graph:
+
+Manifests Graph
+===============
+
+.. figure:: ../_static/images/graphs/manifests-graph.png
+    :target: ../_static/images/graphs/manifests-graph.png
+    :alt: Manifests model graph
+
+    Graph of models in the :ref:`manifests` app and related apps.
+
+Overview
+--------
+
+.. include:: ../summaries/manifests.summary.txt
+
+To graph these models::
+
+    $ python manage.py graph_models manifests stamps supplyorders -g -o manifests-graph.png
+
+Related Graphs
+--------------
+
+* :ref:`records-graph`
+* :ref:`stamps-graph`
+* :ref:`supplyorders-graph`

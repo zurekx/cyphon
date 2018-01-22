@@ -1,0 +1,27 @@
+.. _supplyorders-graph:
+
+SupplyOrders Graph
+==================
+
+.. figure:: ../_static/images/graphs/supplyorders-graph.png
+    :target: ../_static/images/graphs/supplyorders-graph.png
+    :alt: SupplyOrders model graph
+
+    Graph of models in the :ref:`supplyorders` app and related apps.
+
+Overview
+--------
+
+.. include:: ../summaries/supplyorders.summary.txt
+
+To graph these models::
+
+    $ python manage.py graph_models supplyorders alerts appusers distilleries procurements -X AbstractBaseUser,Analysis,Comment,PermissionsMixin,Taxonomy --no-inheritance -g -o supplyorders-graph.png
+
+Related Graphs
+--------------
+
+* :ref:`alerts-graph`
+* :ref:`appusers-graph`
+* :ref:`distilleries-graph`
+* :ref:`procurements-graph`

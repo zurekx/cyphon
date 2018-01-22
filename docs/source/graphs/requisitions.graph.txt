@@ -1,0 +1,26 @@
+.. _requisitions-graph:
+
+Requisitions Graph
+==================
+
+.. figure:: ../_static/images/graphs/requisitions-graph.png
+    :target: ../_static/images/graphs/requisitions-graph.png
+    :alt: Requisitions model graph
+
+    Graph of models in the :ref:`requisitions` app and related apps.
+
+Overview
+--------
+
+.. include:: ../summaries/requisitions.summary.txt
+
+To graph these models::
+
+    $ python manage.py graph_models requisitions quartermasters suppliers -g -o requisitions-graph.png
+
+Related Graphs
+--------------
+
+* :ref:`quartermasters-graph`
+* :ref:`suppliers-graph`
+* :ref:`endpoints-graph`
