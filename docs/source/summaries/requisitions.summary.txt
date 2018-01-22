@@ -1,0 +1,1 @@
+|Requisitions| send API requests to :ref:`Suppliers<suppliers>`, such as VirusTotal. They are performed with the help of :ref:`Quartermasters<Qqartermasters>`, which authenticate the calls to the APIs.

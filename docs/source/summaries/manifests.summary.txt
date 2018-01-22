@@ -1,0 +1,1 @@
+|Manifests| save API responses from :ref:`Requisitions<requisitions>`. They also save :ref:`Stamps<stamps>` of the API calls.

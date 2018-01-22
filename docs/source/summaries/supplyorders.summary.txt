@@ -1,0 +1,1 @@
+|SupplyOrders| allow |AppUsers| to request data through |Procurements|.

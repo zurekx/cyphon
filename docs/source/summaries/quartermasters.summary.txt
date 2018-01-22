@@ -1,0 +1,1 @@
+|Quartermasters| help to execute :ref:`Requisitions<requisitions>` by providing :ref:`Passports<passports>` for authenticating API requests to third parties, such as VirusTotal. The use of |Quartermasters| can be constrained by :ref:`Visas<visas>`, which limit the number of API requests made by a particular |Quartermaster| in a given time interval.

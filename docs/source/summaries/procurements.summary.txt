@@ -1,0 +1,1 @@
+|Procurements| gather data using |SupplyChains| and process that data with |DataMungers|.

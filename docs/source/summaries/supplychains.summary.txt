@@ -1,0 +1,1 @@
+|SupplyChains| gather data by passing requests through a series of |SupplyLinks|. Each |SupplyLink| issues an API request, the result of which is used to create a request for the next link in the |SupplyChain|.
