@@ -482,6 +482,7 @@ rst_epilog = """
 .. |Contexts| replace:: :class:`Contexts<contexts.models.Context>`
 .. |ContextFilter| replace:: :class:`~contexts.models.ContextFilter`
 .. |ContextFilters| replace:: :class:`Contexts<contexts.models.ContextFilter>`
+.. |Convoy| replace:: :class:`~procurer.convoy.Convoy`
 .. |Courier| replace:: :class:`~responder.couriers.models.Courier`
 .. |Couriers| replace:: :class:`Couriers<responder.couriers.models.Courier>`
 .. |Alert.data| replace:: :class:`~alerts.models.Alert.data`
@@ -606,6 +607,7 @@ rst_epilog = """
 .. |Plumbers| replace:: :class:`Plumbers<aggregator.plumbers.models.Plumber>`
 .. |Procedure| replace:: :class:`~lab.procedures.models.Procedure`
 .. |Procedures| replace:: :class:`Procedures<lab.procedures.models.Procedure>`
+.. |Procurer| replace:: :ref:`Procurer<procurer>`
 .. |Procurement| replace:: :class:`~procurer.procurements.models.Procurement`
 .. |Procurements| replace:: :class:`Procurements<procurer.procurements.models.Procurement>`
 .. |Protocol| replace:: :class:`~lab.procedures.models.Protocol`
