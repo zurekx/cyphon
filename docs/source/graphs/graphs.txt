@@ -56,6 +56,7 @@ between Cyphon models. See the section on :ref:`graphing-models` for more info.
    mailmungers <mailmungers.graph>
    mailsieves <mailsieves.graph>
    mailsifter <mailsifter.graph>
+   manifests <manifests.graph>
    monitors <monitors.graph>
    mungers <mungers.graph>
    parsers <parsers.graph>
@@ -64,7 +65,10 @@ between Cyphon models. See the section on :ref:`graphing-models` for more info.
    platforms <platforms.graph>
    plumbers <plumbers.graph>
    procedures <procedures.graph>
+   procurements <procurements.graph>
+   quartermasters <quartermasters.graph>
    records <records.graph>
+   requisitions <requisitions.graph>
    reservoirqueries <reservoirqueries.graph>
    reservoirs <reservoirs.graph>
    rules <rules.graph>
@@ -73,6 +77,9 @@ between Cyphon models. See the section on :ref:`graphing-models` for more info.
    sieves <sieves.graph>
    stamps <stamps.graph>
    streams <streams.graph>
+   suppliers <suppliers.graph>
+   supplychains <supplychains.graph>
+   supplyorders <supplyorders.graph>
    tags <tags.graph>
    tastes <tastes.graph>
    teasers <teasers.graph>
