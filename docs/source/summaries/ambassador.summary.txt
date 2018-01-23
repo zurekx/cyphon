@@ -1,6 +1,8 @@
-The |Ambassador| package provides a general framework for interacting with REST APIs. This framework is used by the more specialized |Aggregator|  and |Responder| packages to send requests to third-party platforms.
+The |Ambassador| package provides a general framework for interacting with REST APIs. This framework is used by the more specialized |Aggregator|, |Procurer|, and |Responder| packages to send requests to third-party platforms.
 
 The |Aggregator| package sends queries to APIs to find data matching a set of search parameters. Depending on the API, these can be keywords, usernames, locations, and/or timeframes.
+
+The |Procurer| package is used to chain together API requests, so that the response from one request can be used to construct another request.
 
 The |Responder| package sends a request to an API based on data from an |Alert|. This can be used to check the data against another database or to create a customer support ticket with a third party.
 
@@ -21,12 +23,12 @@ The |Ambassador| package provides base classes to address the general requiremen
     **When?**
         When was the request sent (and what was the response)?
 
-=====  ============  ============  =============
-Role   |Ambassador|  |Aggregator|  |Responder|
-=====  ============  ============  =============
-Where  |Platform|    |Reservoir|   |Destination|
-What   |Endpoint|    |Pipe|        |Action|
-Who    |Emissary|    |Plumber|     |Courier|
-How    |Transport|   |Faucet|      |Carrier|
-When   |Record|      |Invoice|     |Dispatch|
-=====  ============  ============  =============
+=====  ============  ============  ===============  =============
+Role   |Ambassador|  |Aggregator|  |Procurer|       |Responder|  
+=====  ============  ============  ===============  =============
+Where  |Platform|    |Reservoir|   |Supplier|       |Destination|
+What   |Endpoint|    |Pipe|        |Requisition|    |Action|
+Who    |Emissary|    |Plumber|     |Quartermaster|  |Courier|
+How    |Transport|   |Faucet|      |Convoy|         |Carrier|
+When   |Record|      |Invoice|     |Manifest|       |Dispatch|
+=====  ============  ============  ===============  =============
