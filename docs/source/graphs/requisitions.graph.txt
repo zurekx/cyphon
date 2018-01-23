@@ -16,7 +16,7 @@ Overview
 
 To graph these models::
 
-    $ python manage.py graph_models requisitions quartermasters suppliers -g -o requisitions-graph.png
+    $ python manage.py graph_models requisitions quartermasters suppliers -X Emmisary,Platform -g -o requisitions-graph.png
 
 Related Graphs
 --------------
@@ -24,3 +24,4 @@ Related Graphs
 * :ref:`quartermasters-graph`
 * :ref:`suppliers-graph`
 * :ref:`endpoints-graph`
+
