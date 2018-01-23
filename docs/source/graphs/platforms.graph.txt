@@ -16,10 +16,11 @@ Overview
 
 To graph these models::
 
-    $ python manage.py graph_models destinations reservoirs -X Gateway -o platforms-graph.png
+    $ python manage.py graph_models destinations reservoirs suppliers -X Gateway -o platforms-graph.png
 
 Related Graphs
 --------------
 
 * :ref:`destinations-graph`
 * :ref:`reservoirs-graph`
+* :ref:`suppliers-graph`

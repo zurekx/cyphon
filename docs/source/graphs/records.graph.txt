@@ -16,11 +16,12 @@ Overview
 
 To graph these models::
 
-    $ python manage.py graph_models dispatches invoices stamps -o records-graph.png
+    $ python manage.py graph_models dispatches invoices manifests stamps -o records-graph.png
 
 Related Graphs
 --------------
 
 * :ref:`dispatches-graph`
 * :ref:`invoices-graph`
+* :ref:`manifests-graph`
 * :ref:`stamps-graph`

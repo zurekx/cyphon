@@ -14,10 +14,11 @@ Overview
 
 To graph these models::
 
-    $ python manage.py graph_models couriers passports plumbers visas -o emissaries-graph.png
+    $ python manage.py graph_models couriers passports plumbers quartermasters visas -o emissaries-graph.png
 
 Related Graphs
 --------------
 
 * :ref:`couriers-graph`
 * :ref:`plumbers-graph`
+* :ref:`quartermasters-graph`
