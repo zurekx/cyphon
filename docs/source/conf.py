@@ -527,6 +527,8 @@ rst_epilog = """
 .. |ElasticsearchEngine| replace:: :class:`~engines.elasticsearch.engine.ElasticsearchEngine`
 .. |Faucet| replace:: :class:`~aggregator.pumproom.faucet.Faucet`
 .. |FIELD_TYPE_CHOICES| replace:: :const:`~cyphon.choices.FIELD_TYPE_CHOICES`
+.. |FieldCoupling| replace:: :class:`~procurer.supplychains.models.FieldCoupling`
+.. |FieldCouplings| replace:: :class:`FieldCouplings<procurer.supplychains.models.FieldCoupling>`
 .. |Fieldset| replace:: :class:`~query.collectionqueries.models.Fieldset`
 .. |Fieldsets| replace:: :class:`Fieldsets<query.collectionqueries.models.Fieldset>`
 .. |Filter| replace:: :class:`~aggregator.filters.models.Filter`
@@ -580,6 +582,8 @@ rst_epilog = """
 .. |MailSieves| replace:: :class:`MailSieves<sifter.mailsifter.mailsieves.models.MailSieve>`
 .. |MailSieveNode| replace:: :class:`~sifter.mailsifter.mailsieves.models.MailSieveNode`
 .. |MailSieveNodes| replace:: :class:`MailSieveNodes<sifter.mailsifter.mailsieves.models.MailSieveNode>`
+.. |Manifest| replace:: :class:`~procurer.manifests.models.Manifest`
+.. |Manifests| replace:: :class:`Manifests<procurer.manifests.models.Manifest>`
 .. |MongoDbEngine| replace:: :class:`~engines.mongodb.engine.MongoDbEngine`
 .. |Monitor| replace:: :class:`~monitors.models.Monitor`
 .. |Monitors| replace:: :class:`Monitors<monitors.models.Monitor>`
@@ -588,6 +592,8 @@ rst_epilog = """
 .. |Muzzle| replace:: :class:`~watchdogs.models.Muzzle`
 .. |Muzzles| replace:: :class:`Muzzles<watchdogs.models.Muzzle>`
 .. |OPERATOR_CHOICES| replace:: :const:`~cyphon.choices.OPERATOR_CHOICES`
+.. |Parameter| replace:: :class:`~procurer.requisitions.models.Parameter`
+.. |Parameters| replace:: :class:`Parameters<procurer.requisitions.models.Parameter>`
 .. |Passport| replace:: :class:`~ambassador.passports.models.Passport`
 .. |Passports| replace:: :class:`Passports<ambassador.passports.models.Passport>`
 .. |Pipe| replace:: :class:`~aggregator.pipes.models.Pipe`
@@ -600,6 +606,8 @@ rst_epilog = """
 .. |Plumbers| replace:: :class:`Plumbers<aggregator.plumbers.models.Plumber>`
 .. |Procedure| replace:: :class:`~lab.procedures.models.Procedure`
 .. |Procedures| replace:: :class:`Procedures<lab.procedures.models.Procedure>`
+.. |Procurement| replace:: :class:`~procurer.procurements.models.Procurement`
+.. |Procurements| replace:: :class:`Procurements<procurer.procurements.models.Procurement>`
 .. |Protocol| replace:: :class:`~lab.procedures.models.Protocol`
 .. |Protocols| replace:: :class:`Protocols<lab.procedures.models.Protocol>`
 .. |Pump| replace:: :class:`~aggregator.pumproom.pump.Pump`
@@ -607,10 +615,14 @@ rst_epilog = """
 .. |PumpRoom| replace:: :class:`~aggregator.pumproom.pumproom.PumpRoom`
 .. |QueryFieldset| replace:: :class:`~cyphon.fieldsets.QueryFieldset`
 .. |QueryFieldsets| replace:: :class:`QueryFieldsets<cyphon.fieldsets.QueryFieldset>`
+.. |Quartermaster| replace:: :class:`~procurer.quartermasters.models.Quartermaster`
+.. |Quartermasters| replace:: :class:`Quartermasters<procurer.quartermasters.models.Quartermaster>`
 .. |RealName| replace:: :class:`~codebooks.models.RealName`
 .. |RealNames| replace:: :class:`RealNames<codebooks.models.RealName>`
 .. |Record| replace:: :class:`~ambassador.records.models.Record`
 .. |Records| replace:: :class:`Records<ambassador.records.models.Record>`
+.. |Requisition| replace:: :class:`~procurer.requisitions.models.Requisition`
+.. |Requisitions| replace:: :class:`Requisitions<procurer.requisitions.models.Requisition>`
 .. |Reservoir| replace:: :class:`~aggregator.reservoirs.models.Reservoir`
 .. |Reservoirs| replace:: :class:`Reservoirs<aggregator.reservoirs.models.Reservoir>`
 .. |ReservoirQuery| replace:: :class:`~query.reservoirqueries.reservoirquery.ReservoirQuery`
@@ -636,6 +648,14 @@ rst_epilog = """
 .. |Stamps| replace:: :class:`Stamps<ambassador.stamps.models.Stamp>`
 .. |Stream| replace:: :class:`~aggregator.streams.models.Stream`
 .. |Streams| replace:: :class:`Streams<aggregator.streams.models.Stream>`
+.. |Supplier| replace:: :class:`~procurer.suppliers.models.Supplier`
+.. |Suppliers| replace:: :class:`Suppliers<procurer.suppliers.models.Supplier>`
+.. |SupplyChain| replace:: :class:`~procurer.supplychains.models.SupplyChain`
+.. |SupplyChains| replace:: :class:`SupplyChains<procurer.supplychains.models.SupplyChain>`
+.. |SupplyLink| replace:: :class:`~procurer.supplychains.models.SupplyLink`
+.. |SupplyLinks| replace:: :class:`SupplyLinks<procurer.supplychains.models.SupplyLink>`
+.. |SupplyOrder| replace:: :class:`~procurer.supplyorders.models.SupplyOrder`
+.. |SupplyOrders| replace:: :class:`SupplyOrders<procurer.supplyorders.models.SupplyOrder>`
 .. |TARGET_TYPE_CHOICES| replace:: :const:`~cyphon.choices.TARGET_TYPE_CHOICES`
 .. |Tag| replace:: :class:`~tags.models.Tag`
 .. |Tags| replace:: :class:`Tags<tags.models.Tag>`
