@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -15,6 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Defines a |Procurement| model for getting and processing data from a
+series of API requests.
+
+============================  ================================================
+Class                         Description
+============================  ================================================
+:class:`~Procurement`         Coordinates API requests and data processing.
+:class:`~ProcurementManager`  Model manager for |Procurements|.
+============================  ================================================
 
 """
 
@@ -45,11 +54,19 @@ class ProcurementManager(GetByNameManager):
     def filter_by_user(self, user, queryset=None):
         """Get |Procurements| that can be executed by the given user.
 
+        Parameters
+        ----------
+        user : |AppUser|
+            The user used to filter the queryset.
+
+        queryset : |QuerySet| or None
+            The |QuerySet| of |Procurements| to be filtered.
+
         Returns
         -------
         |Queryset|
-            A |Queryset| of |Procurements| can be executed by the given
-            user.
+            A |Queryset| of |Procurements| that can be executed by the
+            given user.
 
         """
         if queryset is not None:
@@ -64,6 +81,14 @@ class ProcurementManager(GetByNameManager):
 
     def filter_by_alert(self, alert, queryset=None):
         """Get |Procurements| that can be executed by the given user.
+
+        Parameters
+        ----------
+        alert : |Alert|
+            The |Alert| used to filter the queryset.
+
+        queryset : |QuerySet| or None
+            The |QuerySet| of |Procurements| to be filtered.
 
         Returns
         -------
@@ -86,7 +111,7 @@ class ProcurementManager(GetByNameManager):
 
 
 class Procurement(models.Model):
-    """
+    """Coordinates a chain of API requests and processes the results.
 
     Attributes
     ----------
@@ -135,14 +160,13 @@ class Procurement(models.Model):
 
     @property
     def distillery(self):
-        """
-        Returns the Distillery associated with the Procurement's DataMunger.
-        """
+        """Get the Distillery associated with the Procurement's DataMunger."""
         return self.munger.distillery
 
     @property
     def input_fields(self):
-        """
+        """Get a dictionary of input fields for the Procurement's SupplyChain.
+
         Returns a dictionary in which keys are the names of input fields
         and the values are the field types.
         """
@@ -171,31 +195,36 @@ class Procurement(models.Model):
         return self.munger.process(doc_obj)
 
     def validate(self, data):
-        """
-        Takes a data dictionary and returns a Boolean indicating whether
-        the data is valid input for the Procurement's SupplyChain.
+        """Validate a dictionary of data as input for the SupplyChain.
+
+        Takes a data dictionary and returns True if the data is valid
+        input for the Procurement's SupplyChain.
 
         Parameters
         ----------
         data : dict
-            Data to be evaluated as potential input for the |Procurement|.
+            Data to be evaluated as potential input for the Procurement.
 
         Returns
         -------
         bool
-            A Boolean indicating whether the data is valid input for the
-            Procurement.
+            Returns |True| id the data is valid input for the Procurement.
+
+        Raises
+        ------
+        |SupplyChainError|
+            Raises a |SupplyChainError| if the data is not valid input.
 
         """
         return self.supply_chain.validate_input(data)
 
     def is_valid(self, data):
-        """
+        """Take a dictionary and return True if the data is valid input.
 
         Parameters
         ----------
         data : dict
-            Data to be evaluated as potential input for the |Procurement|.
+            Data to be evaluated as potential input for the Procurement.
 
         Returns
         -------

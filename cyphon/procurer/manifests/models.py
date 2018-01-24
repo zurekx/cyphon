@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -15,6 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Defines a model for recording the results of an API request returned by
+a |Convoy|.
+
+===========================  ================================================
+Class                        Description
+===========================  ================================================
+:class:`~Manifest`           Records the results of an API request.
+===========================  ================================================
 
 """
 
@@ -35,6 +43,9 @@ class Manifest(Record):
     ----------
     stamp : Stamp
         A |Stamp| recording the details of the API call.
+
+    supply_order : SupplyOrder
+        A |SupplyOrder| associated with the Manifest.
 
     data : dict
         A dictionary containing the response to the API request.

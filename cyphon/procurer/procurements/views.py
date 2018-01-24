@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -15,11 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Defines views for |Procurements| using the Django REST framework.
+
+==============================  ===========================================
+Class                           Description
+==============================  ===========================================
+:class:`~ProcurementViewSet`    |CustomModelViewSet| for |Procurements|.
+==============================  ===========================================
 
 """
 
 # third party
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route, list_route
 
@@ -31,11 +38,11 @@ from procurer.supplychains.exceptions import SupplyChainError
 from procurer.supplyorders.models import SupplyOrder
 from procurer.supplyorders.serializers import SupplyOrderSerializer
 from .models import Procurement
-from .serializers import ProcurementSerializer#, ProcurementProcessSerializer
+from .serializers import ProcurementSerializer
 
 
 class ProcurementViewSet(CustomModelViewSet):
-    """REST API views for Procurements."""
+    """REST API views for |Procurements|."""
 
     queryset = Procurement.objects.all()
     custom_filter_backends = ['procurer.procurements.filters.ProcurementFilterBackend']
@@ -44,7 +51,7 @@ class ProcurementViewSet(CustomModelViewSet):
     @staticmethod
     def _get_alert(request):
         """
-        Takes a Request wit an `id` parameter and returns the Alert
+        Takes a Request with an `id` parameter and returns the Alert
         associated with the id if it exists. Otherwise, returns None.
         """
         user = request.user
@@ -69,7 +76,7 @@ class ProcurementViewSet(CustomModelViewSet):
 
     @list_route(methods=['get', 'post'], url_path='by-alert')
     def filtered_by_alert(self, request, *args, **kwargs):
-        """Return a list view of Procurements compatible with a given Alert.
+        """Return a list view of |Procurements| compatible with a given |Alert|.
 
         Parameters
         ----------
@@ -80,8 +87,7 @@ class ProcurementViewSet(CustomModelViewSet):
         -------
         :class:`rest_framework.response.Response`
             A Django REST framework HTTP `Response`_ object containing
-            a list of JSON serialized |Distilleries| associated with
-            |Alerts|.
+            a list of JSON serialized |Procurements|.
 
         """
         alert = self._get_alert(request)
@@ -112,9 +118,7 @@ class ProcurementViewSet(CustomModelViewSet):
         Returns
         -------
         :class:`rest_framework.response.Response`
-            A Django REST framework HTTP `Response`_ object containing
-            a list of JSON serialized |Distilleries| associated with
-            |Alerts|.
+            A Django REST framework HTTP `Response`_ object.
 
         """
         procurement = self.get_object()
@@ -149,9 +153,7 @@ class ProcurementViewSet(CustomModelViewSet):
         Returns
         -------
         :class:`rest_framework.response.Response`
-            A Django REST framework HTTP `Response`_ object containing
-            a list of JSON serialized |Distilleries| associated with
-            |Alerts|.
+            A Django REST framework HTTP `Response`_ object.
 
         """
         procurement = self.get_object()

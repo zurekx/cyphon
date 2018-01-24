@@ -20,8 +20,8 @@ platforms are enabled.
 
 Note
 ----
-The |Platform| class is the basis for the |Destination| and |Reservoir|
-classes.
+The |Platform| class is the basis for the |Destination|, |Reservoir|,
+and |Supplier| classes.
 
 """
 

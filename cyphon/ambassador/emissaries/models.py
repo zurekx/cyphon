@@ -19,8 +19,8 @@ Defines an |Emissary| base class for interacting with third-party APIs.
 
 Note
 ----
-The |Emissary| class is the basis for the |Courier| and |Plumber|
-classes.
+The |Emissary| class is the basis for the |Courier|, |Plumber|, and
+|Quartermatser| classes.
 
 """
 

@@ -21,7 +21,8 @@ requests to the endpoint.
 
 Note
 ----
-The |Endpoint| class is the basis for the |Action| and |Pipe| classes.
+The |Endpoint| class is the basis for the |Action|, |Pipe|, and
+|Requisition| classes.
 
 """
 

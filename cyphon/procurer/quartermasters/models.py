@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -15,6 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Defines a |Quartermaster| model for getting and processing data from a
+series of API requests.
+
+============================  ================================================
+Class                         Description
+============================  ================================================
+:class:`~Quartermaster`       Provides credentials for a |Convoy|.
+============================  ================================================
 
 """
 
@@ -28,7 +36,7 @@ from procurer.requisitions.models import Requisition
 
 
 class Quartermaster(Emissary):
-    """
+    """Handles a |Passport| and |Visa| for use with a |Convoy|.
 
     Attributes
     ----------
@@ -41,6 +49,10 @@ class Quartermaster(Emissary):
     visa : Visa
         The |Visa| used to define a rate limit when accessing any of the
         `endpoints`.
+
+    endpoints : `QuerySet` of `Requisitions`
+        A |QuerySet| of |Requisitions| that the |Quartermaster| can help
+        execute.
 
     """
     endpoints = models.ManyToManyField(

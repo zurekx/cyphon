@@ -19,7 +19,8 @@ Defines a |Record| base class for storing a record of an API call.
 
 Note
 ----
-The |Record| class is the basis for the |Dispatch| and |Invoice| classes.
+The |Record| class is the basis for the |Dispatch|, |Invoice|, and
+|Manifest| classes.
 
 """
 

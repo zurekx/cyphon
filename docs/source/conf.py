@@ -485,6 +485,7 @@ rst_epilog = """
 .. |Convoy| replace:: :class:`~procurer.convoy.Convoy`
 .. |Courier| replace:: :class:`~responder.couriers.models.Courier`
 .. |Couriers| replace:: :class:`Couriers<responder.couriers.models.Courier>`
+.. |CustomModelViewSet| replace:: :class:`CustomModelViewSet<cyphon.views.CustomModelViewSet>`
 .. |Alert.data| replace:: :class:`~alerts.models.Alert.data`
 .. |DataChute| replace:: :class:`~sifter.datasifter.datachutes.models.DataChute`
 .. |DataChutes| replace:: :class:`DataChutes<sifter.datasifter.datachutes.models.DataChute>`
@@ -654,6 +655,7 @@ rst_epilog = """
 .. |Suppliers| replace:: :class:`Suppliers<procurer.suppliers.models.Supplier>`
 .. |SupplyChain| replace:: :class:`~procurer.supplychains.models.SupplyChain`
 .. |SupplyChains| replace:: :class:`SupplyChains<procurer.supplychains.models.SupplyChain>`
+.. |SupplyChainError| replace:: :class:`~procurer.supplychains.exceptions.SupplyChainError`
 .. |SupplyLink| replace:: :class:`~procurer.supplychains.models.SupplyLink`
 .. |SupplyLinks| replace:: :class:`SupplyLinks<procurer.supplychains.models.SupplyLink>`
 .. |SupplyOrder| replace:: :class:`~procurer.supplyorders.models.SupplyOrder`

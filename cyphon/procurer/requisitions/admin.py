@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -15,6 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Customizes admin pages for |Requisitions| and |Parameters|.
+
+==============================  ===============================================
+Class                           Description
+==============================  ===============================================
+:class:`~ParameterAdmin`        Customizes admin pages for |Parameters|.
+:class:`~ParameterInlineAdmin`  Customizes inline admin pages for |Parameters|.
+:class:`~RequisitionAdmin`      Customize admin pages for |Requisitions|.
+==============================  ===============================================
 
 """
 
@@ -26,14 +35,14 @@ from .models import Requisition, Parameter
 
 
 @admin.register(Parameter)
-class ParameternAdmin(admin.ModelAdmin):
-    """Customizes admin pages for Parameters."""
+class ParameterAdmin(admin.ModelAdmin):
+    """Customizes admin pages for |Parameters|."""
 
     pass
 
 
 class ParameterInlineAdmin(admin.TabularInline):
-    """Customizes admin inline tables for Parameters."""
+    """Customizes admin inline tables for |Parameters|."""
 
     model = Parameter
     show_change_link = True
@@ -42,6 +51,6 @@ class ParameterInlineAdmin(admin.TabularInline):
 
 @admin.register(Requisition)
 class RequisitionAdmin(admin.ModelAdmin):
-    """Customizes admin pages for Requisitions."""
+    """Customizes admin pages for |Requisitions|."""
 
     inlines = [ParameterInlineAdmin, ]

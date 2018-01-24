@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Dunbar Security Solutions, Inc.
+# Copyright 2017-2018 Dunbar Security Solutions, Inc.
 #
 # This file is part of Cyphon Engine.
 #
@@ -15,7 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
-Defines filters for Procurements.
+Provides a filter backend for |Procurements|.
+
+==================================  =========================================
+Class                               Description
+==================================  =========================================
+:class:`~ProcurementFilterBackend`  A filter backend for |Procurements|.
+==================================  =========================================
+
 """
 
 # third party
