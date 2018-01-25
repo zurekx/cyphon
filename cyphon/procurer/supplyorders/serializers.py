@@ -15,7 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
-Serializers for SupplyOrders.
+Defines a serializer for |SupplyOrders|.
+
+====================================  ========================================
+Class                                 Description
+====================================  ========================================
+:class:`~SupplyOrderSerializer`       Serializer for |SupplyOrder| views.
+====================================  ========================================
+
 """
 
 # third party
@@ -27,9 +34,7 @@ from .models import SupplyOrder
 
 
 class SupplyOrderSerializer(serializers.ModelSerializer):
-    """
-    Serializer for SupplyOrders.
-    """
+    """Serializer for SupplyOrders."""
 
     manifests = ManifestSerializer(many=True)
 

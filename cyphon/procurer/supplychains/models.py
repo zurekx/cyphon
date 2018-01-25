@@ -15,6 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Defines a |SupplyChain| and related models to chain together
+API requests.
+
+============================  ================================================
+Class                         Description
+============================  ================================================
+:class:`~SupplyChain`         Chains together API requests.
+:class:`~SupplyChainManager`  Model manager for |SupplyChains|.
+:class:`~SupplyLink`          Defines an API call within a |SupplyChain|.
+:class:`~SupplyLinkManager`   Model manager for |SupplyLinks|.
+:class:`~FieldCoupling`       Maps a data field to an API parameter.
+============================  ================================================
 
 """
 
@@ -29,7 +41,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 # local
-# from bottler.containers.models import Container
 from cyphon.models import GetByNameManager
 from cyphon.choices import TIME_UNIT_CHOICES
 from cyphon.tasks import start_supplylink

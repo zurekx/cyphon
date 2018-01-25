@@ -20,7 +20,7 @@ Customizes admin pages for |Quartermasters|.
 ============================  ============================================
 Class                         Description
 ============================  ============================================
-:class:`~QuartermasterAdmin`  Customizes admin pages for |Quartermasters|.
+:class:`~QuartermasterAdmin`  Creates admin pages for |Quartermasters|.
 ============================  ============================================
 
 """

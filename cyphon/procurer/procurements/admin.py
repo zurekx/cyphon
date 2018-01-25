@@ -20,7 +20,7 @@ Customizes admin pages for |Procurements|.
 ==========================  ==========================================
 Class                       Description
 ==========================  ==========================================
-:class:`~ProcurementAdmin`  Customizes admin pages for |Procurements|.
+:class:`~ProcurementAdmin`  Creates admin pages for |Procurements|.
 ==========================  ==========================================
 
 """

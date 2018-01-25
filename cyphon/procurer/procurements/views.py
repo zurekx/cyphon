@@ -118,7 +118,8 @@ class ProcurementViewSet(CustomModelViewSet):
         Returns
         -------
         :class:`rest_framework.response.Response`
-            A Django REST framework HTTP `Response`_ object.
+            A Django REST framework HTTP `Response`_ object containing
+            the result of the SupplyOrder.
 
         """
         procurement = self.get_object()
@@ -145,6 +146,9 @@ class ProcurementViewSet(CustomModelViewSet):
     def process_alert(self, request, *args, **kwargs):
         """Create and process a SupplyOrder based on an Alert.
 
+        Takes a Request with an |Alert| id, and uses data from the
+        |Alert| to create and process a |SupplyOrder|.
+
         Parameters
         ----------
         request : :class:`rest_framework.request.Request`
@@ -153,7 +157,8 @@ class ProcurementViewSet(CustomModelViewSet):
         Returns
         -------
         :class:`rest_framework.response.Response`
-            A Django REST framework HTTP `Response`_ object.
+            A Django REST framework HTTP `Response`_ object containing
+            the result of the SupplyOrder.
 
         """
         procurement = self.get_object()

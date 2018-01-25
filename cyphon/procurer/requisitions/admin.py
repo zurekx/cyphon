@@ -20,9 +20,9 @@ Customizes admin pages for |Requisitions| and |Parameters|.
 ==============================  ===============================================
 Class                           Description
 ==============================  ===============================================
-:class:`~ParameterAdmin`        Customizes admin pages for |Parameters|.
-:class:`~ParameterInlineAdmin`  Customizes inline admin pages for |Parameters|.
-:class:`~RequisitionAdmin`      Customize admin pages for |Requisitions|.
+:class:`~ParameterAdmin`        Creates admin pages for |Parameters|.
+:class:`~ParameterInlineAdmin`  Creates inline admin pages for |Parameters|.
+:class:`~RequisitionAdmin`      Creates admin pages for |Requisitions|.
 ==============================  ===============================================
 
 """

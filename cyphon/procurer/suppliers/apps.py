@@ -15,6 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Configures the :ref:`Suppliers<suppliers>` app.
+
+==============================  =================================
+Class                           Description
+==============================  =================================
+:class:`~SuppliersConfig`       |AppConfig| for |Suppliers|.
+==============================  =================================
 
 """
 

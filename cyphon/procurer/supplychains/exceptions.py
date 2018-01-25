@@ -16,6 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Configures exceptions for the :ref:`SupplyChains<supplychains>` app.
+
+==============================  ======================================
+Class                           Description
+==============================  ======================================
+:class:`~SupplyChainError`      An Exception for |SupplyChain| errors.
+==============================  ======================================
 
 """
 
@@ -31,4 +38,5 @@ class SupplyChainError(Exception):
     """
 
     def __init__(self, msg=None):
+        super(SupplyChainError, self).__init__(msg)
         self.msg = msg

@@ -15,6 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Customizes admin pages for |SupplyChains|, |SupplyLinks|, and |FieldCouplings|.
+
+==================================  =========================================
+Class                               Description
+==================================  =========================================
+:class:`~FieldCouplingAdmin`        Creates admin pages for |FieldCouplings|.
+:class:`~FieldCouplingInlineAdmin`  Inline admin pages for |FieldCouplings|.
+:class:`~SupplyChainAdmin`          Creates admin pages for |SupplyChains|.
+:class:`~SupplyLinkAdmin`           Creates admin pages for |SupplyLinks|.
+:class:`~SupplyLinkInlineAdmin`     Inline admin pages for |SupplyLinks|.
+==================================  =========================================
 
 """
 

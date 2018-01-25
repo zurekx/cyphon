@@ -15,6 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Defines views for |SupplyOrders| using the Django REST framework.
+
+==============================  ===========================================
+Class                           Description
+==============================  ===========================================
+:class:`~SupplyOrderViewSet`    |CustomModelViewSet| for |SupplyOrders|.
+==============================  ===========================================
 
 """
 

@@ -15,6 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Defines a |SupplyOrder| model for processing |Procurements| for
+by |AppUsers|.
+
+============================  ================================================
+Class                         Description
+============================  ================================================
+:class:`~SupplyOrder`         Handles a |Procurement| for an |AppUser|.
+:class:`~SupplyOrderManager`  Model manager for |SupplyOrders|.
+============================  ================================================
 
 """
 

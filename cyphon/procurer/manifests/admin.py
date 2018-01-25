@@ -20,7 +20,7 @@ Customizes admin pages for |Manifests|.
 =========================  =========================================
 Class                      Description
 =========================  =========================================
-:class:`~ManifestAdmin`    Customizes admin pages for |Manifests|.
+:class:`~ManifestAdmin`    Creates admin pages for |Manifests|.
 =========================  =========================================
 
 """

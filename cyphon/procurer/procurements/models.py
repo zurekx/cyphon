@@ -197,8 +197,7 @@ class Procurement(models.Model):
     def validate(self, data):
         """Validate a dictionary of data as input for the SupplyChain.
 
-        Takes a data dictionary and returns True if the data is valid
-        input for the Procurement's SupplyChain.
+        Takes a data dictionary and returns True if the data is validinput for the Procurement's SupplyChain.
 
         Parameters
         ----------
@@ -240,7 +239,7 @@ class Procurement(models.Model):
             return False
 
     def process(self, supply_order):
-        """
+        """Process and update a |SupplyOrder|.
 
         Parameters
         ----------

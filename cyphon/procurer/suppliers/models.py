@@ -15,6 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Defines a |Supplier| model for third-party platforms that fulfill
+API requests through |Requisitions|.
+
+============================  ================================================
+Class                         Description
+============================  ================================================
+:class:`~Supplier`            Defines a third-party platform.
+============================  ================================================
 
 """
 
@@ -26,7 +34,7 @@ from ambassador.platforms.models import Platform, PlatformManager
 
 
 class Supplier(Platform):
-    """
+    """A third-party |Platform| that fulfills |Requisitions|.
 
     Attributes
     ----------

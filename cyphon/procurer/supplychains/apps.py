@@ -15,6 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Configures the :ref:`SupplyChains<supplychains>` app.
+
+==============================  =================================
+Class                           Description
+==============================  =================================
+:class:`~SupplyChainsConfig`    |AppConfig| for |SupplyChains|.
+==============================  =================================
 
 """
 

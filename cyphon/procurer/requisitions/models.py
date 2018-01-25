@@ -15,6 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
+Defines models for accessing and submitting a request to an API endpoint.
+
+============================  ================================================
+Class                         Description
+============================  ================================================
+:class:`~Parameter`           Defines a request parameter for an API endpoint.
+:class:`~Requisition`         Defines an API endpoint.
+============================  ================================================
 
 """
 
