@@ -4,7 +4,7 @@ backoff==1.4.3
 beautifulsoup4==4.6.0
 billiard==3.5.0.3
 bleach==2.1.2
-boto3==1.5.20
+boto3==1.5.21
 celery==4.1.0
 cryptography==2.1.4
 django-autocomplete-light==2.3.3  # pyup: >=2.0.0,<3.0.0
@@ -50,7 +50,7 @@ requests==2.18.4
 sauceclient==1.0.0
 selenium==3.8.1
 six==1.10.0
-testfixtures==5.3.1
+testfixtures==5.4.0
 textblob==0.15.1
 tlslite==0.4.9
 tweepy==3.5.0
