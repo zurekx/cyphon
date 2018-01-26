@@ -1,1 +1,7 @@
-The Procurer package is used to send API requests to third parties. Requests are defined as :ref:`Requisitions<requisitions>`, which are sent to particular :ref:`Suppliers<suppliers>` (such as VirusTotal). :ref:`Quartermasters<quartermasters>` are used to provide credentials to authenticate the API requests. Results are saved as :ref:`Manifests<manifests>`, which provide information about the API calls. Several :ref:`Requisitions<requisitions>` can be chained together in a :ref:`SupplyChain<supplychains>`. :ref:`Procurements<procurements>` process the results from :ref:`SupplyChains<supplychains>` by passing them to :ref:`DataMungers<datamungers>`. :ref:`Procurements<procurements>` can be issued by :ref:`AppUsers<appusers>` as :ref:`SupplyOrders<supplyorders>`.
+The Procurer package is used to send API requests to third parties. Requests are defined as :ref:`Requisitions<requisitions>`, which are sent to particular :ref:`Suppliers<suppliers>` (such as VirusTotal).
+
+:ref:`Quartermasters<quartermasters>` are used to provide credentials to authenticate the API requests. Results are saved as :ref:`Manifests<manifests>`, which provide information about the API calls. 
+
+Several :ref:`Requisitions<requisitions>` can be chained together as SupplyLinks in a :ref:`SupplyChain<supplychains>`.
+
+:ref:`Procurements<procurements>` process the results from :ref:`SupplyChains<supplychains>` by passing them to :ref:`DataMungers<datamungers>`. :ref:`Procurements<procurements>` can be issued by :ref:`AppUsers<appusers>` as :ref:`SupplyOrders<supplyorders>`.
