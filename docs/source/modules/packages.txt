@@ -24,12 +24,11 @@ Packages
    inspections
    lab
    monitors
-   receiver
-   responder
    parsers
    platforms
    procurer
    query
+   receiver
    responder
    sifter
    tags
