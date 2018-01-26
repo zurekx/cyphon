@@ -32,10 +32,12 @@ Cyphon's docstrings use `cross-references`_ to create hyperlinks to other object
 Substitutions that are used in multiple files are defined in the `rst_epilog`_ setting of the Sphinx conf.py file. These sustitutions can be used in any docstring or documentation file within the project. However, substitutions that are only needed in one file are defined in that file, rather than in the conf.py file.
 
 .. _cross-references: http://www.sphinx-doc.org/en/stable/markup/inline.html#xref-syntax
-.. _Napoleon: http://www.sphinx-doc.org/en/stable/ext/napoleon.html
-.. _NumPy documentation style: http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html.. _Sphinx: http://www.sphinx-doc.org/en/stable/
+.. _Napoleon: http://sphinxcontrib-napoleon.readthedocs.io/en/latest/
+.. _NumPy documentation style: http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html
+.. _Sphinx: http://www.sphinx-doc.org/en/stable/
 .. _reStructuredText: http://www.sphinx-doc.org/en/stable/rest.html
 .. _rst_epilog: http://www.sphinx-doc.org/en/stable/config.html#confval-rst_epilog
 .. _Sphinx: http://www.sphinx-doc.org/
-.. _Style Guide for Sphinx-based Documentation: http://documentation-style-guide-sphinx.readthedocs.io/en/latest/style-guide.html.. _NumPy documentation style: https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt
+.. _Style Guide for Sphinx-based Documentation: http://documentation-style-guide-sphinx.readthedocs.io/en/latest/style-guide.html
+.. _NumPy documentation style: https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt
 .. _substitutions: http://www.sphinx-doc.org/en/stable/rest.html#substitutions
