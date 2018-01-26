@@ -37,24 +37,24 @@ from .models import Manifest
 class ManifestAdmin(JSONDataAdmin):
     """Customizes admin pages for |Manifests|."""
 
-    exclude = ['data']
-    readonly_fields = [
-        'supply_order',
-        'stamp',
-        'data_prettified'
-    ]
     list_display = [
         'id',
         'supply_order',
         'get_status_code',
         'get_user'
     ]
-    search_fields = [
-        'stamp__user__email'
-    ]
     list_per_page = 25
     list_select_related = True
 
+    exclude = ['data']
+    readonly_fields = [
+        'supply_order',
+        'stamp',
+        'data_prettified'
+    ]
+    search_fields = [
+        'stamp__user__email'
+    ]
     fieldsets = (
         (None, {
             'fields': ['supply_order', 'stamp', 'data_prettified'],
