@@ -28,11 +28,3 @@ Submodules
 .. toctree::
 
    procurer.convoy
-
-Module contents
----------------
-
-.. automodule:: sifter.mailsifter
-    :members:
-    :undoc-members:
-    :show-inheritance:
