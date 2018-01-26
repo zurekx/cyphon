@@ -23,12 +23,12 @@ The |Ambassador| package provides base classes to address the general requiremen
     **When?**
         When was the request sent (and what was the response)?
 
-=====  ============  ============  ===============  =============
-Role   |Ambassador|  |Aggregator|  |Procurer|       |Responder|  
-=====  ============  ============  ===============  =============
-Where  |Platform|    |Reservoir|   |Supplier|       |Destination|
-What   |Endpoint|    |Pipe|        |Requisition|    |Action|
-Who    |Emissary|    |Plumber|     |Quartermaster|  |Courier|
-How    |Transport|   |Faucet|      |Convoy|         |Carrier|
-When   |Record|      |Invoice|     |Manifest|       |Dispatch|
-=====  ============  ============  ===============  =============
+==========  ===============  ===============  ===============  ===============
+Role        |Ambassador|     |Aggregator|     |Procurer|       |Responder|  
+==========  ===============  ===============  ===============  ===============
+Where       |Platform|       |Reservoir|      |Supplier|       |Destination|
+What        |Endpoint|       |Pipe|           |Requisition|    |Action|
+Who         |Emissary|       |Plumber|        |Quartermaster|  |Courier|
+How         |Transport|      |Faucet|         |Convoy|         |Carrier|
+When        |Record|         |Invoice|        |Manifest|       |Dispatch|
+==========  ===============  ===============  ===============  ===============
