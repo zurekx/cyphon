@@ -80,7 +80,7 @@ class Monitor(Alarm):
 
     time_unit : str
         The time units for the time_interval. Possible values are
-        constrained to TIME_UNIT_CHOICES.
+        constrained to |TIME_UNIT_CHOICES|.
 
     alerts_enabled : bool
         If True, the Monitor is allowed to generate Alerts.

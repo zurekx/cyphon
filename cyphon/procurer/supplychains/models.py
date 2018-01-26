@@ -80,11 +80,12 @@ class SupplyChainManager(GetByNameManager):
 
 
 class SupplyChain(models.Model):
-    """
+    """Links together a series of API requests.
 
     Attributes
     ----------
     name : str
+        The name of the SupplyChain.
 
     """
 
@@ -103,29 +104,28 @@ class SupplyChain(models.Model):
         verbose_name_plural = _('supply chains')
 
     def __str__(self):
-        """
-
-        """
+        """String representation of a SupplyChain."""
         return self.name
 
     @cached_property
     def _first_link(self):
-        """Return the first SupplyLink in the SupplyChain."""
+        """The first SupplyLink in the SupplyChain."""
         return self.supply_links.first()
 
     @cached_property
     def _last_link(self):
-        """Return the last SupplyLink in the SupplyChain."""
+        """The last SupplyLink in the SupplyChain."""
         return self.supply_links.last()
 
     @property
     def platform(self):
-        """Return the Platform for the last SupplyLink in the SupplyChain."""
+        """The |Platform| for the last |SupplyLink| in the |SupplyChain|."""
         return self._last_link.platform
 
     @property
     def input_fields(self):
-        """
+        """|dict| of field names and field types for the SupplyChain input.
+
         Returns a dictionary in which keys are the names of input fields
         and the values are the field types.
         """
@@ -133,9 +133,7 @@ class SupplyChain(models.Model):
 
     @property
     def errors(self):
-        """
-
-        """
+        """|list| of errors associated with the SupplyChain's SupplyLinks."""
         errors = []
         supply_links = self.supply_links.all()
 
@@ -149,14 +147,46 @@ class SupplyChain(models.Model):
         return errors
 
     def validate_input(self, data):
-        """
-        Returns a dictionary in which keys are the names of input fields
-        and the values are the field types.
+        """Return |True| if the data is valid input for the SupplyChain.
+
+        Parameter
+        ---------
+        data : dict
+            The data to validate as input for the SupplyChain.
+
+        Returns
+        -------
+        |True|
+            Returns |True| if the data is valid input for the SupplyChain.
+            (Otherwise, raises a |SupplyChainError|.)
+
+        Raises
+        ------
+        |SupplyChainError|
+            If the data is not valid input for the SupplyChain.
+
         """
         return self._first_link.validate_input(data)
 
     def start(self, supply_order):
-        """
+        """Fulfill a |SupplyOrder| using the SupplyChain.
+
+        Parameter
+        ---------
+        supply_order : |SupplyOrder|
+            The |SupplyOrder| that is supplying the input data for the
+            SupplyChain and storing the result of the API request.
+
+        Returns
+        -------
+        dict or None
+            Returns a dictionary of results if the SupplyChain was
+            executed successfully. Otherwise, returns None.
+
+        Notes
+        -----
+        As a side effect, this method will also create |Manifests| that
+        record the API calls made by the SupplyLinks in the SupplyChain.
 
         """
         # use object ids instead of objects, which aren't JSON serializable
@@ -220,7 +250,7 @@ class SupplyLinkManager(GetByNameManager):
 
 
 class SupplyLink(models.Model):
-    """
+    """Defines an API call within a |SupplyChain|.
 
     Attributes
     ----------
@@ -236,8 +266,11 @@ class SupplyLink(models.Model):
         lowest rank first)
 
     wait_time : int
+        A delay time to wait before processing a request to the API.
 
     time_unit : str
+        The time units for the wait_time. Possible values are
+        constrained to |TIME_UNIT_CHOICES|.
 
     """
 
@@ -290,14 +323,13 @@ class SupplyLink(models.Model):
         verbose_name_plural = _('supply links')
 
     def __str__(self):
-        """
-
-        """
+        """A string representation of the SupplyLink."""
         return self.name
 
     @cached_property
     def input_fields(self):
-        """
+        """|dict| of field names and field types for the SupplyLink input.
+
         Returns a dictionary in which keys are the names of input fields
         and the values are the field types.
         """
@@ -407,7 +439,7 @@ class SupplyLink(models.Model):
 
         Raises
         ------
-        SupplyChainError
+        |SupplyChainError|
 
         """
         if data is None:

@@ -134,9 +134,7 @@ class SupplyOrder(models.Model):
         ordering = ['-id']
 
     def __str__(self):
-        """
-
-        """
+        """A string representation of a SupplyOrder."""
         return '%s %s' % (self.__class__.__name__, self.pk)
 
     @property

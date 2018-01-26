@@ -17,11 +17,11 @@
 """
 Defines a |Convoy| model for processing |Requisitions|.
 
-============================  ================================================
-Class                         Description
-============================  ================================================
-:class:`~Convoy`              A |Transport| associated with a |Requisition|.
-============================  ================================================
+================  =======================================================
+Class             Description
+================  =======================================================
+:class:`~Convoy`  A |Transport| subclass associated with a |Requisition|.
+================  =======================================================
 
 """
 
@@ -31,24 +31,23 @@ from procurer.manifests.models import Manifest
 
 
 class Convoy(Transport):
-    """
-
-    """
+    """A |Transport| for a |Requisition|."""
 
     def create_record(self, stamp, obj):
-        """
-        Create a record of the response
+        """Create a |Manifest| to record an API call and its response.
 
         Parameters
         ----------
         stamp : |Stamp|
+            The |Stamp| assciated with an API call.
 
         obj : |dict|
-
+            The data returned by the API call.
 
         Returns
         -------
-        None
+        |Manifest|
+            A |Manifest| recording an API call and its result.
 
         """
         return Manifest.objects.create(

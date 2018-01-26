@@ -45,7 +45,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class Requisition(Endpoint):
-    """
+    """Defines an API endpoint of a |Supplier|.
 
     Attributes
     ----------
@@ -64,8 +64,8 @@ class Requisition(Endpoint):
         |Endpoint|. The |Visa| defines the rate limit that should
         apply to the |Emissary|'s |Passport| (API key).
 
-    platform : |Supplier|
-        The data platform which the API endpoint accesses.
+    platform : Supplier
+        The |Supplier| to which the Requisition is directed.
 
     """
 
@@ -115,7 +115,7 @@ class Requisition(Endpoint):
 
 
 class ParameterManager(models.Manager):
-    """Manage |Parameter| objects.
+    """Manages |Parameter| objects.
 
     Adds methods to the default Django model manager.
     """
@@ -153,7 +153,38 @@ class ParameterManager(models.Manager):
 
 
 class Parameter(models.Model):
-    """
+    """A request parameter for an API endpoint.
+
+    Attributes
+    ----------
+    requisition : Requisition
+        The |Requisition| with which the Parameter is associated.
+
+    param_name : str
+        The name of the parameter in an API request.
+
+    param_type : str
+        The data type of the request parameter. Choices are limited to
+        |FIELD_TYPE_CHOICES|.
+
+    default : str
+        An optional default value that can supplied to a form for
+        creating an API request.
+
+    choices : `list` of `lists`
+        An optional list of [value, label] options that can used in a
+        form for creating an API request.
+
+    required : bool
+        A Boolean indicating whether the parameter is required in
+        requests to the API endpoint.
+
+    help_text : str
+        Optional help text to explain the purpose of the parameter that
+        can be used in forms for creating an API request.
+
+    verbose_name : str
+        Optional human-readable name for the parameter for use in forms.
 
     """
 
@@ -187,7 +218,7 @@ class Parameter(models.Model):
         null=True,
         blank=True,
         help_text=_('A list of choices for the parameter, '
-                    'in the format: (value, label), (value, label)')
+                    'in the format: [value, label], [value, label]')
     )
     required = models.BooleanField(
         default=False,
@@ -224,19 +255,11 @@ class Parameter(models.Model):
         """String representation of a Parameter."""
         return '%s : %s' % (self.requisition, self.param_name)
 
-    def save(self, *args, **kwargs):
-        """
-        Overrides the save() method to validate the default value.
-        """
-        if self.default is not None \
-                and not self._validate_data_type(self.value):
-            msg = _('Default value is incompatible with the parameter type.')
-            raise ValidationError(msg)
-        return super(Parameter, self).save(*args, **kwargs)
-
     def _validate_data_type(self, value):
-        """
+        """Validate a value against the parameter's data type.
 
+        Returns a Boolean indicating if the given value is compatible
+        with the Parameter's data type.
         """
         try:
             restore_type(field_type=self.param_type, value=value)
@@ -244,8 +267,40 @@ class Parameter(models.Model):
         except ValueError:
             return False
 
-    def validate(self, value):
+    def save(self, *args, **kwargs):
+        """Validate and save the Parameter object.
+
+        Overrides the save() method to validate the default value.
+
+        Returns
+        -------
+        self
+
+        Raises
+        ------
+        ValidationError
+            If the default value is incompatible with the parameter type.
+
         """
+        if self.default is not None \
+                and not self._validate_data_type(self.value):
+            msg = _('Default value is incompatible with the parameter type.')
+            raise ValidationError(msg)
+        return super(Parameter, self).save(*args, **kwargs)
+
+    def validate(self, value):
+        """Return a Boolean indicating if the given parameter value is valid.
+
+        Parameters
+        ----------
+        value : any
+            The value to examine.
+
+        Returns
+        -------
+        bool
+            Returns |True| if the value is valid for the parameter.
+            Otherwise, returns |False|.
 
         """
         if value in [None, '']:
