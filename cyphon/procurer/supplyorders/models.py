@@ -16,7 +16,7 @@
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
 Defines a |SupplyOrder| model for processing |Procurements| for
-by |AppUsers|.
+|AppUsers|.
 
 ============================  ================================================
 Class                         Description
@@ -72,11 +72,30 @@ class SupplyOrderManager(models.Manager):
 
 
 class SupplyOrder(models.Model):
-    """
+    """Processes a |Procurement| for an |AppUser|.
 
     Attributes
     ----------
-    name : str
+    procurement : Procurement
+        The |Procurement| used to process the |SupplyOrder|.
+
+    user : AppUser
+        The |AppUser| associated with the |SupplyOrder|.
+
+    alert : Alert
+        The |Alert| associated with the |SupplyOrder|.
+
+    input_data : dict
+        The data used as the input for the |SupplyChain|.
+
+    distillery : Distillery
+        The |Distillery| in which the |SupplyOrder|'s result is saved.
+
+    doc_id : str
+        The document id of the saved result.
+
+    created_date : datetime
+        A |datetime| for when the |SupplyOrder| was created.
 
     """
 
@@ -139,9 +158,10 @@ class SupplyOrder(models.Model):
 
     @property
     def results(self):
-        """
-        Returns the document for the SupplyOrder if it can be found.
-        If not, returns an empty dictionary.
+        """A |dict| of results associated with the |SupplyOrder|.
+
+        Returns a |dict| of the document for the |SupplyOrder| if it can
+        be found. If not, returns an empty |dict|.
         """
         if self.distillery and self.doc_id:
             data = self.distillery.find_by_id(self.doc_id)
@@ -154,14 +174,24 @@ class SupplyOrder(models.Model):
 
     @property
     def input_fields(self):
-        """
+        """A |dict| of input field names mapped to their data types.
+
         Returns a dictionary in which keys are the names of input fields
         and the values are the field types.
         """
         return self.procurement.input_fields
 
     def associate_alert(self, alert):
-        """
+        """Associate an |Alert| with the |SupplyOrder|.
+
+        Parameters
+        ----------
+        alert : |Alert|
+            The |Alert| to associate with eth |SupplyOrder|.
+
+        Returns
+        -------
+        self
 
         """
         self.alert = alert
@@ -169,7 +199,19 @@ class SupplyOrder(models.Model):
         return self
 
     def update_result(self, distillery, doc_id):
-        """
+        """Update the |SupplyOrder| with the storage location of its result.
+
+        Parameters
+        ----------
+        distillery : |Distillery|
+            The |Distillery| where the |SupplyOrder|'s result is saved.
+
+        doc_id : dict
+            The document id for the |SupplyOrder|'s result.
+
+        Returns
+        -------
+        self
 
         """
         self.distillery = distillery
@@ -178,8 +220,12 @@ class SupplyOrder(models.Model):
         return self
 
     def use_alert_data(self):
-        """
-        Uses values from the Alert data for the SupplyOrder data.
+        """Use date from the |SupplyOrder|'s |Alert| for the input data.
+
+        Returns
+        -------
+        self
+
         """
         input_data = {}
         alert_data = self.alert.data
@@ -190,7 +236,16 @@ class SupplyOrder(models.Model):
         return self
 
     def process(self):
-        """
+        """Process and update a |SupplyOrder|.
+
+        Parameters
+        ----------
+        supply_order : |SupplyOrder|
+            The |SupplyOrder| that will process and save the data.
+
+        Returns
+        -------
+            The processed and updated |SupplyOrder|.
 
         """
         return self.procurement.process(self)

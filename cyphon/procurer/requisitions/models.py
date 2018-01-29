@@ -82,7 +82,7 @@ class Requisition(Endpoint):
 
     @property
     def required_parameters(self):
-        """Get a QuerySet of required Parameters.
+        """Get a |QuerySet| of required |Parameters|.
 
         Returns
         -------

@@ -60,7 +60,7 @@ class SupplyChainManager(GetByNameManager):
     def filter_by_user(self, user, queryset=None):
         """Get |SupplyChains| that can be executed by the given user.
 
-        Ensures that every SupplyLink in the the SupplyChain can be
+        Ensures that every |SupplyLink| in the the |SupplyChain| can be
         executed by the given user.
 
         Returns
@@ -85,7 +85,7 @@ class SupplyChain(models.Model):
     Attributes
     ----------
     name : str
-        The name of the SupplyChain.
+        The name of the |SupplyChain|.
 
     """
 
@@ -104,17 +104,17 @@ class SupplyChain(models.Model):
         verbose_name_plural = _('supply chains')
 
     def __str__(self):
-        """String representation of a SupplyChain."""
+        """String representation of a |SupplyChain|."""
         return self.name
 
     @cached_property
     def _first_link(self):
-        """The first SupplyLink in the SupplyChain."""
+        """The first |SupplyLink| in the |SupplyChain|."""
         return self.supply_links.first()
 
     @cached_property
     def _last_link(self):
-        """The last SupplyLink in the SupplyChain."""
+        """The last |SupplyLink| in the |SupplyChain|."""
         return self.supply_links.last()
 
     @property
@@ -124,7 +124,7 @@ class SupplyChain(models.Model):
 
     @property
     def input_fields(self):
-        """|dict| of field names and field types for the SupplyChain input.
+        """|dict| of field names and field types for the |SupplyChain| input.
 
         Returns a dictionary in which keys are the names of input fields
         and the values are the field types.
@@ -133,7 +133,7 @@ class SupplyChain(models.Model):
 
     @property
     def errors(self):
-        """|list| of errors associated with the SupplyChain's SupplyLinks."""
+        """A |list| of errors associated with the |SupplyLinks|."""
         errors = []
         supply_links = self.supply_links.all()
 
@@ -147,46 +147,46 @@ class SupplyChain(models.Model):
         return errors
 
     def validate_input(self, data):
-        """Return |True| if the data is valid input for the SupplyChain.
+        """Return |True| if the data is valid input for the |SupplyChain|.
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         data : dict
-            The data to validate as input for the SupplyChain.
+            The data to validate as input for the |SupplyChain|.
 
         Returns
         -------
         |True|
-            Returns |True| if the data is valid input for the SupplyChain.
+            Returns |True| if the data is valid input for the |SupplyChain|.
             (Otherwise, raises a |SupplyChainError|.)
 
         Raises
         ------
         |SupplyChainError|
-            If the data is not valid input for the SupplyChain.
+            If the data is not valid input for the |SupplyChain|.
 
         """
         return self._first_link.validate_input(data)
 
     def start(self, supply_order):
-        """Fulfill a |SupplyOrder| using the SupplyChain.
+        """Fulfill a |SupplyOrder| using the |SupplyChain|.
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         supply_order : |SupplyOrder|
             The |SupplyOrder| that is supplying the input data for the
-            SupplyChain and storing the result of the API request.
+            |SupplyChain| and storing the result of the API request.
 
         Returns
         -------
         dict or None
-            Returns a dictionary of results if the SupplyChain was
+            Returns a dictionary of results if the |SupplyChain| was
             executed successfully. Otherwise, returns None.
 
         Notes
         -----
         As a side effect, this method will also create |Manifests| that
-        record the API calls made by the SupplyLinks in the SupplyChain.
+        record the API calls made by the SupplyLinks in the |SupplyChain|.
 
         """
         # use object ids instead of objects, which aren't JSON serializable
@@ -255,22 +255,22 @@ class SupplyLink(models.Model):
     Attributes
     ----------
     supply_chain : SupplyChain
-        The |SupplyChain| associated with the SupplyLink.
+        The |SupplyChain| associated with the |SupplyLink|.
 
     requisition : Requisition
-        The |Requisition| associated with the SupplyLink.
+        The |Requisition| associated with the |SupplyLink|.
 
     position : int
-        An |int| representing the order of the SupplyLink in a
-        |SupplyChain|. SupplyLinks are evaluated in ascending order (the
-        lowest rank first)
+        An |int| representing the order of the |SupplyLink| in a
+        |SupplyChain|. |SupplyLinks| are evaluated in ascending order
+        (the lowest rank first)
 
     wait_time : int
         A delay time to wait before processing a request to the API.
 
     time_unit : str
-        The time units for the wait_time. Possible values are
-        constrained to |TIME_UNIT_CHOICES|.
+        The time units for the :attr:`~SupplyLink.wait_time`. Possible
+        values are constrained to |TIME_UNIT_CHOICES|.
 
     """
 
@@ -323,12 +323,12 @@ class SupplyLink(models.Model):
         verbose_name_plural = _('supply links')
 
     def __str__(self):
-        """A string representation of the SupplyLink."""
+        """A string representation of the |SupplyLink|."""
         return self.name
 
     @cached_property
     def input_fields(self):
-        """|dict| of field names and field types for the SupplyLink input.
+        """|dict| of field names and field types for the |SupplyLink| input.
 
         Returns a dictionary in which keys are the names of input fields
         and the values are the field types.
@@ -340,7 +340,8 @@ class SupplyLink(models.Model):
 
     @cached_property
     def coupling(self):
-        """
+        """|dict| of input field names mapped to parameter names.
+
         Returns a dictionary in which the keys are field names that
         correspond to the keys of input data and the values are the
         names of the parameters for which those fields will supply
@@ -353,35 +354,27 @@ class SupplyLink(models.Model):
 
     @property
     def countdown_seconds(self):
-        """
-        Returns the number of seconds bedore.
-        """
+        """The number of seconds to wait before processing an API request."""
         return dt.convert_time_to_seconds(self.wait_time, self.time_unit)
 
     @property
     def platform(self):
-        """Return the Platform associated with the SupplyLink's Requisition."""
+        """The |Platform| associated with the |SupplyLink|'s |Requisition|."""
         return self.requisition.platform
 
     @cached_property
     def _coupling_parameters(self):
-        """
-
-        """
+        """A list of Parameters associated with the |SupplyLink|."""
         return [coupling.parameter for coupling in self.field_couplings.all()]
 
     @cached_property
     def _required_parameters(self):
-        """
-
-        """
+        """A QuerySet of required Parameters for the |SupplyLink|."""
         return self.requisition.required_parameters
 
     @property
     def errors(self):
-        """
-
-        """
+        """A |list| of errors for missing required |FieldCouplings|."""
         errors = []
         for req_param in self._required_parameters:
             if req_param not in self._coupling_parameters:
@@ -390,8 +383,10 @@ class SupplyLink(models.Model):
         return errors
 
     def _get_params(self, data):
-        """
+        """Return a dict of parameter values based on input data.
 
+        Takes a dictionary of input data and returns a dictionary that
+        maps their values to parameter names.
         """
         params = {}
         for (field_name, param_name) in self.coupling.items():
@@ -399,13 +394,27 @@ class SupplyLink(models.Model):
         return params
 
     def _create_transport(self, user):
-        """
-
-        """
+        """Create a Convoy for the given user."""
         return self.requisition.create_request_handler(user=user)
 
     def validate_input(self, data):
-        """
+        """Return |True| if the data is valid input for the |SupplyChain|.
+
+        Parameters
+        ----------
+        data : dict
+            The data to validate as input for the |SupplyChain|.
+
+        Returns
+        -------
+        |True|
+            Returns |True| if the data is valid input for the
+            |SupplyChain|. (Otherwise, raises a |SupplyChainError|.)
+
+        Raises
+        ------
+        |SupplyChainError|
+            If the data is not valid input for the |SupplyChain|.
 
         """
         is_valid = True
@@ -423,23 +432,30 @@ class SupplyLink(models.Model):
         return is_valid
 
     def process(self, data, supply_order):
-        """
+        """Submit an API request and return the result.
 
         Parameters
         ----------
-        user : |AppUser|
-            The user making the API request.
-
         data : |dict|
             A dictionary of data used to construct the API request.
 
+        supply_order : |SupplyOrder|
+            The |SupplyOrder| associated with the API request.
+
         Returns
         -------
-        dict
+        |dict| or |None|
+            The data returned from the API.
 
         Raises
         ------
         |SupplyChainError|
+            If the data is not valid input for the SupplyLink.
+
+        Notes
+        -----
+        If the API request returns a response, a |Manifest| for the API
+        call will be created and associated with the |SupplyOrder|.
 
         """
         if data is None:
@@ -464,7 +480,7 @@ class SupplyLink(models.Model):
 
 
 class FieldCoupling(models.Model):
-    """
+    """Maps an input field name to an API request parameter.
 
     Attributes
     ----------
@@ -472,7 +488,8 @@ class FieldCoupling(models.Model):
         The |SupplyLink| associated with the Coupling.
 
     field_name : str
-        The dictionary key storing the value for the `parameter`.
+        The name of an input field storing the value for the
+        :attr:`~FieldCoupling.parameter`.
 
     parameter : Parameter
         The |Parameter| that will be supplied a value.
@@ -509,39 +526,42 @@ class FieldCoupling(models.Model):
         verbose_name_plural = _('field couplings')
 
     def __str__(self):
-        """String representation of a FieldCoupling."""
+        """String representation of a |FieldCoupling|."""
         return '%s: %s' % (self.supply_link, self.parameter)
 
     @cached_property
     def _param_name(self):
-        """
-
-        """
+        """The name of the API request parameter."""
         return self.parameter.param_name
 
     @cached_property
     def _param_type(self):
-        """
-
-        """
+        """The data type of API request parameter."""
         return self.parameter.param_type
 
     @property
     def mapping(self):
-        """
-
-        """
+        """A |dict| that maps the input field name to the parameter name."""
         return {self.field_name: self._param_name}
 
     @cached_property
     def input_field(self):
-        """
-
-        """
+        """A |dict| that maps the input field name to the parameter type."""
         return {self.field_name: self._param_type}
 
     def validate_input(self, data):
-        """
+        """Determine if the input data contains a valid parameter value.
+
+        Parameters
+        ----------
+        data : dict
+            A |dict| of input data.
+
+        Returns
+        -------
+        bool
+            Returns |True| if the data sontains a valid value for the
+            parameter. Otherwise, returns |False|.
 
         """
         value = data.get(self.field_name)
