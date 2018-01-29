@@ -33,8 +33,6 @@ Substitutions that are used in multiple files are defined in the `rst_epilog`_ s
 
 .. _cross-references: http://www.sphinx-doc.org/en/stable/markup/inline.html#xref-syntax
 .. _Napoleon: http://sphinxcontrib-napoleon.readthedocs.io/en/latest/
-.. _NumPy documentation style: http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html
-.. _Sphinx: http://www.sphinx-doc.org/en/stable/
 .. _reStructuredText: http://www.sphinx-doc.org/en/stable/rest.html
 .. _rst_epilog: http://www.sphinx-doc.org/en/stable/config.html#confval-rst_epilog
 .. _Sphinx: http://www.sphinx-doc.org/
