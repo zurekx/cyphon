@@ -116,6 +116,7 @@ class Procurement(models.Model):
     Attributes
     ----------
     name : str
+        The name of the |Procurement|.
 
     supply_chain : SupplyChain
         The |SupplyChain| that will procure the data.
@@ -149,7 +150,7 @@ class Procurement(models.Model):
     objects = ProcurementManager()
 
     def __str__(self):
-        """String representation of a FieldCoupling."""
+        """String representation of a |Procurement|."""
         return '%s %s' % (self.__class__.__name__, self.pk)
 
     class Meta(object):
@@ -160,12 +161,12 @@ class Procurement(models.Model):
 
     @property
     def distillery(self):
-        """Get the Distillery associated with the Procurement's DataMunger."""
+        """Get the |Distillery| associated with the |Procurement|."""
         return self.munger.distillery
 
     @property
     def input_fields(self):
-        """Get a dictionary of input fields for the Procurement's SupplyChain.
+        """Get a dictionary of input fields for the |Procurement|.
 
         Returns a dictionary in which keys are the names of input fields
         and the values are the field types.
@@ -173,41 +174,39 @@ class Procurement(models.Model):
         return self.supply_chain.input_fields
 
     def _get_result(self, supply_order):
-        """Return the result of a Procurement request.
+        """Return the result of a |Procurement| request.
 
-        Takes a dictionary of data and an AppUser, and submits them as a
-        SupplyChain request. If the request is succesful, returns a
+        Takes a dictionary of data and an |AppUser|, and submits them as
+        a |SupplyChain| request. If the request is succesful, returns a
         data dictionary of the result. Otherwise, returns None.
         """
         return self.supply_chain.start(supply_order)
 
     def _get_platform_name(self):
-        """Return the name of the Platform associated with the Procurement."""
+        """Return the name of the |Platform| for the |Procurement|."""
         return str(self.supply_chain.platform)
 
     def _get_doc_obj(self, result):
-        """Return a DocumentObj for a result."""
+        """Return a |DocumentObj| for a result."""
         platform = self._get_platform_name()
         return DocumentObj(data=result, platform=platform)
 
     def _process_doc(self, doc_obj):
-        """Parse and save data from a DocumentObj."""
+        """Parse and save data from a |DocumentObj|."""
         return self.munger.process(doc_obj)
 
     def validate(self, data):
-        """Validate a dictionary of data as input for the SupplyChain.
-
-        Takes a data dictionary and returns True if the data is validinput for the Procurement's SupplyChain.
+        """Validate a dictionary of data as input for the |Procurement|.
 
         Parameters
         ----------
         data : dict
-            Data to be evaluated as potential input for the Procurement.
+            Data to be evaluated as potential input for the |Procurement|.
 
         Returns
         -------
         bool
-            Returns |True| id the data is valid input for the Procurement.
+            Returns |True| id the data is valid input for the |Procurement|.
 
         Raises
         ------
@@ -218,18 +217,18 @@ class Procurement(models.Model):
         return self.supply_chain.validate_input(data)
 
     def is_valid(self, data):
-        """Take a dictionary and return True if the data is valid input.
+        """Take a |dict| and return |True| if the data is valid input.
 
         Parameters
         ----------
         data : dict
-            Data to be evaluated as potential input for the Procurement.
+            Data to be evaluated as potential input for the |Procurement|.
 
         Returns
         -------
         bool
             A Boolean indicating whether the data is valid input for the
-            Procurement.
+            |Procurement|.
 
         """
         try:

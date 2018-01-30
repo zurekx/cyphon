@@ -41,7 +41,7 @@ class Quartermaster(Emissary):
     Attributes
     ----------
     name : str
-        The iname of the Quartermaster.
+        The name of the |Quartermaster|.
 
     passport : Passport
         The |Passport| used to access the `endpoints`.

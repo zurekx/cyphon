@@ -45,7 +45,7 @@ class Manifest(Record):
         A |Stamp| recording the details of the API call.
 
     supply_order : SupplyOrder
-        A |SupplyOrder| associated with the Manifest.
+        A |SupplyOrder| associated with the |Manifest|.
 
     data : dict
         A dictionary containing the response to the API request.

@@ -65,7 +65,7 @@ class Requisition(Endpoint):
         apply to the |Emissary|'s |Passport| (API key).
 
     platform : Supplier
-        The |Supplier| to which the Requisition is directed.
+        The |Supplier| to which the |Requisition| is directed.
 
     """
 
@@ -87,7 +87,7 @@ class Requisition(Endpoint):
         Returns
         -------
         |QuerySet|
-            A QuerySet of the Requisition's required Parameters.
+            A |QuerySet| of the |Requisition|'s required |Parameters|.
 
         """
         return self.parameters.filter(required=True)

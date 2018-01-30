@@ -43,7 +43,7 @@ class Supplier(Platform):
         accessing a REST API.
 
     enabled : bool
-        Whether the Supplier is available for use.
+        Whether the |Supplier| is available for use.
 
     """
 
