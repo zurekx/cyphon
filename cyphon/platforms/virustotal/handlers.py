@@ -16,6 +16,21 @@
 # along with Cyphon Engine. If not, see <http://www.gnu.org/licenses/>.
 """
 Defines classes for VirusTotal handlers.
+
+==================================  ===========================================
+Class                               Description
+==================================  ===========================================
+:class:`~VirusTotalHandler`         Base class for interacting with VirusTotal.
+:class:`~VirusTotalResourceReport`  Base class for resource-related endpoints.
+:class:`~DomainReport`              Accesses the endpoint for domain reports.
+:class:`~FileReport`                Accesses the endpoint for file reports.
+:class:`~FileScan`                  Accesses the endpoint for file scanning.
+:class:`~IPAddressReport`           Accesses the endpoint for IP addr reports.
+:class:`~RescanReport`              Accesses the endpoint for file rescanning.
+:class:`~UrlReport`                 Accesses the endpoint for URL reports.
+:class:`~UrlScan`                   Accesses the endpoint for URL scanning.
+==================================  ===========================================
+
 """
 
 # standard library
@@ -36,9 +51,7 @@ _RETRIES = 6
 
 
 class VirusTotalHandler(Convoy):
-    """
-    Base class for interacting with VirusTotal APIs.
-    """
+    """Base class for interacting with VirusTotal APIs."""
 
     base_url = 'https://www.virustotal.com/vtapi/v2/'
 
@@ -59,23 +72,21 @@ class VirusTotalHandler(Convoy):
         self.api_key = self.get_key()
 
     def _get_params(self):
-        """
-        Returns a dictionary of credentials for VirusTotal authentication.
-        """
+        """Return a |dict| of credentials for VirusTotal authentication."""
         return {'apikey': self.api_key}
 
     def _update_params(self, obj, key):
-        """
-        Returns a dictionary of credentials for VirusTotal authentication.
+        """Add a dictionary item to the VirusTotal request parameters.
+
+        Takes a dictionary object and a key, and adds the corresponding
+        item from the dictionary to the parameters dictionary.
         """
         params = self._get_params()
         params[key] = obj.get(key)
         return params
 
     def _get_url(self, params):
-        """
-
-        """
+        """Add parameters to the URL and return the HTTP Response."""
         url = '%s?%s' % (self.url, urllib.urlencode(params))
         return urllib.urlopen(url).read()
 
@@ -85,9 +96,7 @@ class VirusTotalHandler(Convoy):
 
     @staticmethod
     def _package_cargo(response):
-        """
-
-        """
+        """Return a |Cargo| object based on a HTTP Response."""
         if response.status_code == 200:
             response_dict = response.json()
             status_code = response_dict.pop('response_code', '')
@@ -103,37 +112,13 @@ class VirusTotalHandler(Convoy):
             notes=verbose_msg
         )
 
-    def _get_cargo(self, obj):
-        """Takes a dict, issues an API call, and returns a Cargo object."""
-        response = self._get_response(obj)
-        return self._package_cargo(response)
-
-    def _process_cargo(self, cargo):
-        """
-        Takes a Cargo object from a previous API call and performs
-        additional operations if necessary. This method should be
-        overridden in derived classes where appropriate.
-
-        Parameters
-        ----------
-        |Cargo|
-            The results of a previous API call to VirusTotal.
-
-        Returns
-        -------
-        |Cargo|
-            The final results.
-
-        """
-        return cargo
-
     def process_request(self, obj):
-        """
+        """Process an API request and return a |Cargo| object for the response.
 
         Parameters
         ----------
         obj : |dict|
-            The |dict| containing a 'resource' dictionary key.
+            A |dict| containing parameters for a VirusTotal API request.
 
         Returns
         -------
@@ -141,24 +126,38 @@ class VirusTotalHandler(Convoy):
             The results of the API call to VirusTotal.
 
         """
-        cargo = self._get_cargo(obj)
-        return self._process_cargo(cargo)
+        response = self._get_response(obj)
+        return self._package_cargo(response)
 
 
 class VirusTotalResourceReport(VirusTotalHandler):
-    """
-    Accesses the VirusTotal API endpoint for resource reports.
-    """
+    """Accesses the VirusTotal API endpoint for resource reports."""
 
     def _get_response(self, obj):
-        """Take a dict or parameters and get the API response."""
+        """Take a dict of parameters and get the API response."""
         params = self._update_params(obj, 'resource')
         return requests.get(self.url, params=params, headers=self.headers)
 
 
+class DomainReport(VirusTotalHandler):
+    """Accesses the VirusTotal API endpoint for domain reports."""
+
+    api = 'domain/report'
+
+    def _get_response(self, obj):
+        """Take a dict of parameters and get the API response."""
+        params = self._update_params(obj, 'domain')
+        return self._get_url(params)
+
+
+class FileReport(VirusTotalResourceReport):
+    """Accesses the VirusTotal API endpoint for file reports."""
+
+    api = 'file/report'
+
+
 class FileScan(VirusTotalHandler):
-    """
-    Accesses the VirusTotal API endpoint for file scanning.
+    """Accesses the VirusTotal API endpoint for file scanning.
 
     {
       'permalink': 'https://www.virustotal.com/file/d1...',
@@ -182,39 +181,25 @@ class FileScan(VirusTotalHandler):
         return requests.post(self.url, files=files, params=params)
 
 
-class FileReport(VirusTotalResourceReport):
-    """
-    Accesses the VirusTotal API endpoint for file reports.
-    """
+class IPAddressReport(VirusTotalHandler):
+    """Accesses the VirusTotal API endpoint for IP address reports."""
 
-    api = 'file/report'
-
-
-class RescanReport(VirusTotalResourceReport):
-    """
-    Accesses the VirusTotal API endpoint for file rescanning.
-    """
-
-    api = 'file/rescan'
-
-
-class UrlScan(VirusTotalHandler):
-    """
-    Accesses the VirusTotal API endpoint for URL scanning.
-    """
-
-    api = 'url/scan'
+    api = 'ip-address/report'
 
     def _get_response(self, obj):
         """Take a dict or parameters and get the API response."""
         params = self._update_params(obj, 'url')
-        return requests.post(self.url, data=params)
+        return self._get_url(params)
+
+
+class RescanReport(VirusTotalResourceReport):
+    """Accesses the VirusTotal API endpoint for file rescanning."""
+
+    api = 'file/rescan'
 
 
 class UrlReport(VirusTotalResourceReport):
-    """
-    Accesses the VirusTotal API endpoint for URL reports.
-    """
+    """Accesses the VirusTotal API endpoint for URL reports."""
 
     api = 'url/report'
 
@@ -225,41 +210,61 @@ class UrlReport(VirusTotalResourceReport):
         return requests.post(self.url, data=params)
 
     def _process_cargo(self, cargo, tries=0):
-        """
+        """Take a |Cargo| object and use it submit another request if needed.
+
+        Takes a |Cargo| object from a previous API call and performs
+        additional operations if necessary.
+
+        Parameters
+        ----------
+        cargo : |Cargo|
+            The results of a previous API call to VirusTotal.
+
+        tries : int
+            The number of prior requests that have been made.
+
+        Returns
+        -------
+        |Cargo|
+            The final results.
 
         """
         if cargo.data and 'scans' not in cargo.data and \
                 'scan_id' in cargo.data and tries <= self.retries:
             time.sleep(self.wait_time_seconds)
             cargo.data['resource'] = cargo.data['scan_id']
-            cargo = self._get_cargo(cargo.data)
+            response = self._get_response(cargo.data)
+            cargo = self._package_cargo(response)
             tries += 1
             return self._process_cargo(cargo, tries)
         else:
             return cargo
 
+    def process_request(self, obj):
+        """Process an API request and return a |Cargo| object for the response.
 
-class IPAddressReport(VirusTotalHandler):
-    """
-    Accesses the VirusTotal API endpoint for IP address reports.
-    """
+        Parameters
+        ----------
+        obj : |dict|
+            A |dict| containing parameters for an API request.
 
-    api = 'ip-address/report'
+        Returns
+        -------
+        |Cargo|
+            The results of the API call to VirusTotal.
+
+        """
+        response = self._get_response(obj)
+        cargo = self._package_cargo(response)
+        return self._process_cargo(cargo)
+
+
+class UrlScan(VirusTotalHandler):
+    """Accesses the VirusTotal API endpoint for URL scanning."""
+
+    api = 'url/scan'
 
     def _get_response(self, obj):
         """Take a dict or parameters and get the API response."""
         params = self._update_params(obj, 'url')
-        return self._get_url(params)
-
-
-class DomainReport(VirusTotalHandler):
-    """
-    Accesses the VirusTotal API endpoint for domain reports.
-    """
-
-    api = 'domain/report'
-
-    def _get_response(self, obj):
-        """Take a dict or parameters and get the API response."""
-        params = self._update_params(obj, 'domain')
-        return self._get_url(params)
+        return requests.post(self.url, data=params)
