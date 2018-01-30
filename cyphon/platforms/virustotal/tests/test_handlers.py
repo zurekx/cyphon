@@ -41,6 +41,14 @@ from tests.fixture_manager import get_fixtures
 from .settings import VIRUSTOTAL_SETTINGS, VIRUSTOTAL_TESTS_ENABLED
 
 
+# class VirusTotalTestCase(TestCase):
+#     """
+#     Base class for VirusTotal tests.
+#     """
+
+#     fixtures = get_fixtures(['virustotal'])
+
+
 # class UrlScanSupplyChainTestCase(TransactionTestCase, PassportMixin):
 #     """
 
@@ -87,12 +95,10 @@ from .settings import VIRUSTOTAL_SETTINGS, VIRUSTOTAL_TESTS_ENABLED
 #         # [({'url': 'http://example.com'}, '403', 'Forbidden'), ({'resource': None}, '403', 'Forbidden')]
 
 
-# class UrlReportTestCase(TestCase):
+# class UrlReportTestCase(VirusTotalTestCase):
 #     """
 #     Tests the UrlReport class.
 #     """
-
-#     fixtures = get_fixtures(['virustotal'])
 
 #     def test_process_request(self):
 #         """
@@ -109,12 +115,10 @@ from .settings import VIRUSTOTAL_SETTINGS, VIRUSTOTAL_TESTS_ENABLED
 #         print('notes', cargo.notes)
 
 
-# class UrlScanSupplyChainTestCase(TestCase):
+# class UrlScanSupplyChainTestCase(VirusTotalTestCase):
 #     """
 #     Tests the Url scan SupplyChain.
 #     """
-
-#     fixtures = get_fixtures(['virustotal'])
 
 #     def test_process_request(self):
 #         """
@@ -125,5 +129,5 @@ from .settings import VIRUSTOTAL_SETTINGS, VIRUSTOTAL_TESTS_ENABLED
 #         result = supplychain.start(user=None, data={'url': 'dunbararmored.com'})
 
 #         print('result', result)
-#         # print('result code', result.status_code)
-#         # print('result notes', result.notes)
+#         print('result code', result.status_code)
+#         print('result notes', result.notes)
