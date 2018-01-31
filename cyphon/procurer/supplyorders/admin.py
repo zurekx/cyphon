@@ -59,7 +59,7 @@ class SupplyOrderAdmin(admin.ModelAdmin):
                 'input_data',
                 'distillery',
                 'doc_id',
-                'results',
+                'result',
             ),
         }),
     )
@@ -70,6 +70,6 @@ class SupplyOrderAdmin(admin.ModelAdmin):
         'input_data',
         'distillery',
         'doc_id',
-        'results',
+        'result',
         'created_date',
     ]

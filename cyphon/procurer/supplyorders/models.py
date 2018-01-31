@@ -157,7 +157,7 @@ class SupplyOrder(models.Model):
         return '%s %s' % (self.__class__.__name__, self.pk)
 
     @property
-    def results(self):
+    def result(self):
         """A |dict| of results associated with the |SupplyOrder|.
 
         Returns a |dict| of the document for the |SupplyOrder| if it can

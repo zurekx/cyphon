@@ -52,7 +52,7 @@ class SupplyOrderTestCase(TestCase):
         the SupplyOrder
         """
         self.supplyorder.distillery = None
-        actual = self.supplyorder.results
+        actual = self.supplyorder.result
         expected = {}
         self.assertEqual(actual, expected)
 
@@ -62,7 +62,7 @@ class SupplyOrderTestCase(TestCase):
         SupplyOrder
         """
         self.supplyorder.doc_id = None
-        actual = self.supplyorder.results
+        actual = self.supplyorder.result
         expected = {}
         self.assertEqual(actual, expected)
 
@@ -72,7 +72,7 @@ class SupplyOrderTestCase(TestCase):
         Tests the results property when the document associated with the
         SupplyOrder can be found.
         """
-        actual = self.supplyorder.results
+        actual = self.supplyorder.result
         expected = {'foo': 'bar'}
         self.assertEqual(actual, expected)
 
@@ -83,7 +83,7 @@ class SupplyOrderTestCase(TestCase):
         SupplyOrder can't be found.
         """
         with LogCapture() as log_capture:
-            actual = self.supplyorder.results
+            actual = self.supplyorder.result
             expected = {}
             self.assertEqual(actual, expected)
             msg = ('The document associated with id %s cannot be found in %s.'
