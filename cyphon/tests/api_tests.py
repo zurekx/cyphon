@@ -38,7 +38,6 @@ def settings_exist(settings):
     settings_exist = True
     for key, val in settings.items():
         if not val:
-            # print('missing key', key, val)
             settings_exist = False
     return settings_exist
 
@@ -58,6 +57,7 @@ class PassportMixin(object):
         passport.access_token = settings.get('ACCESS_TOKEN', '')
         passport.access_token_secret = settings.get('ACCESS_TOKEN_SECRET', '')
         passport.save()
+        return passport
 
 
 class APITestMixin(object):
