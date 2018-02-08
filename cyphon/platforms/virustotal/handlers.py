@@ -85,18 +85,13 @@ class VirusTotalHandler(Convoy):
         params[key] = obj.get(key)
         return params
 
-    def _get_url(self, params):
-        """Add parameters to the URL and return the HTTP Response."""
-        url = '%s?%s' % (self.url, urllib.urlencode(params))
-        return urllib.urlopen(url).read()
-
     def _get_response(self, obj):
         """Take a dict or parameters and get the API response."""
         raise NotImplementedError
 
     @staticmethod
     def _package_cargo(response):
-        """Return a |Cargo| object based on a HTTP Response."""
+        """Return a |Cargo| object based on an HTTP Response."""
         if response.status_code == 200:
             response_dict = response.json()
             status_code = response_dict.pop('response_code', '')
@@ -147,7 +142,7 @@ class DomainReport(VirusTotalHandler):
     def _get_response(self, obj):
         """Take a dict of parameters and get the API response."""
         params = self._update_params(obj, 'domain')
-        return self._get_url(params)
+        return requests.get(self.url, params=params)
 
 
 class FileReport(VirusTotalResourceReport):
@@ -188,14 +183,19 @@ class IPAddressReport(VirusTotalHandler):
 
     def _get_response(self, obj):
         """Take a dict or parameters and get the API response."""
-        params = self._update_params(obj, 'url')
-        return self._get_url(params)
+        params = self._update_params(obj, 'ip')
+        return requests.get(self.url, params=params)
 
 
-class RescanReport(VirusTotalResourceReport):
+class RescanReport(VirusTotalHandler):
     """Accesses the VirusTotal API endpoint for file rescanning."""
 
     api = 'file/rescan'
+
+    def _get_response(self, obj):
+        """Take a dict or parameters and get the API response."""
+        params = self._update_params(obj, 'resource')
+        return requests.post(self.url, params=params)
 
 
 class UrlReport(VirusTotalResourceReport):
