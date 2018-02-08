@@ -1,3 +1,4 @@
+
 [
   {
     "model": "requisitions.requisition",
@@ -5,7 +6,7 @@
       "id": 1,
       "platform": ["virustotal"],
       "api_module": "handlers",
-      "api_class": "UrlScan"
+      "api_class": "DomainReport"
     }
   },
   {
@@ -14,7 +15,102 @@
       "id": 2,
       "platform": ["virustotal"],
       "api_module": "handlers",
+      "api_class": "FileReport"
+    }
+  },
+  {
+    "model": "requisitions.requisition",
+    "fields": {
+      "id": 3,
+      "platform": ["virustotal"],
+      "api_module": "handlers",
+      "api_class": "FileScan"
+    }
+  },
+  {
+    "model": "requisitions.requisition",
+    "fields": {
+      "id": 4,
+      "platform": ["virustotal"],
+      "api_module": "handlers",
+      "api_class": "IPAddressReport"
+    }
+  },
+  {
+    "model": "requisitions.requisition",
+    "fields": {
+      "id": 5,
+      "platform": ["virustotal"],
+      "api_module": "handlers",
+      "api_class": "RescanReport"
+    }
+  },
+  {
+    "model": "requisitions.requisition",
+    "fields": {
+      "id": 6,
+      "platform": ["virustotal"],
+      "api_module": "handlers",
+      "api_class": "UrlScan"
+    }
+  },
+  {
+    "model": "requisitions.requisition",
+    "fields": {
+      "id": 7,
+      "platform": ["virustotal"],
+      "api_module": "handlers",
       "api_class": "UrlReport"
+    }
+  },
+  {
+    "model": "requisitions.parameter",
+    "fields": {
+      "id": 1,
+      "requisition": ["virustotal", "DomainReport"],
+      "param_name": "resource",
+      "param_type": "CharField",
+      "required": true
+    }
+  },
+  {
+    "model": "requisitions.parameter",
+    "fields": {
+      "id": 1,
+      "requisition": ["virustotal", "FileReport"],
+      "param_name": "url",
+      "param_type": "CharField",
+      "required": true
+    }
+  },
+  {
+    "model": "requisitions.parameter",
+    "fields": {
+      "id": 1,
+      "requisition": ["virustotal", "FileScan"],
+      "param_name": "url",
+      "param_type": "CharField",
+      "required": true
+    }
+  },
+  {
+    "model": "requisitions.parameter",
+    "fields": {
+      "id": 1,
+      "requisition": ["virustotal", "IPAddressReport"],
+      "param_name": "url",
+      "param_type": "CharField",
+      "required": true
+    }
+  },
+  {
+    "model": "requisitions.parameter",
+    "fields": {
+      "id": 1,
+      "requisition": ["virustotal", "RescanReport"],
+      "param_name": "url",
+      "param_type": "CharField",
+      "required": true
     }
   },
   {

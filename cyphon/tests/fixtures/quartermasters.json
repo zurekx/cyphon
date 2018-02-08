@@ -3,7 +3,15 @@
     "model": "quartermasters.quartermaster",
     "fields": {
       "name": "Virustotal UrlReport",
-      "endpoints": [["virustotal", "UrlReport"]],
+      "endpoints": [
+        ["virustotal", "DomainReport"],
+        ["virustotal", "FileReport"],
+        ["virustotal", "FileScan"],
+        ["virustotal", "IPAddressReport"],
+        ["virustotal", "RescanReport"],
+        ["virustotal", "UrlReport"],
+        ["virustotal", "UrlScan"]
+      ],
       "passport": ["VirusTotal Public"],
       "visa": ["VirusTotal API"]
     }
