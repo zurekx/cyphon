@@ -55,7 +55,7 @@ sys.modules.update((mod_name, make_mock(mod_name)) for mod_name in MOCK_MODULES)
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../../cyphon'))
-sys.path.insert(0, os.path.abspath('../cyphon'))
+sys.path.insert(0, os.path.abspath('..'))
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'cyphon.settings.sphinx'
 import django
