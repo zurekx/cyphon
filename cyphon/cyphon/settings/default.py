@@ -382,7 +382,6 @@ INSTALLED_APPS = [
     'cyclops',
     'cyphon.settings',
     'distilleries',
-    'httmock',
     'inspections',
     'lab.procedures',
     'monitors',
